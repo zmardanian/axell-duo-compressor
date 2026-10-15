@@ -551,6 +551,68 @@ inline void testV2 (Recorder& r)
         r.greater ("handshake timeout: the old configuration plays again after 0.5 s", db (maxAbs (o3[0], (int) (0.8 * fs))), -7.0, "dBFS");
     }
 
+    //== V11 level-matched compare and display history (2.1) =====================================
+    {
+        auto p = fetOnly();
+        p.fetInDb = 18.0f; // heavy compression: the processed signal is much louder than the input after OUTPUT
+        p.fetOutDb = 6.0f;
+        Buf in = program (c.nCh, (int) (3.0 * fs), fs, 31);
+        auto e0 = makeEngine (c, p);
+        auto proc = run (*e0, in);
+        auto q = p;
+        q.compare = true;
+        auto e1 = makeEngine (c, q);
+        auto cmp = run (*e1, in);
+        // loudness (plain RMS of the last 1.5 s; K-weighting changes it by the same amount on both for this material)
+        auto rmsDb = [&] (const Buf& b)
+        {
+            double s2 = 0;
+            const size_t from = b[0].size() - (size_t) (1.5 * fs);
+            for (size_t ch = 0; ch < b.size(); ++ch)
+                for (size_t i = from; i < b[ch].size(); ++i)
+                    s2 += (double) b[ch][i] * b[ch][i];
+            return 10.0 * std::log10 (s2 / (1.5 * fs * (double) b.size()));
+        };
+        double inLevel = rmsDb (in);
+        r.info ("compare: processed signal louder than the input by", rmsDb (proc) - inLevel, "dB");
+        r.range ("compare: unprocessed signal played at the processed signal's loudness (difference)", rmsDb (cmp) - rmsDb (proc), -1.0, 1.0, "dB");
+        // and it is the input itself (latency-aligned), only scaled: residual after the best gain
+        const int L = e1->getLatencySamples();
+        double sxy = 0, sxx = 0;
+        const size_t from = (size_t) (2.0 * fs);
+        for (size_t i = from; i < cmp[0].size(); ++i)
+        {
+            sxy += (double) cmp[0][i] * in[0][i - (size_t) L];
+            sxx += (double) in[0][i - (size_t) L] * in[0][i - (size_t) L];
+        }
+        const double g = sxy / sxx;
+        double res = 0, ref = 0;
+        for (size_t i = from; i < cmp[0].size(); ++i)
+        {
+            const double d = cmp[0][i] - g * in[0][i - (size_t) L];
+            res += d * d;
+            ref += (double) cmp[0][i] * cmp[0][i];
+        }
+        r.less ("compare: output is the unprocessed input (residual after one gain)", 10.0 * std::log10 (res / ref + 1e-30), -40.0, "dB");
+
+        // history: one frame per ~5 ms, gain reduction as on the meters
+        auto e2 = makeEngine (c, p);
+        Buf in2 = zeros (c.nCh, (int) fs);
+        addSine (in2, fs, 1000.0, 0.5);
+        run (*e2, in2);
+        duo::HistoryFrame f;
+        int frames = 0;
+        float lastGr = 0;
+        while (e2->popHistory (f))
+        {
+            ++frames;
+            lastGr = f.fetGr;
+        }
+        r.range ("history: frames per second of audio", frames, 195, 205, "");
+        r.range ("history: FET gain reduction in the last frame vs the stage's steady GR",
+                 lastGr - steadyGr (c, p, -6.02, true), -0.3, 0.3, "dB");
+    }
+
     //== V10 block-size invariance, allocations, with every 2.0 feature on ======================
     {
         auto p = duo::Params();

@@ -13,7 +13,7 @@ elif [ -e "$PUB" ]; then echo "$PUB exists but is not a git repository - remove 
 mkdir -p "$PUB"
 for f in CMakeLists.txt LICENSE README.md CHANGELOG.md THIRD_PARTY_NOTICES.md; do cp "$f" "$PUB/"; done
 cp -r Resources Source scripts "$PUB/"
-mkdir -p "$PUB/tests/independent" "$PUB/docs" "$PUB/tools/validation" "$PUB/tools/listening"
+mkdir -p "$PUB/tests/independent" "$PUB/docs" "$PUB/tools/validation" "$PUB/tools/listening" "$PUB/tools/benchmark"
 cp tests/*.cpp tests/*.h tests/lsan.supp tests/report.md tests/report-asan.md "$PUB/tests/"
 cp tests/independent/*.cpp tests/independent/*.py tests/independent/README.md tests/independent/audit-report.txt "$PUB/tests/independent/"
 cp docs/ENGINEERING_SPEC.md docs/DECISIONS.md docs/pluginval-log.txt "$PUB/docs/"
@@ -21,6 +21,7 @@ cp -r docs/research docs/screenshots "$PUB/docs/"
 cp tools/duo_render.cpp tools/retune_presets.cpp "$PUB/tools/"
 cp tools/validation/*.py tools/validation/*.json "$PUB/tools/validation/"
 cp tools/listening/index.html tools/listening/make_stimuli.py "$PUB/tools/listening/"
+cp tools/benchmark/*.py "$PUB/tools/benchmark/"
 cat > "$PUB/.gitignore" <<'IGN'
 build/
 build-*/

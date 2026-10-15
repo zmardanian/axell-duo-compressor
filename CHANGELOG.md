@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.1.0 (2026-10-15)
+
+### New
+- **Level / gain-reduction history** (last 5 s): input and output level with the gain reduction of the FET, opto and
+  limiter drawn from the top, and a **transfer curve** of the whole chain at the current settings with your live level.
+- **COMPARE** (level-matched compare): plays the unprocessed track at the processed track's loudness (K-weighted,
+  BS.1770), so you judge what the compression does, not the level change. Matches within 0.1 dB in the test suite.
+
+### Verified
+- **Benchmark against Universal Audio's UADx 1176 and UADx LA-2A** (black box, same host and analysis;
+  `docs/research/benchmark.md`): 30-85 dB less aliasing, correct latency reporting (both UADx plugins report 0 while
+  delaying the audio by 86-87 samples in this host), no noise, deterministic. Fidelity to the hardware recordings:
+  LA-2A on par (gain tracking on music 0.68 vs 0.89 dB, loudness 0.36 vs 0.56 dB; UAD better on spectral match and
+  onsets), 1176 behind (1.46 vs 1.09 dB). Open items listed in the report.
+- DSP suite 2596 checks, plugin suite 125, black-box audit 26/26, pluginval strictness 10 + VST3 validator.
+
 ## 2.0.0 — Axell Duo Compressor (2026-10-14)
 
 Duo Vocal Comp becomes **Axell Duo Compressor**. Same plugin identity: projects saved with Duo Vocal Comp 1.0 open

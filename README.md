@@ -33,6 +33,10 @@ to 0.48 fs (21 kHz at 44.1 kHz) - see [the limiter's limits](#the-limiters-limit
 Mid/Side, compressor lookahead 0-10 ms (catches transients before they arrive: 23 dB of onset overshoot down to
 1.3 dB with 2 ms), Color (analog-style harmonics), stereo link, parallel Mix (sample-aligned), output, auto makeup.
 
+**DISPLAY**: a 5-second history of input and output level with each stage's gain reduction, a transfer curve of the
+whole chain at the current settings, and **COMPARE**: hear your unprocessed track at exactly the processed track's
+loudness, so you judge what the compression does and not the level change.
+
 Presets for vocals, mix bus, mastering, bass and side-chain ducking; A/B compare; user presets in
 `~/.local/share/AxellDuoCompressor/Presets` (Duo Vocal Comp presets are listed too). Latency is reported to the DAW
 and changes only after the DAW has been told (no misaligned audio when you switch lookahead, limiter or oversampling).
@@ -68,6 +72,17 @@ Measured against recordings of real hardware published by researchers (details a
   setting available the FET law was left unchanged (see the report).
 - **Blind test kit**: ABX and MUSHRA-style trials, hardware vs plugin, loudness-matched
   (`tools/listening/`). Listener results are still to be collected.
+
+## Benchmark against the UADx 1176 and LA-2A
+
+Measured side by side with Universal Audio's UADx emulations of the same two units, in the same host, with the same
+analysis ([docs/research/benchmark.md](docs/research/benchmark.md)):
+
+- **Ahead on engineering**: 30-85 dB less aliasing, correct latency reporting, no noise, a distortion-free detector
+  option, plus a true-peak limiter, lookahead, Mid/Side and an external side-chain with EQ.
+- **On par for the LA-2A**: closer gain tracking on music (0.68 vs 0.89 dB) and loudness (0.36 vs 0.56 dB); UAD is
+  closer in spectral match and on fast onsets after short dips.
+- **Behind for the 1176**: gain-trajectory error 1.46 dB vs UAD's 1.09 dB at the one setting with public hardware data.
 
 ## The limiter's limits
 No low-latency detector can predict exactly how a signal reconstructs between samples when it contains energy

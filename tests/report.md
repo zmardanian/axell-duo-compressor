@@ -1,8 +1,8 @@
 # Axell Duo Compressor - DSP test report
 
-Generated 2026-10-15 01:48 by `DuoDspTests` in 118.9 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Release.
+Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Release.
 
-**Result: ALL PASS** - 1910 checks passed, 0 failed (every check runs once per sample rate / channel configuration).
+**Result: ALL PASS** - 1950 checks passed, 0 failed (every check runs once per sample rate / channel configuration).
 
 ## Summary (worst case over all configurations)
 
@@ -253,6 +253,11 @@ Generated 2026-10-15 01:48 by `DuoDspTests` in 118.9 s. Stage ballistics are mea
 | V 2.0 features | handshake: engine latency = the acknowledged one | = 211.0 samples | 211.0 samples | 44.1 k mono | PASS 10/10 |
 | V 2.0 features | handshake timeout: latency unchanged | = 211.0 samples | 211.0 samples | 44.1 k mono | PASS 10/10 |
 | V 2.0 features | handshake timeout: the old configuration plays again after 0.5 s | > -7.000 dBFS | -6.021 dBFS | 88.2 k mono | PASS 10/10 |
+| V 2.0 features | compare: processed signal louder than the input by | (info) | 6.239 .. 7.432 dB | all | - |
+| V 2.0 features | compare: unprocessed signal played at the processed signal's loudness (difference) | -1.000 .. 1.000 dB | 0.0860 dB | 44.1 k stereo | PASS 10/10 |
+| V 2.0 features | compare: output is the unprocessed input (residual after one gain) | < -40.000 dB | -42.636 dB | 48 k mono | PASS 10/10 |
+| V 2.0 features | history: frames per second of audio | 195.0 .. 205.0  | 199.0  | 44.1 k mono | PASS 10/10 |
+| V 2.0 features | history: FET gain reduction in the last frame vs the stage's steady GR | -0.3000 .. 0.3000 dB | -0.0049 dB | 44.1 k mono | PASS 10/10 |
 | V 2.0 features | all 2.0 features: block 512 vs 37 (difference) | < -140.0 dBFS | -600.0 dBFS | 44.1 k mono | PASS 10/10 |
 | V 2.0 features | all 2.0 features: output finite | yes | 1.000  | 44.1 k mono | PASS 10/10 |
 | V 2.0 features | all 2.0 features: heap allocations inside process() | = 0.0000  | 0.0000  | 44.1 k mono | PASS 10/10 |
@@ -267,15 +272,15 @@ Generated 2026-10-15 01:48 by `DuoDspTests` in 118.9 s. Stage ballistics are mea
 | V 2.0 features | Mid/Side, link 0: loud side compressed by | > 3.000 dB | 8.993 dB | 44.1 k stereo | PASS 5/5 |
 | O Oversampling filters | 2x decimator (stopband from base Nyquist): stopband peak | < -100.0 dB | -100.2 dB | 88.2 k mono | PASS 6/6 |
 | O Oversampling filters | 2x decimator (stopband from base Nyquist): passband ripple | < 0.0010 dB | 0.000101 dB | 88.2 k mono | PASS 6/6 |
-| 10 CPU | 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | < 2.000 % | 1.691 % | 48 k stereo | PASS 1/1 |
-| 10 CPU | 48 kHz / 128 / stereo / 2x: real-time factor | (info) | 59.137 x | all | - |
-| 10 CPU | silence after program (denormal safety): CPU silence / CPU program | < 1.500 x | 0.8112 x | 48 k stereo | PASS 1/1 |
-| 10 CPU | 48 kHz / 128 / stereo / 1x: CPU of one core | (info) | 1.081 % | all | - |
-| 10 CPU | 48 kHz / 128 / stereo / 4x: CPU of one core | (info) | 2.943 % | all | - |
-| 10 CPU | 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | < 8.000 % | 6.123 % | 48 k stereo | PASS 1/1 |
-| 10 CPU | stereo / 128 / 2x at 44.100 kHz: CPU of one core | (info) | 1.562 % | all | - |
-| 10 CPU | stereo / 128 / 2x at 96.000 kHz: CPU of one core | (info) | 3.371 % | all | - |
-| 10 CPU | stereo / 128 / 2x at 192.0 kHz: CPU of one core | (info) | 6.730 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | < 2.000 % | 1.765 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | 48 kHz / 128 / stereo / 2x: real-time factor | (info) | 56.669 x | all | - |
+| 10 CPU | silence after program (denormal safety): CPU silence / CPU program | < 1.500 x | 0.7934 x | 48 k stereo | PASS 1/1 |
+| 10 CPU | 48 kHz / 128 / stereo / 1x: CPU of one core | (info) | 1.153 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 4x: CPU of one core | (info) | 2.996 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | < 8.000 % | 6.135 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | stereo / 128 / 2x at 44.100 kHz: CPU of one core | (info) | 1.620 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 96.000 kHz: CPU of one core | (info) | 3.492 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 192.0 kHz: CPU of one core | (info) | 7.003 % | all | - |
 
 ## Detail per configuration
 
@@ -526,6 +531,11 @@ Generated 2026-10-15 01:48 by `DuoDspTests` in 118.9 s. Stage ballistics are mea
 | V 2.0 features: handshake: engine latency = the acknowledged one | 211.0 | 211.0 | 223.0 | 223.0 | 298.0 | 298.0 | 321.0 | 321.0 | 609.0 | 609.0 |
 | V 2.0 features: handshake timeout: latency unchanged | 211.0 | 211.0 | 223.0 | 223.0 | 298.0 | 298.0 | 321.0 | 321.0 | 609.0 | 609.0 |
 | V 2.0 features: handshake timeout: the old configuration plays again after 0.5 s | -6.021 | -6.021 | -6.021 | -6.021 | -6.021 | -6.021 | -6.021 | -6.021 | -6.021 | -6.021 |
+| V 2.0 features: compare: processed signal louder than the input by | 7.314 | 6.956 | 7.432 | 6.922 | 6.862 | 6.583 | 6.812 | 6.566 | 6.560 | 6.239 |
+| V 2.0 features: compare: unprocessed signal played at the processed signal's loudness (difference) | 0.0575 | 0.0860 | -0.0065 | -0.0056 | 0.0113 | 0.0065 | 0.0799 | 0.0804 | 0.0224 | 0.0209 |
+| V 2.0 features: compare: output is the unprocessed input (residual after one gain) | -49.131 | -49.090 | -42.636 | -54.295 | -48.737 | -44.339 | -49.104 | -48.043 | -48.668 | -48.290 |
+| V 2.0 features: history: frames per second of audio | 199.0 | 199.0 | 200.0 | 200.0 | 200.0 | 200.0 | 200.0 | 200.0 | 200.0 | 200.0 |
+| V 2.0 features: history: FET gain reduction in the last frame vs the stage's steady GR | -0.0049 | -0.0049 | -0.0016 | -0.0016 | -0.000454 | -0.000454 | -0.00045 | -0.00045 | -0.00045 | -0.00045 |
 | V 2.0 features: all 2.0 features: block 512 vs 37 (difference) | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 |
 | V 2.0 features: all 2.0 features: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | V 2.0 features: all 2.0 features: heap allocations inside process() | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
@@ -540,12 +550,12 @@ Generated 2026-10-15 01:48 by `DuoDspTests` in 118.9 s. Stage ballistics are mea
 | V 2.0 features: Mid/Side, link 0: loud side compressed by | - | 8.993 | - | 9.000 | - | 9.005 | - | 9.014 | - | 9.043 |
 | O Oversampling filters: 2x decimator (stopband from base Nyquist): stopband peak | - | - | - | - | -100.2 | -100.2 | -100.2 | -100.2 | -100.2 | -100.2 |
 | O Oversampling filters: 2x decimator (stopband from base Nyquist): passband ripple | - | - | - | - | 0.000101 | 0.000101 | 0.000101 | 0.000101 | 0.000101 | 0.000101 |
-| 10 CPU: 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | - | - | - | 1.691 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 2x: real-time factor | - | - | - | 59.137 | - | - | - | - | - | - |
-| 10 CPU: silence after program (denormal safety): CPU silence / CPU program | - | - | - | 0.8112 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 1x: CPU of one core | - | - | - | 1.081 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 4x: CPU of one core | - | - | - | 2.943 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | - | - | - | 6.123 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 44.100 kHz: CPU of one core | - | - | - | 1.562 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 96.000 kHz: CPU of one core | - | - | - | 3.371 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 192.0 kHz: CPU of one core | - | - | - | 6.730 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | - | - | - | 1.765 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 2x: real-time factor | - | - | - | 56.669 | - | - | - | - | - | - |
+| 10 CPU: silence after program (denormal safety): CPU silence / CPU program | - | - | - | 0.7934 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 1x: CPU of one core | - | - | - | 1.153 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x: CPU of one core | - | - | - | 2.996 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | - | - | - | 6.135 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 44.100 kHz: CPU of one core | - | - | - | 1.620 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 96.000 kHz: CPU of one core | - | - | - | 3.492 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 192.0 kHz: CPU of one core | - | - | - | 7.003 | - | - | - | - | - | - |

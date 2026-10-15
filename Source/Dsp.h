@@ -188,6 +188,12 @@ public:
 
     void invalidate() noexcept { lastType = 0; }
 
+    void setRaw (double nb0, double nb1, double nb2, double na1, double na2) noexcept
+    {
+        b0 = nb0; b1 = nb1; b2 = nb2; a1 = na1; a2 = na2;
+        lastType = 9;
+    }
+
 private:
     double b0 = 1.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0;
     std::array<double, kMaxCh> z1 {}, z2 {};
@@ -441,6 +447,39 @@ private:
 };
 
 //==============================================================================
+// ITU-R BS.1770 K-weighting (pre-filter high shelf + RLB high-pass), coefficients derived for any rate by the
+// standard's bilinear forms. Used for the level-matched compare (loudness, not peaks).
+class KWeighting
+{
+public:
+    void prepare (double fs) noexcept
+    {
+        {
+            const double f0 = 1681.974450955533, G = 3.999843853973347, Q = 0.7071752369554196;
+            const double K = std::tan (kPi * f0 / fs), Vh = std::pow (10.0, G / 20.0), Vb = std::pow (Vh, 0.4996667741545416);
+            const double a0 = 1.0 + K / Q + K * K;
+            shelf.setRaw ((Vh + Vb * K / Q + K * K) / a0, 2.0 * (K * K - Vh) / a0, (Vh - Vb * K / Q + K * K) / a0,
+                          2.0 * (K * K - 1.0) / a0, (1.0 - K / Q + K * K) / a0);
+        }
+        {
+            const double f0 = 38.13547087602444, Q = 0.5003270373238773;
+            const double K = std::tan (kPi * f0 / fs), a0 = 1.0 + K / Q + K * K;
+            hp.setRaw (1.0, -2.0, 1.0, 2.0 * (K * K - 1.0) / a0, (1.0 - K / Q + K * K) / a0);
+        }
+        resetState();
+    }
+    void resetState() noexcept
+    {
+        shelf.resetState();
+        hp.resetState();
+    }
+    double process (double x, int c) noexcept { return hp.process (shelf.process (x, c), c); }
+
+private:
+    Biquad shelf, hp;
+};
+
+//==============================================================================
 // FET stage: INPUT drives into the threshold (like the hardware; -12 dBFS by default, adjustable since 2.0),
 // attack 20-800 us, release 50-1100 ms, 4/8/12/20/All ratios.
 //
@@ -460,7 +499,21 @@ public:
         float thresholdDb = -12.0f, kneeDb = -1.0f /* < 0: Auto */, rangeDb = 60.0f /* >= 60: off */, holdMs = 0.0f;
         bool clean = false;       // Clean detector: ripple-free full-band envelope
         SideChainEq eq;
+        // the ALL ("all buttons") law. Defaults = the 1.x law (educated guesses, DECISIONS D9);
+        // measuredAll() = calibrated on hardware 1176LN recordings (DECISIONS D27)
+        struct AllModel
+        {
+            float ratio = 20.0f, knee = 2.0f, thrOffsetDb = 0.0f, attackMul = 0.6f, releaseMul = 0.7f;
+            float bumpOffsetDb = 10.0f, bumpSlope = 0.15f, bumpMaxDb = 6.0f;
+        } all;
     };
+    static Settings::AllModel classicAll() noexcept { return {}; }
+    static Settings::AllModel measuredAll() noexcept
+    {
+        Settings::AllModel m;
+        // not calibrated yet (DECISIONS D27): the Classic law
+        return m;
+    }
 
     static constexpr float kThresholdDb = -12.0f; // 1.x fixed threshold = the default
 
@@ -508,9 +561,10 @@ public:
 
         const int idx = std::clamp (s.ratio, 0, 4);
         allButtons = (idx == 4);
-        ratio = ratios[idx];
-        knee  = s.kneeDb < 0.0f ? knees[idx] : std::clamp (s.kneeDb, 0.0f, 24.0f);
-        threshold = std::clamp (s.thresholdDb, -60.0f, 0.0f);
+        allm = s.all;
+        ratio = allButtons ? std::max (1.0f, allm.ratio) : ratios[idx];
+        knee  = s.kneeDb < 0.0f ? (allButtons ? std::clamp (allm.knee, 0.0f, 24.0f) : knees[idx]) : std::clamp (s.kneeDb, 0.0f, 24.0f);
+        threshold = std::clamp (s.thresholdDb + (allButtons ? allm.thrOffsetDb : 0.0f), -60.0f, 0.0f);
         range = s.rangeDb >= 60.0f ? -1.0f : std::clamp (s.rangeDb, 0.0f, 60.0f);
         // the curve is exactly 0 below threshold - knee/2; 1 dB of margin (1.x: -16 dBFS)
         quietLevel = dbToGain (threshold - 0.5f * std::max (knee, 6.0f) - 1.0f);
@@ -519,8 +573,8 @@ public:
         inTarget  = dbToGain (s.inDb);
         outTarget = dbToGain (s.outDb);
         // All-buttons: attack 0.6x and release 0.7x of the knob (faster, pumping; documented in DECISIONS.md)
-        const float atkSec = std::clamp (s.attackMs, 0.02f, 0.8f) * 0.001f * (allButtons ? 0.6f : 1.0f);
-        const float relSec = std::clamp (s.releaseMs, 50.0f, 1100.0f) * 0.001f * (allButtons ? 0.7f : 1.0f);
+        const float atkSec = std::clamp (s.attackMs, 0.02f, 0.8f) * 0.001f * (allButtons ? std::max (0.05f, allm.attackMul) : 1.0f);
+        const float relSec = std::clamp (s.releaseMs, 50.0f, 1100.0f) * 0.001f * (allButtons ? std::max (0.05f, allm.releaseMul) : 1.0f);
         atkK = 1.0f - onePole (atkSec, fs);
         relRate = (float) (1.0 / (relSec * fs));
         sc.setHighPass (fs, std::clamp (s.scHz, 20.0f, 300.0f));
@@ -578,6 +632,12 @@ public:
 
     float grDb (int ch) const noexcept { return gr[(size_t) ch]; }
     double sampleRate() const noexcept { return fs; }
+    // static gain reduction for a steady signal whose detector level (after INPUT) is levelDb (displays)
+    float staticGainReductionDb (float levelDb) const noexcept
+    {
+        float g = curve (levelDb);
+        return range >= 0.0f ? std::min (g, range) : g;
+    }
 
 private:
     template <int numCh>
@@ -723,7 +783,8 @@ private:
         {
             // over-compression: above threshold + 10 dB the output level falls by 0.1 dB per dB
             // (soft 6 dB knee, capped at 6 dB extra) - the "nuke" bump of all-buttons-in.
-            g += std::min (6.0f, gainReductionDb (levelDb, threshold + 10.0f, 1.0f / (1.0f - 0.15f), 6.0f));
+            g += std::min (allm.bumpMaxDb, gainReductionDb (levelDb, threshold + allm.bumpOffsetDb,
+                                                           1.0f / (1.0f - std::clamp (allm.bumpSlope, 0.0f, 0.9f)), 6.0f));
         }
         return g;
     }
@@ -769,6 +830,7 @@ private:
     float color = 0.0f, colorTarget = 0.0f, smoothK = 0.001f;
     std::array<float, kMaxCh> gr {}, memory {};
     bool allButtons = false, clean = false;
+    Settings::AllModel allm;
 };
 
 //==============================================================================
@@ -799,6 +861,9 @@ public:
             float ratioComp = 3.0f, ratioLim = 10.0f, kneeComp = 12.0f, kneeLim = 6.0f;
             float attackSec = 0.0085f, fastReleaseSec = 0.040f, fastShare = 0.6f;
             float slowMinSec = 0.5f, slowMaxSec = 5.0f, memRiseSec = 4.0f, memFallSec = 8.0f;
+            // onset flare (2.1): extra GR = onsetGain * max(0, fast(target) - slow(target)) - the cell over-reacts to
+            // a rising drive, then settles (measured on hardware onsets, DECISIONS D28). 0 = none (1.x, 2.0)
+            float onsetGain = 0.0f, onsetFastSec = 0.008f, onsetSlowSec = 0.040f;
         } model;
     };
 
@@ -864,6 +929,9 @@ public:
             fastShare  = std::clamp (md.fastShare, 0.0f, 1.0f);
             slowMin    = std::max (0.01f, md.slowMinSec);
             slowSpan   = std::max (0.0f, md.slowMaxSec - slowMin);
+            onsetGain  = std::max (0.0f, md.onsetGain);
+            onsetFastK = 1.0f - onePole (std::max (0.0005f, md.onsetFastSec), baseFs);
+            onsetSlowK = 1.0f - onePole (std::max (0.001f, md.onsetSlowSec), baseFs);
         }
         threshold    = std::clamp (s.thresholdDb, -60.0f, 0.0f);
         range        = s.rangeDb >= 60.0f ? -1.0f : std::clamp (s.rangeDb, 0.0f, 60.0f);
@@ -895,6 +963,8 @@ public:
         scEq.resetState();
         dc.resetState();
         holdCount.fill (0);
+        onsetFast.fill (0.0f);
+        onsetSlow.fill (0.0f);
         ms.fill (0.0f);
         grFast.fill (0.0f);
         grSlow.fill (0.0f);
@@ -954,6 +1024,12 @@ public:
 
     float stageGain (int c) const noexcept { return gainCur[(size_t) c] * makeup; }
     double sampleRate() const noexcept { return fs; }
+    // static gain reduction for a steady sine of peak level peakDb at the stage input (displays)
+    float staticGainReductionDb (float peakDb) const noexcept
+    {
+        const float g = gainReductionDb (peakDb + prGainDb, threshold, ratio, knee);
+        return range >= 0.0f ? std::min (g, range) : g;
+    }
 
 private:
     // one base-rate step of detector + ballistics; sets the per-frame GR interpolation
@@ -1011,9 +1087,20 @@ private:
             // memory follows the compression demand: full build-up at 10 dB
             const float w = std::clamp (target * 0.1f, 0.0f, 1.0f);
             m += (w - m) * (w > m ? memRiseK : memFallK);
+            float gOut = g;
+            if (onsetGain > 0.0f)
+            {
+                float& t1 = onsetFast[(size_t) c];
+                float& t2 = onsetSlow[(size_t) c];
+                t1 += (target - t1) * onsetFastK;
+                t2 += (target - t2) * onsetSlowK;
+                gOut += onsetGain * std::max (0.0f, t1 - t2);
+                if (range >= 0.0f)
+                    gOut = std::min (gOut, range);
+            }
             const float inv = 1.0f / (float) decim;
-            grStep[(size_t) c] = (g - grCur[(size_t) c]) * inv;
-            gainStep[(size_t) c] = (dbToGain (-g) - gainCur[(size_t) c]) * inv;
+            grStep[(size_t) c] = (gOut - grCur[(size_t) c]) * inv;
+            gainStep[(size_t) c] = (dbToGain (-gOut) - gainCur[(size_t) c]) * inv;
         }
     }
 
@@ -1047,7 +1134,8 @@ private:
     std::array<int, kMaxCh> holdCount {};
     float makeup = 1.0f, makeupTarget = 1.0f, color = 0.0f, colorTarget = 0.0f, smoothK = 0.001f;
     float detK = 0.0f, atkK = 0.0f, relFastK = 0.0f, memRiseK = 0.0f, memFallK = 0.0f, invFs = 0.0f;
-    float fastShare = 0.6f, slowMin = 0.5f, slowSpan = 4.5f;
+    float fastShare = 0.6f, slowMin = 0.5f, slowSpan = 4.5f, onsetGain = 0.0f, onsetFastK = 0.0f, onsetSlowK = 0.0f;
+    std::array<float, kMaxCh> onsetFast {}, onsetSlow {};
     Settings::Model modelApplied { -1.0f };
     std::array<float, kMaxCh> ms {}, grFast {}, grSlow {}, memory {}, grCur {}, grStep {};
     std::array<float, kMaxCh> gainCur { 1.0f, 1.0f }, gainStep {};

@@ -1,6 +1,7 @@
 #include "PluginEditor.h"
 #include "BinaryData.h"
 
+#include <cstring>
 #include <tuple>
 
 using namespace ui;
@@ -103,6 +104,14 @@ const char* out = "Final output level after everything.";
 const char* inMeter = "Input level (peak dBFS). The number is the highest peak - click to reset.";
 const char* outMeter = "Output level (peak dBFS). The number is the highest peak - click to reset.";
 const char* fetMeter = "FET gain reduction in dB. The line marks the recent peak - click to reset.";
+const char* compare = "COMPARE plays your unprocessed track at the same loudness as the processed one (measured like a "
+                      "loudness meter). Louder always sounds better - this removes that trick, so you hear only what the "
+                      "compression does to tone and punch. Turn it off to hear the processing again.";
+const char* graph = "The last 5 seconds: input level (grey area), output level (white line) and the gain reduction of the "
+                    "FET (orange), opto (teal) and limiter (pink), drawn from the top.";
+const char* transfer = "Input level (across) against output level (up) for a steady tone with the current settings: where "
+                       "the curve bends is where compression starts; flat at the top is the limiter's ceiling. The dot is "
+                       "your signal right now.";
 const char* limMeter = "Limiter gain reduction in dB. The line marks the recent peak - click to reset.";
 const char* optoMeter = "Opto gain reduction in dB. The line marks the recent peak - click to reset.";
 const char* presets = "Presets: rap/vocal and mix-bus/master starting points, all level-matched. "
@@ -654,7 +663,8 @@ DuoCompEditor::DuoCompEditor (DuoCompProcessor& p)
       color (p.apvts, "color", "COLOR", col::global, tip::color),
       link (p.apvts, "link", "LINK", col::global, tip::link),
       mix (p.apvts, "mix", "MIX", col::global, tip::mix),
-      out (p.apvts, "out", "OUTPUT", col::global, tip::out)
+      out (p.apvts, "out", "OUTPUT", col::global, tip::out),
+      compare (p.apvts, "compare", "COMPARE", col::warn, "pill", tip::compare)
 {
     // read before setResizeLimits(), which already triggers resized()
     const int savedWidth = (int) proc.apvts.state.getProperty (kUiWidth, kWidth);
@@ -667,7 +677,8 @@ DuoCompEditor::DuoCompEditor (DuoCompProcessor& p)
              &optoOn, &optoMode, &optoModel, &optoKey, &optoPR, &optoGain, &optoEmph, &optoThr, &optoKnee, &optoRange, &optoHold, &optoMeter,
              &limOn, &limCeil, &limRel, &limLook, &limMeter,
              &scListen, &scHpf, &scLpf, &scBellF, &scBellG, &scBellQ,
-             &order, &oversampling, &chMode, &autoGain, &look, &color, &link, &mix, &out, &inMeter, &outMeter })
+             &order, &oversampling, &chMode, &autoGain, &look, &color, &link, &mix, &out, &inMeter, &outMeter,
+             &graph, &transfer, &compare })
         content.addAndMakeVisible (c);
 
     for (auto* b : { &slotA, &slotB })
@@ -685,6 +696,8 @@ DuoCompEditor::DuoCompEditor (DuoCompProcessor& p)
     fetMeter.setTooltip (tip::fetMeter);
     optoMeter.setTooltip (tip::optoMeter);
     limMeter.setTooltip (tip::limMeter);
+    graph.setTooltip (tip::graph);
+    transfer.setTooltip (tip::transfer);
 
     presetPrev.onClick = [this] { stepPreset (-1); };
     presetNext.onClick = [this] { stepPreset (1); };
@@ -752,6 +765,8 @@ void DuoCompEditor::layout()
         pb.removeFromRight (4);
         presetName.setBounds (pb);
 
+        compare.setBounds (836, 16, 150, 26);
+
         auto ab = Rectangle<int> (kWidth - m - 160, 14, 160, 30);
         slotA.setBounds (ab.removeFromLeft (34));
         ab.removeFromLeft (4);
@@ -760,8 +775,17 @@ void DuoCompEditor::layout()
         slotCopy.setBounds (ab);
     }
 
+    // display strip: history graph + transfer curve
+    displayArea = { m, 68, kWidth - 2 * m, 134 };
+    {
+        auto d = displayArea;
+        transfer.setBounds (d.removeFromRight (180));
+        d.removeFromRight (10);
+        graph.setBounds (d);
+    }
+
     // stage row: [IN] [FET] [OPTO] [LIMITER] [OUT]
-    const int top = 70, rowH = 372;
+    const int top = 212, rowH = 372;
     inMeter.setBounds (m, top, 44, rowH);
     outMeter.setBounds (kWidth - m - 44, top, 44, rowH);
     const int x0 = m + 44 + 10;
@@ -970,6 +994,21 @@ void DuoCompEditor::timerCallback()
     fetMeter.push (mv.fetGr.exchange (0.0f), fetOn.getToggleState());
     optoMeter.push (mv.optoGr.exchange (0.0f), optoOn.getToggleState());
     limMeter.push (mv.limGr.exchange (0.0f), limOn.getToggleState());
+    duo::HistoryFrame hf;
+    float lastIn = -120.0f, lastOut = -120.0f;
+    bool any = false;
+    while (proc.engine().popHistory (hf))
+    {
+        graph.push (hf);
+        lastIn = hf.inDb;
+        lastOut = hf.outDb;
+        any = true;
+    }
+    if (any)
+        graph.repaint();
+    transfer.setParams (proc.readParams());
+    if (any)
+        transfer.setLevel (lastIn, lastOut);
 
     presetName.setButtonText (proc.getPresetName() + (proc.isPresetModified() ? " *" : ""));
     slotA.setToggleState (proc.getActiveSlot() == 0, juce::dontSendNotification);
@@ -1099,4 +1138,160 @@ void DuoCompEditor::promptSavePreset()
         // delete after the modal callback has returned
         MessageManager::callAsync ([safe] { if (safe != nullptr) safe->saveDialog.reset(); });
     }), false);
+}
+
+//==============================================================================
+GrGraph::GrGraph() : ring (1400) {}
+
+void GrGraph::push (const duo::HistoryFrame& f)
+{
+    ring[(size_t) pos] = f;
+    pos = (pos + 1) % (int) ring.size();
+}
+
+void GrGraph::paint (juce::Graphics& g)
+{
+    using namespace juce;
+    const auto r = getLocalBounds().toFloat();
+    g.setColour (col::well);
+    g.fillRoundedRectangle (r, 8.0f);
+    const auto plot = r.reduced (8.0f, 6.0f);
+    const float lo = -60.0f;
+    auto yLevel = [&] (float dbv) { return plot.getBottom() - (jlimit (lo, 0.0f, dbv) - lo) / -lo * plot.getHeight(); };
+    auto yGr = [&] (float gr) { return plot.getY() + jlimit (0.0f, 24.0f, gr) / 24.0f * plot.getHeight(); };
+    // grid: level every 12 dB, GR every 6 dB (labels left / right)
+    g.setFont (ui::font (9.5f));
+    for (float d = -12.0f; d > lo; d -= 12.0f)
+    {
+        g.setColour (col::track.withAlpha (0.6f));
+        g.drawHorizontalLine ((int) yLevel (d), plot.getX(), plot.getRight());
+        g.setColour (col::faint);
+        g.drawText (String ((int) d), Rectangle<float> (plot.getX() + 2.0f, yLevel (d) - 11.0f, 30.0f, 10.0f), Justification::left);
+    }
+    for (float gr = 6.0f; gr < 24.0f; gr += 6.0f)
+        g.drawText ("-" + String ((int) gr), Rectangle<float> (plot.getRight() - 32.0f, yGr (gr) - 11.0f, 30.0f, 10.0f), Justification::right);
+
+    const int n = (int) plot.getWidth();
+    const int N = (int) ring.size();
+    auto at = [&] (int i) -> const duo::HistoryFrame& { return ring[(size_t) ((pos - n + i + N * 4) % N)]; };
+    auto xAt = [&] (int i) { return plot.getX() + (float) i; };
+    Path in;
+    in.startNewSubPath (xAt (0), plot.getBottom());
+    for (int i = 0; i < n; ++i)
+        in.lineTo (xAt (i), yLevel (at (i).inDb));
+    in.lineTo (xAt (n - 1), plot.getBottom());
+    in.closeSubPath();
+    g.setColour (col::dim.withAlpha (0.28f));
+    g.fillPath (in);
+    auto line = [&] (auto value, Colour c, float w, bool fromTop)
+    {
+        Path p;
+        bool started = false;
+        for (int i = 0; i < n; ++i)
+        {
+            const float v = value (at (i));
+            const float y = fromTop ? yGr (v) : yLevel (v);
+            if (! started) { p.startNewSubPath (xAt (i), y); started = true; }
+            else p.lineTo (xAt (i), y);
+        }
+        g.setColour (c);
+        g.strokePath (p, PathStrokeType (w));
+    };
+    line ([] (const duo::HistoryFrame& f) { return f.outDb; }, col::text.withAlpha (0.85f), 1.2f, false);
+    // gain reduction hangs from the top as filled areas; a stage that never reduced in the window is not drawn
+    auto grArea = [&] (auto value, Colour c)
+    {
+        float mx = 0.0f;
+        for (int i = 0; i < n; ++i)
+            mx = std::max (mx, value (at (i)));
+        if (mx < 0.05f)
+            return;
+        Path p;
+        p.startNewSubPath (xAt (0), plot.getY());
+        for (int i = 0; i < n; ++i)
+            p.lineTo (xAt (i), yGr (value (at (i))));
+        p.lineTo (xAt (n - 1), plot.getY());
+        p.closeSubPath();
+        g.setColour (c.withAlpha (0.25f));
+        g.fillPath (p);
+        line (value, c, 1.5f, true);
+    };
+    grArea ([] (const duo::HistoryFrame& f) { return f.fetGr; }, col::fet);
+    grArea ([] (const duo::HistoryFrame& f) { return f.optoGr; }, col::opto);
+    grArea ([] (const duo::HistoryFrame& f) { return f.limGr; }, col::lim);
+    g.setColour (col::faint);
+    g.drawText ("LEVEL / GAIN REDUCTION", plot.withTrimmedLeft (36).withHeight (12.0f), Justification::topLeft);
+}
+
+//==============================================================================
+TransferCurve::TransferCurve() {}
+
+void TransferCurve::setParams (const duo::Params& p)
+{
+    const bool changed = std::memcmp (&p, &params, sizeof p) != 0;
+    params = p;
+    fetCalc.setParams (duo::fetSettings (p));
+    optoCalc.setParams (duo::optoSettings (p));
+    if (changed)
+        repaint();
+}
+
+void TransferCurve::setLevel (float inDb, float outDb)
+{
+    levelIn = inDb;
+    levelOut = outDb;
+    repaint();
+}
+
+float TransferCurve::outputFor (float inDb) const
+{
+    const auto& p = params;
+    auto fetF = [&] (float v) { if (! p.fetOn) return v; const float lv = v + p.fetInDb; return lv - fetCalc.staticGainReductionDb (lv) + p.fetOutDb; };
+    auto optoF = [&] (float v) { return p.optoOn ? v - optoCalc.staticGainReductionDb (v) + p.optoGainDb : v; };
+    const float w = p.order == 0 ? optoF (fetF (inDb)) : fetF (optoF (inDb));
+    const float mixv = std::clamp (p.mixPct, 0.0f, 100.0f) * 0.01f;
+    const float a = (1.0f - mixv) * duo::dbToGain (inDb) + mixv * duo::dbToGain (w);
+    float out = duo::gainToDb (std::max (a, 1.0e-9f)) + p.outDb;
+    if (p.limOn)
+        out = std::min (out, p.limCeilDb);
+    return out;
+}
+
+void TransferCurve::paint (juce::Graphics& g)
+{
+    using namespace juce;
+    const auto r = getLocalBounds().toFloat();
+    g.setColour (col::well);
+    g.fillRoundedRectangle (r, 8.0f);
+    const float side = jmin (r.getWidth(), r.getHeight()) - 16.0f;
+    const auto plot = Rectangle<float> (r.getCentreX() - side * 0.5f + 6.0f, r.getY() + 8.0f, side, side);
+    const float lo = -60.0f, hi = 6.0f;
+    auto X = [&] (float d) { return plot.getX() + (jlimit (lo, hi, d) - lo) / (hi - lo) * plot.getWidth(); };
+    auto Y = [&] (float d) { return plot.getBottom() - (jlimit (lo, hi, d) - lo) / (hi - lo) * plot.getHeight(); };
+    g.setColour (col::track.withAlpha (0.6f));
+    for (float d = -48.0f; d <= 0.0f; d += 12.0f)
+    {
+        g.drawVerticalLine ((int) X (d), plot.getY(), plot.getBottom());
+        g.drawHorizontalLine ((int) Y (d), plot.getX(), plot.getRight());
+    }
+    g.setColour (col::faint);
+    g.drawLine (X (lo), Y (lo), X (hi), Y (hi), 1.0f); // 1:1
+    Path c;
+    for (int i = 0; i <= 132; ++i)
+    {
+        const float d = lo + (hi - lo) * (float) i / 132.0f;
+        const float o = outputFor (d);
+        if (i == 0) c.startNewSubPath (X (d), Y (o)); else c.lineTo (X (d), Y (o));
+    }
+    g.setColour (col::text);
+    g.strokePath (c, PathStrokeType (1.8f));
+    if (levelIn > lo)
+    {
+        g.setColour (col::warn);
+        g.fillEllipse (X (levelIn) - 3.5f, Y (outputFor (levelIn)) - 3.5f, 7.0f, 7.0f);
+    }
+    g.setColour (col::faint);
+    g.setFont (ui::font (9.5f));
+    g.drawText ("IN", Rectangle<float> (plot.getRight() - 20.0f, plot.getBottom() - 12.0f, 20.0f, 10.0f), Justification::right);
+    g.drawText ("OUT", Rectangle<float> (plot.getX() + 2.0f, plot.getY(), 24.0f, 10.0f), Justification::left);
 }

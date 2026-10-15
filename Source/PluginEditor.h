@@ -6,7 +6,7 @@ namespace ui
 {
 // design canvas; the editor scales it 1.0x .. 2.0x with a vector transform (sharp at any scale)
 constexpr int kWidth = 1200;
-constexpr int kHeight = 720;
+constexpr int kHeight = 860;
 
 juce::Font font (float height, int weight = 0); // 0 regular, 1 semibold, 2 bold
 
@@ -135,6 +135,36 @@ private:
     bool active = true;
 };
 
+// scrolling history (~5 s): input and output level (dBFS, bottom-up), gain reduction of each stage (top-down)
+class GrGraph : public juce::Component, public juce::SettableTooltipClient
+{
+public:
+    GrGraph();
+    void push (const duo::HistoryFrame& f);
+    void paint (juce::Graphics&) override;
+
+private:
+    std::vector<duo::HistoryFrame> ring;
+    int pos = 0;
+};
+
+// static input -> output curve of the whole chain at the current settings (steady 1 kHz sine), with the live level
+class TransferCurve : public juce::Component, public juce::SettableTooltipClient
+{
+public:
+    TransferCurve();
+    void setParams (const duo::Params& p);
+    void setLevel (float inDb, float outDb);
+    void paint (juce::Graphics&) override;
+    float outputFor (float inDb) const; // dBFS peak out for a sine of inDb peak in
+
+private:
+    duo::Params params;
+    duo::FetStage fetCalc;
+    duo::OptoStage optoCalc;
+    float levelIn = -120.0f, levelOut = -120.0f;
+};
+
 //==============================================================================
 class DuoCompEditor : public juce::AudioProcessorEditor, private juce::Timer
 {
@@ -203,8 +233,11 @@ private:
     DuoKnob look, color, link, mix, out;
 
     LevelMeter inMeter { "IN", true }, outMeter { "OUT", false };
+    GrGraph graph;
+    TransferCurve transfer;
+    DuoToggle compare;
 
-    juce::Rectangle<int> headerArea, fetArea, optoArea, limArea, scArea, globalArea;
+    juce::Rectangle<int> headerArea, fetArea, optoArea, limArea, scArea, globalArea, displayArea;
     juce::Rectangle<int> orderLabel, osLabel, chLabel, makeupArea, fetDetLabel, fetKeyLabel, optoModelLabel, optoKeyLabel, scStatusArea, limInfoArea;
     juce::String latencyText, makeupText, scStatusText;
     float lastMakeup = 0.0f;

@@ -32,7 +32,11 @@ int main (int argc, char** argv)
         { "m.ratioComp", &p.optoModel.ratioComp }, { "m.ratioLim", &p.optoModel.ratioLim }, { "m.kneeComp", &p.optoModel.kneeComp },
         { "m.kneeLim", &p.optoModel.kneeLim }, { "m.attackSec", &p.optoModel.attackSec }, { "m.fastReleaseSec", &p.optoModel.fastReleaseSec },
         { "m.fastShare", &p.optoModel.fastShare }, { "m.slowMinSec", &p.optoModel.slowMinSec }, { "m.slowMaxSec", &p.optoModel.slowMaxSec },
-        { "m.memRiseSec", &p.optoModel.memRiseSec }, { "m.memFallSec", &p.optoModel.memFallSec } };
+        { "m.memRiseSec", &p.optoModel.memRiseSec }, { "m.memFallSec", &p.optoModel.memFallSec },
+        { "m.onsetGain", &p.optoModel.onsetGain }, { "m.onsetFastSec", &p.optoModel.onsetFastSec }, { "m.onsetSlowSec", &p.optoModel.onsetSlowSec },
+        { "a.ratio", &p.fetAll.ratio }, { "a.knee", &p.fetAll.knee }, { "a.thrOffsetDb", &p.fetAll.thrOffsetDb },
+        { "a.attackMul", &p.fetAll.attackMul }, { "a.releaseMul", &p.fetAll.releaseMul }, { "a.bumpOffsetDb", &p.fetAll.bumpOffsetDb },
+        { "a.bumpSlope", &p.fetAll.bumpSlope }, { "a.bumpMaxDb", &p.fetAll.bumpMaxDb } };
     std::map<std::string, int*> i { { "fetRatio", &p.fetRatio }, { "optoMode", &p.optoMode }, { "order", &p.order }, { "osLog2", &p.osLog2 } };
     std::map<std::string, bool*> b { { "fetOn", &p.fetOn }, { "optoOn", &p.optoOn }, { "autoMakeup", &p.autoMakeup }, { "fetClean", &p.fetClean },
         { "fetExt", &p.fetExt }, { "optoExt", &p.optoExt }, { "limOn", &p.limOn }, { "midSide", &p.midSide } };

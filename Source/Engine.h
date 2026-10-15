@@ -17,6 +17,7 @@
 #include "Oversampling.h"
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <cmath>
 #include <cstdint>
@@ -55,7 +56,10 @@ struct Params
     bool  limOn = false;
     float limCeilDb = -1.0f, limRelMs = 50.0f, limLookMs = 1.5f;
     bool  midSide = false;
+    bool  compare = false;                      // level-matched compare: dry, loudness-matched to the processed signal
     bool  optoMeasured = false;                 // opto law calibrated on hardware recordings (plugin default for new instances)
+    bool  fetMeasured = false;                  // FET ALL law calibrated on hardware recordings (plugin default for new instances)
+    FetStage::Settings::AllModel fetAll {};     // the Classic ALL law; validation tools override its fields
     OptoStage::Settings::Model optoModel {};    // the Classic (1.x) law; validation tools override its fields
 };
 
@@ -85,6 +89,7 @@ inline FetStage::Settings fetSettings (const Params& p) noexcept
     s.rangeDb = p.fetRangeDb;
     s.holdMs = p.fetHoldMs;
     s.clean = p.fetClean;
+    s.all = p.fetMeasured ? FetStage::measuredAll() : p.fetAll;
     s.eq = scEq (p);
     return s;
 }
@@ -107,6 +112,40 @@ inline OptoStage::Settings optoSettings (const Params& p) noexcept
     s.model = p.optoMeasured ? OptoStage::measuredModel() : p.optoModel;
     return s;
 }
+
+// one point of the display history (one per ~5 ms of audio): written by the audio thread, read by the GUI
+struct HistoryFrame
+{
+    float inDb = -120.0f, outDb = -120.0f, fetGr = 0.0f, optoGr = 0.0f, limGr = 0.0f;
+};
+
+// single-producer / single-consumer ring (audio thread pushes, GUI pops); drops frames when the GUI is closed
+class HistoryFifo
+{
+public:
+    static constexpr std::uint32_t kSize = 2048;
+    void push (const HistoryFrame& f) noexcept
+    {
+        const auto w = write.load (std::memory_order_relaxed);
+        if (w - read.load (std::memory_order_acquire) >= kSize)
+            return;
+        buf[w % kSize] = f;
+        write.store (w + 1, std::memory_order_release);
+    }
+    bool pop (HistoryFrame& f) noexcept
+    {
+        const auto r = read.load (std::memory_order_relaxed);
+        if (r == write.load (std::memory_order_acquire))
+            return false;
+        f = buf[r % kSize];
+        read.store (r + 1, std::memory_order_release);
+        return true;
+    }
+
+private:
+    std::array<HistoryFrame, kSize> buf {};
+    std::atomic<std::uint32_t> write { 0 }, read { 0 };
+};
 
 struct Meters
 {
@@ -193,6 +232,11 @@ public:
         avgK        = 1.0f - onePole (kAutoMakeupSec, fs);
         makeupK     = 1.0f - onePole (0.3f, fs);
         fadeStep    = (float) (1.0 / std::max (1.0, 0.003 * fs));
+        kwDry.prepare (fs);
+        kwWet.prepare (fs);
+        loudK       = 1.0f - onePole (0.4f, fs);
+        cmpK        = 1.0f - onePole (0.25f, fs);
+        hopLen      = std::max (1, (int) std::lround (0.005 * fs));
 
         setParams (params);
         active = want;
@@ -234,6 +278,13 @@ public:
         listenHpf.resetState();
         listenEq.resetState();
         listenShelf.resetState();
+        kwDry.resetState();
+        kwWet.resetState();
+        msDry = msWet = 0.0;
+        cmpGain = 1.0f;
+        cmpAmt = cmpTarget;
+        hopCount = 0;
+        hopIn = hopOut = hopFet = hopOpto = hopLim = 0.0f;
         fet.snap();
         opto.snap();
         fetAmt = fetTarget;
@@ -256,6 +307,7 @@ public:
         outTarget = dbToGain (std::clamp (p.outDb, -24.0f, 24.0f));
         listenTarget = p.scListen ? 1.0f : 0.0f;
         bypassTarget = p.bypass ? 1.0f : 0.0f;
+        cmpTarget = p.compare ? 1.0f : 0.0f;
         lim.setParams (p.limCeilDb, p.limRelMs);
         want.osLog2 = std::clamp (p.osLog2, 0, 2);
         want.order = std::clamp (p.order, 0, 1);
@@ -285,6 +337,8 @@ public:
     const Config& activeConfig() const noexcept { return active; }
 
     const Meters& getMeters() const noexcept { return meters; }
+    // display history (GUI thread): one frame per ~5 ms of audio
+    bool popHistory (HistoryFrame& f) noexcept { return history.pop (f); }
     void clearMeters() noexcept { meters.clear(); }
     void setProbe (Probe* p) noexcept { probe = p; }
 
@@ -600,8 +654,15 @@ private:
         }
 
         // 5. true-peak limiter: the last stage of the processed signal
+        float limPeak = 0.0f;
         if (active.limOn)
-            meters.limGrDb = std::max (meters.limGrDb, lim.process (io, nCh, n));
+        {
+            limPeak = lim.process (io, nCh, n);
+            meters.limGrDb = std::max (meters.limGrDb, limPeak);
+        }
+        hopFet = std::max (hopFet, fetPeak);
+        hopOpto = std::max (hopOpto, optoPeak);
+        hopLim = std::max (hopLim, limPeak);
 
         // 6. side-chain listen, bypass, structural fade (everything aligned to the full latency)
         const bool keyListen = fetExt || optoExt;
@@ -620,10 +681,30 @@ private:
             fadeGain = fadeTgt > fadeGain ? std::min (fadeTgt, fadeGain + fadeStep) : std::max (fadeTgt, fadeGain - fadeStep);
 
             const int at = (writePos + i - latency) & ringMask;
+            cmpAmt += (cmpTarget - cmpAmt) * switchK;
+            snapIfClose (cmpAmt, cmpTarget);
+            // level-matched compare: K-weighted loudness (0.4 s) of the aligned dry and the processed signal
+            double pd = 0.0, pw = 0.0;
+            for (int c = 0; c < nCh; ++c)
+            {
+                const double d = kwDry.process (dryRing[c][(size_t) at], c), w = kwWet.process (io[c][i], c);
+                pd += d * d;
+                pw += w * w;
+                hopIn = std::max (hopIn, std::abs (dryRing[c][(size_t) at]));
+            }
+            msDry += (pd - msDry) * loudK;
+            msWet += (pw - msWet) * loudK;
+            if (msDry > 1.0e-7) // above about -70 LUFS: track; in pauses hold the last match
+            {
+                const float tgt = (float) std::clamp (std::sqrt (msWet / msDry), 0.0631, 15.85); // +-24 dB
+                cmpGain += (tgt - cmpGain) * cmpK;
+            }
             for (int c = 0; c < nCh; ++c)
             {
                 const float dry = dryRing[c][(size_t) at];
                 float y = io[c][i];
+                if (cmpAmt > 0.0f)
+                    y += (dry * cmpGain - y) * cmpAmt;
                 if (listenAmt > 0.0f)
                 {
                     const float src = keyListen ? keyRing[c][(size_t) at] : dry;
@@ -634,6 +715,14 @@ private:
                 y *= fadeGain;
                 io[c][i] = y;
                 meters.outPeak[c] = std::max (meters.outPeak[c], std::abs (y));
+                hopOut = std::max (hopOut, std::abs (y));
+            }
+            if (++hopCount >= hopLen)
+            {
+                auto toDb = [] (float a) { return a > 1.0e-6f ? gainToDb (a) : -120.0f; };
+                history.push ({ toDb (hopIn), toDb (hopOut), hopFet, hopOpto, hopLim });
+                hopCount = 0;
+                hopIn = hopOut = hopFet = hopOpto = hopLim = 0.0f;
             }
         }
         writePos = (writePos + n) & ringMask;
@@ -742,6 +831,12 @@ private:
     float fadeGain = 1.0f, fadeTgt = 1.0f, fadeStep = 0.01f;
     Biquad listenHpf, listenShelf;
     SideChainFilter listenEq;
+    KWeighting kwDry, kwWet;
+    double msDry = 0.0, msWet = 0.0;
+    float loudK = 0.001f, cmpK = 0.001f, cmpGain = 1.0f, cmpAmt = 0.0f, cmpTarget = 0.0f;
+    HistoryFifo history;
+    int hopLen = 240, hopCount = 0;
+    float hopIn = 0.0f, hopOut = 0.0f, hopFet = 0.0f, hopOpto = 0.0f, hopLim = 0.0f;
     Meters meters;
     Probe* probe = nullptr;
 };

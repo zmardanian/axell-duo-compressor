@@ -37,14 +37,15 @@ class Run:
         L = [f"rate {self.fs}", f"channels {self.ch}", f"blocks {self.blocks}",
              f"nonrealtime {1 if self.nonrt else 0}", f"preroll {self.preroll}", f"sleep {self.sleep}", f"pdc {self.pdc}"]
         L += [f"set {k}={v}" for k, v in self.sets.items()]
-        L += [f"at {a} set {k}={v}" for a, k, v in self.ats]
+        L += [f"setn {k}={v}" for k, v in getattr(self, "setns", {}).items()]
+        L += [f"at {a} set {k}={v}" if not str(k).startswith("#n#") else f"at {a} setn {k[3:]}={v}" for a, k, v in self.ats]
         L += [f"input {self.inp}", f"output {self.out}"]
         if self.sc:
             L.append(f"sidechain {self.sc}")
         L.append("run")
         return "\n".join(L)
 
-def run_all(runs, inputs, sidechains=None, jobname="job", plugin=None):
+def run_all(runs, inputs, sidechains=None, jobname="job", plugin=None, subplugin=None, timeout=None):
     """inputs: dict name -> array (n,ch) ; writes, runs host once, returns dict name -> output array"""
     for r in runs:
         raw_write(r.inp, inputs[r.name], r.fs)
@@ -54,15 +55,17 @@ def run_all(runs, inputs, sidechains=None, jobname="job", plugin=None):
     jp = os.path.join(WORK, jobname + ".txt")
     with open(jp, "w") as f:
         f.write("\n".join(r.job() for r in runs) + "\n")
-    p = subprocess.run([HOST, plugin or PLUGIN, jp], capture_output=True, text=True)
+    p = subprocess.run([HOST, plugin or PLUGIN, jp] + (["--plugin", subplugin] if subplugin else []), capture_output=True, text=True, timeout=timeout)
     if p.returncode != 0:
         raise RuntimeError(p.stdout[-3000:] + p.stderr[-3000:])
     blocks = p.stdout.split("\nrun ")
     lat = re.findall(r"  latency (-?\d+)", p.stdout)
+    cpus = re.findall(r"  cpu ([0-9.]+)", p.stdout)
     assert len(lat) == len(runs), p.stdout[-2000:]
     out = {}
     for r, l, b in zip(runs, lat, blocks[1:]):
         r.latency = int(l)
+        r.cpu = float(cpus[len(out)]) if len(cpus) > len(out) else None
         r.log = b
         out[r.name] = raw_read(r.out, r.ch)
         for path in (r.inp, r.out, r.sc):  # long impulse responses add up to gigabytes: keep nothing

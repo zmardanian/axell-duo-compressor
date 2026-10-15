@@ -5,11 +5,15 @@
 //   rate 48000 | channels 2 | blocks 512 | blocks random 1 4096 7 | nonrealtime 1 | preroll 24000 | sleep ms
 //   pdc ms (a live host: run the message loop for ms after every block and log "pdc <sample> <latency>" whenever
 //   the latency the host compensates changes, as the plugin reported it through restartComponent)
-//   set <Param Name>=<text> | at <sample> set <Param Name>=<text> | input a.f32 | sidechain b.f32 | output c.f32
-//   run
+//   set <Param Name>=<text> | setn <Param Name>=<normalised 0..1> | at <sample> set <Param Name>=<text>
+//   input a.f32 | sidechain b.f32 | output c.f32 | run | params (list the parameters of a fresh instance)
+// Command line: AuditHost plugin.vst3 job.txt [--plugin <name>]   (a bundle may hold several plugins)
+//               AuditHost plugin.vst3 --list                       (their names)
+// Each run reports the plugin's processing time ("cpu <seconds>"), for comparisons.
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_events/juce_events.h>
 #include <random>
+#include <chrono>
 #include <thread>
 
 using namespace juce;
@@ -20,7 +24,7 @@ struct Job
     int channels = 2, blockMin = 512, blockMax = 512, preroll = 24000, sleepMs = 0, pdcMs = 0;
     unsigned seed = 1;
     bool nonRealtime = true;
-    std::vector<std::pair<String, String>> sets;
+    std::vector<std::pair<String, String>> sets, setns;
     std::vector<std::tuple<int, String, String>> ats;
     String input, side, output;
 };
@@ -66,6 +70,23 @@ static void applySet (AudioPluginInstance& p, const String& name, const String& 
                      prm->getText (prm->getValue(), 64).toRawUTF8());
 }
 
+static void listParams (AudioPluginFormatManager& fm, const PluginDescription& desc)
+{
+    String err;
+    auto inst = fm.createPluginInstance (desc, 48000.0, 512, err);
+    if (inst == nullptr) { std::fprintf (stderr, "instance: %s\n", err.toRawUTF8()); std::exit (4); }
+    for (auto* prm : inst->getParameters())
+    {
+        std::printf ("param '%s' steps %d default '%s' |", prm->getName (256).toRawUTF8(), prm->getNumSteps(),
+                     prm->getText (prm->getDefaultValue(), 64).toRawUTF8());
+        for (float v : { 0.0f, 0.25f, 0.5f, 0.75f, 1.0f })
+            std::printf (" %.2f='%s'", v, prm->getText (v, 64).toRawUTF8());
+        std::printf ("\n");
+    }
+    std::printf ("latency %d, buses in %d out %d\n", inst->getLatencySamples(), inst->getBusCount (true), inst->getBusCount (false));
+    std::fflush (stdout);
+}
+
 static void runJob (AudioPluginFormatManager& fm, const PluginDescription& desc, const Job& j)
 {
     String err;
@@ -88,6 +109,12 @@ static void runJob (AudioPluginFormatManager& fm, const PluginDescription& desc,
 
     for (auto& [n, t] : j.sets)
         applySet (*inst, n, t, true);
+    for (auto& [n, t] : j.setns)
+    {
+        auto* prm = findParam (*inst, n);
+        prm->setValueNotifyingHost (t.getFloatValue());
+        std::printf ("  setn %-33s = %-12s -> text '%s'\n", n.toRawUTF8(), t.toRawUTF8(), prm->getText (prm->getValue(), 64).toRawUTF8());
+    }
     inst->setNonRealtime (j.nonRealtime);
     inst->prepareToPlay (j.rate, j.blockMax);
 
@@ -121,6 +148,7 @@ static void runJob (AudioPluginFormatManager& fm, const PluginDescription& desc,
     auto ats = j.ats;
     std::sort (ats.begin(), ats.end(), [] (auto& a, auto& b) { return std::get<0> (a) < std::get<0> (b); });
     int hostLat = -1;
+    double cpu = 0.0;
     for (int pos = 0; pos < len;)
     {
         if (j.pdcMs > 0 && inst->getLatencySamples() != hostLat)
@@ -136,7 +164,11 @@ static void runJob (AudioPluginFormatManager& fm, const PluginDescription& desc,
             {
                 while (nextAt < ats.size() && std::get<0> (ats[nextAt]) <= pos)
                 {
-                    applySet (*inst, std::get<1> (ats[nextAt]), std::get<2> (ats[nextAt]), false);
+                    const auto& nm = std::get<1> (ats[nextAt]);
+                    if (nm.startsWith ("#n#"))
+                        findParam (*inst, nm.substring (3))->setValueNotifyingHost (std::get<2> (ats[nextAt]).getFloatValue());
+                    else
+                        applySet (*inst, nm, std::get<2> (ats[nextAt]), false);
                     ++nextAt;
                 }
                 continue;
@@ -150,7 +182,9 @@ static void runJob (AudioPluginFormatManager& fm, const PluginDescription& desc,
         if (useSc)
             for (int c = 0; c < 2; ++c)
                 buf.copyFrom (j.channels + c, 0, sc, jmin (c, sc.getNumChannels() - 1), pos, n);
+        const auto t0 = std::chrono::steady_clock::now();
         inst->processBlock (buf, midi);
+        cpu += std::chrono::duration<double> (std::chrono::steady_clock::now() - t0).count();
         if (j.pdcMs > 0)
             MessageManager::getInstance()->runDispatchLoopUntil (j.pdcMs);
         for (int c = 0; c < j.channels; ++c)
@@ -158,6 +192,7 @@ static void runJob (AudioPluginFormatManager& fm, const PluginDescription& desc,
         pos += n;
     }
     writeRaw (j.output, out);
+    std::printf ("  cpu %.6f\n", cpu);
     std::printf ("  latency %d  -> %s\n", inst->getLatencySamples(), j.output.toRawUTF8());
     std::fflush (stdout);
     inst->releaseResources();
@@ -165,7 +200,7 @@ static void runJob (AudioPluginFormatManager& fm, const PluginDescription& desc,
 
 int main (int argc, char** argv)
 {
-    if (argc < 3) { std::fprintf (stderr, "AuditHost plugin.vst3 job.txt\n"); return 1; }
+    if (argc < 3) { std::fprintf (stderr, "AuditHost plugin.vst3 job.txt [--plugin name] | AuditHost plugin.vst3 --list\n"); return 1; }
     ScopedJuceInitialiser_GUI juceInit;
     AudioPluginFormatManager fm;
     fm.addFormat (std::make_unique<VST3PluginFormat>());
@@ -173,7 +208,20 @@ int main (int argc, char** argv)
     VST3PluginFormat vst3;
     vst3.findAllTypesForFile (found, argv[1]);
     if (found.isEmpty()) { std::fprintf (stderr, "no plugin in %s\n", argv[1]); return 1; }
-    const auto desc = *found[0];
+    if (String (argv[2]) == "--list")
+    {
+        for (auto* d : found)
+            std::printf ("%s | %s | %s\n", d->name.toRawUTF8(), d->category.toRawUTF8(), d->manufacturerName.toRawUTF8());
+        return 0;
+    }
+    auto desc = *found[0];
+    if (argc >= 5 && String (argv[3]) == "--plugin")
+    {
+        bool ok = false;
+        for (auto* d : found)
+            if (d->name == String (argv[4])) { desc = *d; ok = true; break; }
+        if (! ok) { std::fprintf (stderr, "no plugin named '%s' in the bundle\n", argv[4]); return 1; }
+    }
     std::printf ("plugin: %s %s by %s\n", desc.name.toRawUTF8(), desc.version.toRawUTF8(), desc.manufacturerName.toRawUTF8());
 
     StringArray lines;
@@ -202,11 +250,14 @@ int main (int argc, char** argv)
             else j.blockMin = j.blockMax = t[0].getIntValue();
         }
         else if (key == "set") j.sets.push_back (parseSet (rest));
+        else if (key == "setn") j.setns.push_back (parseSet (rest));
+        else if (key == "params") listParams (fm, desc);
         else if (key == "at")
         {
             const int at = rest.upToFirstOccurrenceOf (" ", false, false).getIntValue();
-            auto s = parseSet (rest.fromFirstOccurrenceOf ("set ", false, false));
-            j.ats.emplace_back (at, s.first, s.second);
+            const bool norm = rest.contains (" setn ");
+            auto s = parseSet (rest.fromFirstOccurrenceOf (norm ? "setn " : "set ", false, false));
+            j.ats.emplace_back (at, (norm ? "#n#" : "") + s.first, s.second);
         }
         else if (key == "input") j.input = rest;
         else if (key == "sidechain") j.side = rest;

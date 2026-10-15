@@ -72,10 +72,10 @@ int main()
         // Axell Duo Compressor 2.0
         const juce::StringArray added3 { "fetThr", "fetKnee", "fetRange", "fetHold", "fetDet", "fetKey", "optoThr", "optoKnee",
                                          "optoRange", "optoHold", "optoKey", "scLpf", "scBellF", "scBellG", "scBellQ", "look",
-                                         "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel" };
+                                         "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel", "compare" };
         auto& params = p.getParameters();
         const int total = frozen.size() + added.size() + added3.size();
-        check (params.size() == total, "parameter count = 42 (15 frozen + 5 v2 + 22 v3)");
+        check (params.size() == total, "parameter count = 43 (15 frozen + 5 v2 + 23 v3)");
         for (int i = 0; i < params.size() && i < total; ++i)
         {
             auto* wp = dynamic_cast<juce::AudioProcessorParameterWithID*> (params[i]);

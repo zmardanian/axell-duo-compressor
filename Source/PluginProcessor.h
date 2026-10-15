@@ -105,10 +105,10 @@ private:
     std::atomic<float>* pAuto = nullptr;
     // v3 parameters
     enum class V3 { fetThr, fetKnee, fetRange, fetHold, fetDet, fetKey, optoThr, optoKnee, optoRange, optoHold, optoKey,
-                    scLpf, scBellF, scBellG, scBellQ, look, limOn, limCeil, limRel, limLook, chMode, optoModel, count };
+                    scLpf, scBellF, scBellG, scBellQ, look, limOn, limCeil, limRel, limLook, chMode, optoModel, compare, count };
     static constexpr std::array<const char*, (size_t) V3::count> v3Ids {
         "fetThr", "fetKnee", "fetRange", "fetHold", "fetDet", "fetKey", "optoThr", "optoKnee", "optoRange", "optoHold", "optoKey",
-        "scLpf", "scBellF", "scBellG", "scBellQ", "look", "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel" };
+        "scLpf", "scBellF", "scBellG", "scBellQ", "look", "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel", "compare" };
     std::array<std::atomic<float>*, (size_t) V3::count> pV3 {};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DuoCompProcessor)

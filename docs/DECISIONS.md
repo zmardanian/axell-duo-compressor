@@ -217,3 +217,32 @@ knee; range 60 dB = Off; hold 0). Hold: while the demand stays within 0.05 dB of
 restarts; the release begins `hold` after the demand fell (restarting only on rising demand failed once the GR had
 converged, found by the DSP suite). Side-chain EQ (both detectors): the 1.x HPF plus a 12 dB/oct LPF (20 kHz = Off)
 and a bell (0 dB = Off); filters that are off are not run, so the default detector is the 1.x one.
+
+---------------------------------------------------------------------------------------
+# 2.1 (2026-10-15)
+
+## D27. FET ALL law exposed for calibration, not yet calibrated
+The ALL ("all buttons") constants (ratio 20, knee 2, attack x0.6, release x0.7, over-compression above threshold +10 dB)
+were 1.0 estimates. They are now a model (`FetStage::Settings::AllModel`; defaults = 1.x) so they can be fitted to the
+hardware 1176 notes with the knobs fixed at the hardware's settings (tools/validation/fet1176_all_fit.py). The fit was
+stopped before it finished (user's decision to ship 2.1 without waiting); the law ships unchanged. The benchmark
+shows the gap it would address: 1.46 dB vs 1.09 dB (UADx 1176) on held-out notes.
+
+## D28. Opto onset flare: explored, not adopted
+At level jumps after short dips the hardware LA-2A's gain reduction overshoots (6 -> 14 dB within 30 ms, then settles);
+the Measured law does not (mean-trajectory deviation 6.7 dB; UADx LA-2A 2.8 dB). A transient term
+(`onsetGain * max(0, fast(target) - slow(target))`) was fitted twice: free release law -> onsets 1.8-2.5 dB but the
+10 ms gain tracking 3.7 -> 5.4-5.8 dB; release law fixed -> onsets 4.6-4.7 dB, gain tracking 4.3-4.5 dB. The rule set
+before the fit (ship only if onsets improve and the overall tracking does not degrade) was not met. The term stays in
+the model at 0 (no effect) for future work on a physical light-cell model.
+
+## D29. Level-matched COMPARE
+The aligned dry and the processed signal are K-weighted (BS.1770) and their mean square tracked over 0.4 s; the dry
+signal is played with gain sqrt(ms_wet / ms_dry) (+-24 dB, smoothed 0.25 s, held in pauses below about -70 LUFS),
+crossfaded in 10 ms. Louder is judged better; compare removes that bias (DSP suite: 0.09 dB loudness difference with
+7 dB of make-up in play). A parameter (like SC Listen), not part of presets.
+
+## D30. Display history and transfer curve
+The engine pushes one frame per 5 ms (input and output peak, GR per stage) into a lock-free single-producer /
+single-consumer ring; the GUI drains it at 30 Hz. The transfer curve is computed in the GUI from the stages' own static
+curve functions (`staticGainReductionDb`) on GUI-owned stage objects - no shared state with the audio thread.

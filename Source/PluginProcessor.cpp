@@ -165,6 +165,8 @@ APVTS::ParameterLayout DuoCompProcessor::createLayout()
     // states saved before 2.0 load as Classic (upgradeLegacyState), so they sound as they did
     p.push_back (std::make_unique<AudioParameterChoice> (ParameterID { "optoModel", 3 }, "Opto Model",
         StringArray { "Classic", "Measured" }, 1));
+    // monitoring: hear the unprocessed signal at the processed signal's loudness (like SC Listen, not part of presets)
+    p.push_back (std::make_unique<AudioParameterBool> (ParameterID { "compare", 3 }, "Level-Matched Compare", false));
 
     return { p.begin(), p.end() };
 }
@@ -272,6 +274,7 @@ duo::Params DuoCompProcessor::readParams() const
     p.limLookMs   = v (V3::limLook);
     p.midSide     = juce::roundToInt (v (V3::chMode)) == 1;
     p.optoMeasured = juce::roundToInt (v (V3::optoModel)) == 1;
+    p.compare     = v (V3::compare) > 0.5f;
     return p;
 }
 
