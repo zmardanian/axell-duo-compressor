@@ -16,6 +16,7 @@ FetchContent_MakeAvailable(JUCE)
 
 juce_add_plugin(AxellDuoCompressor
   COMPANY_NAME              "Axell Yobag"
+  COMPANY_EMAIL             "axellpetre@protonmail.com"
   BUNDLE_ID                 com.axellyobag.axellduocompressor
   PLUGIN_MANUFACTURER_CODE  Dcmp
   PLUGIN_CODE               Dvc1

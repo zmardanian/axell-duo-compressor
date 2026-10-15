@@ -117,3 +117,7 @@ Validation data: SignalTrain LA-2A dataset (Hawley, Colburn, Mimilakis; Zenodo 3
 of Martínez Ramírez, Benetos and Reiss (Applied Sciences 10(2) 638, 2020; Zenodo 3562442, CC BY 4.0). Product names
 are used only to identify the hardware the stages are modelled on and validated against; no code, data, graphics or
 impulse responses of any commercial product are used.
+
+## Contact
+
+Axell Yobag - axellpetre@protonmail.com (questions, bug reports, feedback). Issues on GitHub are welcome too.
