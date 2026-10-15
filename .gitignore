@@ -1,0 +1,7 @@
+build/
+build-*/
+tools/pluginval*
+tools/vst3-validator*
+tools/listening/stimuli/
+__pycache__/
+*.user

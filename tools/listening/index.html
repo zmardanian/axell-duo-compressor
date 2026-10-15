@@ -1,0 +1,247 @@
+<title>Axell Duo Blind Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one column console - a strip of transport keys per trial, like a tape-op's comparison desk. */
+:root {
+  --bg: #f3f1ec; --panel: #ffffff; --ink: #1d1f24; --dim: #5f6470; --line: #d9d6cf;
+  --amber: #b86a12; --teal: #127a73; --good: #2f7d4a; --bad: #b2402e; --key: #ece9e2; --keyOn: #1d1f24; --keyOnInk: #f3f1ec;
+  --display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --body: "Public Sans", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15171b; --panel: #1d2026; --ink: #e8e9ec; --dim: #9aa0ab; --line: #2f333b;
+  --amber: #f0a33c; --teal: #3cc4b8; --good: #6cc48a; --bad: #ec7a65; --key: #262a31; --keyOn: #e8e9ec; --keyOnInk: #15171b; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15171b; --panel: #1d2026; --ink: #e8e9ec; --dim: #9aa0ab; --line: #2f333b;
+  --amber: #f0a33c; --teal: #3cc4b8; --good: #6cc48a; --bad: #ec7a65; --key: #262a31; --keyOn: #e8e9ec; --keyOnInk: #15171b; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 28px 16px 64px; display: grid; gap: 22px; }
+h1 { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 7vw, 54px); line-height: 1; letter-spacing: .01em; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 26px; margin: 0; letter-spacing: .02em; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 20px; display: grid; gap: 14px; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.muted { color: var(--dim); font-size: 13.5px; }
+button { font: 600 14px var(--body); color: var(--ink); background: var(--key); border: 1px solid var(--line); border-radius: 4px; padding: 10px 16px; cursor: pointer; }
+button:hover { border-color: var(--dim); }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+button.on { background: var(--keyOn); color: var(--keyOnInk); border-color: var(--keyOn); }
+button.primary { background: var(--amber); color: #fff; border-color: var(--amber); }
+button:disabled { opacity: .45; cursor: default; }
+.key { font-family: var(--mono); min-width: 64px; font-size: 16px; }
+.choice { min-width: 120px; }
+.progress { font-family: var(--mono); font-size: 13px; color: var(--dim); font-variant-numeric: tabular-nums; }
+.bar { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--amber); width: 0; transition: width .3s; }
+.slider { display: grid; grid-template-columns: 64px 1fr 48px; gap: 12px; align-items: center; }
+.slider input[type=range] { width: 100%; accent-color: var(--teal); }
+.slider output { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.scale { display: grid; grid-template-columns: 64px 1fr 48px; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--dim); }
+.scale span:nth-child(2) { display: flex; justify-content: space-between; }
+label { font-size: 14px; }
+select { font: 14px var(--body); padding: 8px; background: var(--key); color: var(--ink); border: 1px solid var(--line); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+th { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); font-weight: 600; }
+.tablewrap { overflow-x: auto; }
+.pill { font-family: var(--mono); font-size: 12px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line); }
+.pill.good { color: var(--good); border-color: var(--good); }
+.pill.bad { color: var(--bad); border-color: var(--bad); }
+.notice { border-left: 3px solid var(--amber); padding: 8px 12px; background: var(--key); border-radius: 0 4px 4px 0; }
+.meter { font-family: var(--mono); font-size: 12px; color: var(--teal); }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header style="display:grid;gap:10px">
+    <div class="eyebrow">Blind listening test · hardware vs plugin</div>
+    <h1>Can you hear the hardware?</h1>
+    <p>You will compare recordings of a real opto leveling amplifier (a Teletronix LA-2A) and a real FET limiter (a 1176LN) with the same audio processed by Axell Duo Compressor. Every pair is loudness-matched, so level gives nothing away. Use headphones or monitors in a quiet room. It takes about 15 minutes.</p>
+  </header>
+
+  <section class="panel" id="intro">
+    <h2>Before you start</h2>
+    <div class="row">
+      <label for="playback">Listening on</label>
+      <select id="playback"><option value="">choose…</option><option>studio headphones</option><option>consumer headphones</option><option>studio monitors</option><option>laptop or phone speakers</option></select>
+      <label for="experience">Audio experience</label>
+      <select id="experience"><option value="">choose…</option><option>engineer / producer</option><option>musician</option><option>listener</option></select>
+    </div>
+    <p class="muted" id="loadState">Loading the test audio…</p>
+    <div class="row"><button class="primary" id="start" disabled>Start part 1</button></div>
+  </section>
+
+  <section class="panel" id="abx" hidden>
+    <div class="row" style="justify-content:space-between"><h2>Part 1 · ABX</h2><span class="progress" id="abxProg"></span></div>
+    <div class="bar"><i id="abxBar"></i></div>
+    <p>A and B are two versions of the same passage: one is the hardware, one is the plugin. X is one of them. Listen as often as you like, switch while it plays (the position is kept), then say which one X is.</p>
+    <p class="meter" id="abxWhat"></p>
+    <div class="row">
+      <button class="key" data-k="A">A</button><button class="key" data-k="B">B</button><button class="key" data-k="X">X</button>
+      <button id="abxStop">Stop</button>
+    </div>
+    <div class="row">
+      <button class="choice" id="pickA" disabled>X is A</button><button class="choice" id="pickB" disabled>X is B</button>
+      <span class="muted" id="abxHint">Play X at least once to answer.</span>
+    </div>
+  </section>
+
+  <section class="panel" id="mushra" hidden>
+    <div class="row" style="justify-content:space-between"><h2>Part 2 · Rate the similarity</h2><span class="progress" id="muProg"></span></div>
+    <div class="bar"><i id="muBar"></i></div>
+    <p>REF is the hardware recording. 1, 2 and 3 are hidden versions: one of them is the hardware itself, the others come from the plugin. Rate how close each one sounds to REF (100 = identical). Give the one you think is the hardware 100.</p>
+    <div class="row" id="muKeys"><button class="key" data-m="ref">REF</button></div>
+    <div id="muSliders" style="display:grid;gap:10px"></div>
+    <div class="scale"><span></span><span><i>0 bad</i><i>40 fair</i><i>80 excellent</i><i>100</i></span><span></span></div>
+    <div class="row"><button id="muStop">Stop</button><button class="primary" id="muNext">Next</button><span class="muted" id="muHint"></span></div>
+  </section>
+
+  <section class="panel" id="done" hidden>
+    <h2>Thank you</h2>
+    <p id="doneScore"></p>
+    <p class="muted" id="saveState"></p>
+  </section>
+
+  <section class="panel" id="owner" hidden>
+    <div class="row" style="justify-content:space-between"><h2>Results so far</h2><span class="muted" id="ownerCount"></span></div>
+    <p class="muted">Only you and editors see this. ABX: a listener who cannot hear a difference scores about 50 %; p is the one-sided binomial probability of scoring at least this well by guessing.</p>
+    <div class="tablewrap"><table id="ownerAbx"></table></div>
+    <div class="tablewrap"><table id="ownerMu"></table></div>
+  </section>
+
+  <footer class="muted" style="display:grid;gap:6px">
+    <p>Audio: SignalTrain LA-2A dataset (Hawley, Colburn, Mimilakis; Zenodo 3824876, CC BY 4.0) and the 1176LN recordings of Martínez Ramírez, Benetos and Reiss, “Deep Learning for Black-Box Modeling of Audio Effects”, Applied Sciences 10(2) 638, 2020 (Zenodo 3562442, CC BY 4.0; dry notes from IDMT-SMT-Audio-Effects). Excerpts shortened and loudness-matched. Method after ITU-R BS.1534 (MUSHRA) and the listening study of Steinmetz & Reiss, AES 2021.</p>
+  </footer>
+</div>
+
+<script>
+const S = { manifest: null, buffers: {}, ctx: null, src: null, playing: null, startAt: 0, offset: 0,
+            abx: [], abxIdx: 0, mu: [], muIdx: 0, heardX: false, t0: 0, meta: {} };
+const $ = (id) => document.getElementById(id);
+
+function shuffle(a, rnd = Math.random) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+async function loadAll() {
+  try {
+    S.manifest = await (await fetch("stimuli/manifest.json")).json();
+  } catch (e) { $("loadState").textContent = "The test audio could not be loaded. Reload the page to try again."; return; }
+  const files = new Set();
+  S.manifest.abx.forEach(t => { files.add(t.hw); files.add(t.model); });
+  S.manifest.mushra.forEach(t => { files.add(t.hw); t.conditions.forEach(c => files.add(c.file)); });
+  const list = [...files]; let n = 0;
+  S.ctx = new (window.AudioContext || window.webkitAudioContext)();
+  await Promise.all(list.map(async f => {
+    const buf = await (await fetch("stimuli/" + f)).arrayBuffer();
+    S.buffers[f] = await S.ctx.decodeAudioData(buf);
+    n++; $("loadState").textContent = `Loading the test audio… ${n} / ${list.length}`;
+  }));
+  $("loadState").textContent = `${S.manifest.abx.length} ABX trials and ${S.manifest.mushra.length} rating screens are ready.`;
+  checkStart();
+}
+function checkStart() { $("start").disabled = !(S.manifest && $("playback").value && $("experience").value); }
+$("playback").onchange = checkStart; $("experience").onchange = checkStart;
+
+// ---- playback: one source at a time; switching keeps the position
+function play(file, tag) {
+  if (S.ctx.state === "suspended") S.ctx.resume();
+  const buf = S.buffers[file];
+  let pos = 0;
+  if (S.src) { pos = (S.ctx.currentTime - S.startAt + S.offset) % S.playing.duration; S.src.onended = null; S.src.stop(); }
+  const src = S.ctx.createBufferSource(); src.buffer = buf; src.loop = true; src.connect(S.ctx.destination);
+  src.start(0, pos % buf.duration); S.src = src; S.playing = buf; S.startAt = S.ctx.currentTime; S.offset = pos % buf.duration;
+  document.querySelectorAll("[data-k],[data-m]").forEach(b => b.classList.toggle("on", b.dataset.k === tag || b.dataset.m === tag));
+}
+function stop() { if (S.src) { S.src.onended = null; S.src.stop(); S.src = null; } document.querySelectorAll("[data-k],[data-m]").forEach(b => b.classList.remove("on")); }
+$("abxStop").onclick = stop; $("muStop").onclick = stop;
+
+// ---- part 1: ABX
+$("start").onclick = () => {
+  S.meta = { playback: $("playback").value, experience: $("experience").value, started: new Date().toISOString() };
+  S.abx = shuffle(S.manifest.abx.map(t => ({ ...t, aIsHw: Math.random() < 0.5, xIsA: Math.random() < 0.5 })));
+  S.mu = shuffle(S.manifest.mushra.map(t => ({ ...t, order: shuffle([{ id: "hidden_ref", file: t.hw }, ...t.conditions]) })));
+  $("intro").hidden = true; $("abx").hidden = false; showAbx();
+};
+function showAbx() {
+  stop(); const t = S.abx[S.abxIdx]; S.heardX = false; S.t0 = performance.now();
+  $("abxProg").textContent = `${S.abxIdx + 1} / ${S.abx.length}`; $("abxBar").style.width = `${100 * S.abxIdx / S.abx.length}%`;
+  $("abxWhat").textContent = t.label; $("pickA").disabled = $("pickB").disabled = true; $("abxHint").hidden = false;
+}
+document.querySelectorAll("[data-k]").forEach(b => b.onclick = () => {
+  const t = S.abx[S.abxIdx]; const A = t.aIsHw ? t.hw : t.model, B = t.aIsHw ? t.model : t.hw;
+  const k = b.dataset.k; play(k === "A" ? A : k === "B" ? B : (t.xIsA ? A : B), k);
+  if (k === "X") { S.heardX = true; $("pickA").disabled = $("pickB").disabled = false; $("abxHint").hidden = true; }
+});
+function pick(saidA) {
+  const t = S.abx[S.abxIdx];
+  t.answer = { saidA, correct: saidA === t.xIsA, seconds: Math.round((performance.now() - S.t0) / 1000) };
+  if (++S.abxIdx < S.abx.length) showAbx(); else { stop(); $("abx").hidden = true; $("mushra").hidden = false; showMu(); }
+}
+$("pickA").onclick = () => pick(true); $("pickB").onclick = () => pick(false);
+
+// ---- part 2: MUSHRA-style ratings
+function showMu() {
+  stop(); const t = S.mu[S.muIdx];
+  $("muProg").textContent = `${S.muIdx + 1} / ${S.mu.length}`; $("muBar").style.width = `${100 * S.muIdx / S.mu.length}%`;
+  const keys = $("muKeys"); keys.querySelectorAll("[data-m]:not([data-m=ref])").forEach(e => e.remove());
+  keys.querySelector("[data-m=ref]").onclick = () => play(t.hw, "ref");
+  const sl = $("muSliders"); sl.textContent = "";
+  t.order.forEach((c, i) => {
+    const b = document.createElement("button"); b.className = "key"; b.dataset.m = "c" + i; b.textContent = String(i + 1);
+    b.onclick = () => play(c.file, "c" + i); keys.appendChild(b);
+    const row = document.createElement("div"); row.className = "slider";
+    const lab = document.createElement("label"); lab.htmlFor = "r" + i; lab.textContent = String(i + 1);
+    const inp = document.createElement("input"); inp.type = "range"; inp.min = 0; inp.max = 100; inp.value = 50; inp.id = "r" + i;
+    const out = document.createElement("output"); out.textContent = "50"; inp.oninput = () => { out.textContent = inp.value; c.moved = true; };
+    row.append(lab, inp, out); sl.appendChild(row);
+  });
+  $("muHint").textContent = ""; $("muNext").textContent = S.muIdx + 1 < S.mu.length ? "Next" : "Finish";
+}
+$("muNext").onclick = async () => {
+  const t = S.mu[S.muIdx];
+  t.ratings = t.order.map((c, i) => ({ id: c.id, rating: +$("r" + i).value }));
+  if (!t.ratings.some(r => r.rating === 100)) { $("muHint").textContent = "Give the one you think is the hardware 100."; return; }
+  if (++S.muIdx < S.mu.length) showMu(); else { stop(); $("mushra").hidden = true; await finish(); }
+};
+
+// ---- results
+function binomTail(k, n) { let p = 0; for (let i = k; i <= n; i++) { let c = 1; for (let j = 0; j < i; j++) c = c * (n - j) / (j + 1); p += c / 2 ** n; } return p; }
+async function finish() {
+  const correct = S.abx.filter(t => t.answer.correct).length, n = S.abx.length;
+  $("done").hidden = false;
+  $("doneScore").textContent = `You identified X correctly in ${correct} of ${n} ABX trials. Guessing alone gets this score or better with probability ${binomTail(correct, n).toFixed(3)}.`;
+  const doc = { ...S.meta, finished: new Date().toISOString(), version: S.manifest.version,
+    abx: S.abx.map(t => ({ id: t.id, group: t.group, aIsHw: t.aIsHw, xIsA: t.xIsA, ...t.answer })),
+    mushra: S.mu.map(t => ({ id: t.id, ratings: t.ratings })) };
+  const db = await claude.use("db"), user = await claude.use("user");
+  if (!db || !user) { $("saveState").textContent = "Your answers could not be saved here: open the page signed in with access to contribute."; return; }
+  try { const id = await user.id(); await db.doc("results/" + id).set(doc); $("saveState").textContent = "Your answers are saved. You can close the page."; }
+  catch (e) { $("saveState").textContent = "Saving failed (" + (e && e.code || "error") + "). Ask the owner for contributor access, then run the test again."; }
+}
+
+async function ownerView() {
+  const user = await claude.use("user"); if (!user || !(await user.canEdit())) return;
+  const db = await claude.use("db"); if (!db) return;
+  db.collection("results").onSnapshot(snap => {
+    const docs = snap.docs ? snap.docs.map(d => d.data ? d.data() : d) : [];
+    $("owner").hidden = false; $("ownerCount").textContent = `${docs.length} listener${docs.length === 1 ? "" : "s"}`;
+    const groups = {};
+    docs.forEach(d => (d.abx || []).forEach(a => { const g = groups[a.group] ||= { k: 0, n: 0 }; g.n++; if (a.correct) g.k++; }));
+    const ta = $("ownerAbx"); ta.textContent = "";
+    ta.insertAdjacentHTML("beforeend", "<tr><th>ABX group</th><th>correct</th><th>%</th><th>p (guessing)</th></tr>");
+    Object.entries(groups).forEach(([g, v]) => { const tr = document.createElement("tr");
+      [g, `${v.k} / ${v.n}`, `${Math.round(100 * v.k / v.n)} %`, binomTail(v.k, v.n).toFixed(3)].forEach(x => { const td = document.createElement("td"); td.textContent = x; tr.appendChild(td); }); ta.appendChild(tr); });
+    const conds = {};
+    docs.forEach(d => (d.mushra || []).forEach(m => m.ratings.forEach(r => (conds[r.id] ||= []).push(r.rating))));
+    const tm = $("ownerMu"); tm.textContent = "";
+    tm.insertAdjacentHTML("beforeend", "<tr><th>rated version</th><th>ratings</th><th>median</th><th>mean</th></tr>");
+    Object.entries(conds).forEach(([c, v]) => { const s = [...v].sort((a, b) => a - b); const tr = document.createElement("tr");
+      [c, v.length, s[Math.floor(s.length / 2)], (v.reduce((a, b) => a + b, 0) / v.length).toFixed(1)].forEach(x => { const td = document.createElement("td"); td.textContent = x; tr.appendChild(td); }); tm.appendChild(tr); });
+  }, () => {});
+}
+
+loadAll(); ownerView();
+</script>

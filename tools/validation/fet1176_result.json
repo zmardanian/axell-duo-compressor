@@ -1,0 +1,9 @@
+{
+ "input_gain_db": 2.47946716744676,
+ "cal_err_db_mean": 1.45778388201375,
+ "eval_err_db_mean": 1.4546965240159033,
+ "eval_err_db_median": 1.4375364288078474,
+ "eval_err_db_p90": 1.9399312415439323,
+ "baseline_no_dynamics_db_mean": 3.6796648519792443,
+ "notes_eval": 593
+}
