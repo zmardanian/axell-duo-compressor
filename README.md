@@ -5,7 +5,24 @@ boom-bap vocals and just as much at home on bass, drums, mix bus and master. For
 saved with Duo Vocal Comp 1.0 open in Axell Duo Compressor with every setting and render bit-identically
 (checked through a VST3 host, difference exactly 0).
 
+> **Part of Axell's Dojo** - the Axell Signature suite for rap vocals, beats and masters on Linux:
+> [Penta EQ](https://github.com/zmardanian/axell-penta-eq) · [Duo Compressor](https://github.com/zmardanian/axell-duo-compressor) ·
+> [Gate](https://github.com/zmardanian/axell-gate) · [De-Reverb](https://github.com/zmardanian/axell-dereverb) ·
+> [Velvet](https://github.com/zmardanian/axell-velvet) · [Master](https://github.com/zmardanian/axell-master), installed,
+> updated and tuned to your voice by the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo).
+> Since 3.0 the plugins share one core library (`external/axell-core`): a breakthrough in one plugin becomes a
+> feature of the next.
+
 ![Axell Duo Compressor](docs/screenshots/duo-150pct.png)
+
+## What's new in 3.0
+
+- **VOICE HOLD**: a compressor releases in every pause, so the room, breaths and headphone bleed between phrases come
+  up by as much as the voice is compressed. With VOICE HOLD the suite's voice detector (Axell Gate's) marks the
+  pauses and the gain reduction holds at the voice's own level. On a real rap take: pauses **+23.4 -> +5.9 dB** re the
+  voice, the voice's compression unchanged, no latency added. On for new instances and the vocal presets; projects
+  from before 3.0 load with it off and sound exactly as before.
+- **Axell's Dojo look**: the family emblem, a brush-written title with Duo's seal (双, "pair"), an ember ground.
 
 ## What it does
 
@@ -58,8 +75,10 @@ and changes only after the DAW has been told (no misaligned audio when you switc
 | Limiter, -1 dBTP, +12 dB drums (content ≤ 0.47 fs) | -1.048 dBTP (ideal reconstruction), sample peak -1.05 dBFS |
 | Host block sizes 1-4096, every feature on | identical output |
 | Real-time safety | no allocation, lock or I/O in the audio path (allocation counter in the test suite) |
+| VOICE HOLD, real take (FET +17 dB, PR 70) | pauses re the voice +23.4 -> +5.9 dB; voice gain reduction 14.1 / 14.2 dB |
+| VOICE HOLD, synthetic voice (all rates) | pause lift 18-19 dB lower; voice level within 0.05 dB; block-size invariant; no allocation |
 
-All from the automated suites (`tests/`, 2400+ checks at 44.1-192 kHz, mono and stereo), an independent black-box
+All from the automated suites (`tests/`: 2766 DSP checks at 44.1-192 kHz, mono and stereo, and 131 plugin checks), an independent black-box
 audit through a VST3 host (`tests/independent/duo_audit.py`), pluginval at strictness 10 and Steinberg's VST3
 validator.
 
@@ -98,11 +117,28 @@ snares and hats at full scale up to Nyquist) the measured worst true peak is +0.
 audio rarely has much energy that high; if you need a hard guarantee for such material, use 2x or 4x and set the
 ceiling 0.3 dB lower. Details: `docs/DECISIONS.md` D21.
 
+## Engineering progress
+
+| Version | Date | Engineering | Measured |
+|---|---|---|---|
+| **1.0.0** (Duo Vocal Comp) | 2026 | FET and opto stages in series (order swap), side-chain HPF, Color, Mix, stereo link, HF emphasis, 1x/2x/4x, auto makeup, 22 presets | - |
+| **2.0.0** | 2026-10-14 | Renamed Axell Duo Compressor (same plugin identity). True-peak limiter (8x detection), Clean FET detector, threshold / knee / range / hold, side-chain EQ + external key, lookahead, Mid/Side, latency handshake, 4x default, **Measured** opto law calibrated on hardware LA-2A recordings | 1.0 sessions bit-identical; aliasing -149.5 dBFS at 4x; Clean detector THD+N -142 dB (Vintage -43); LA-2A held-out: gain tracking 0.60 dB, STFT 0.449 / loudness 0.43 dB (published neural models 0.551-0.796 / 0.36-1.31) |
+| **2.1.0** | 2026-10-15 | Level / gain-reduction history and transfer curve, level-matched COMPARE (BS.1770) | COMPARE within 0.1 dB; benchmark vs UADx 1176 / LA-2A: 30-85 dB less aliasing, LA-2A on par, 1176 behind (1.46 vs 1.09 dB) |
+| **3.0.0** | 2026-10-26 | VOICE HOLD with the suite's voice detector (Axell Gate's, in the shared core); Axell's Dojo look | Real take: pauses +23.4 -> +5.9 dB, voice unchanged; 2766 DSP + 131 plugin checks, ASan clean, audit 26/26 (1.0 sessions still bit-identical), pluginval L10, validator 47/47 |
+
+Every design decision with its measurement: [docs/DECISIONS.md](docs/DECISIONS.md); all changes: [CHANGELOG.md](CHANGELOG.md).
+
 ## Install (Linux)
 
-    tar xzf AxellDuoCompressor-2.0.0-linux-x86_64.tar.gz
-    cd AxellDuoCompressor-2.0.0-linux-x86_64
+Download `AxellDuoCompressor-3.0.0-linux-x86_64.tar.gz` from the
+[latest release](https://github.com/zmardanian/axell-duo-compressor/releases/latest) (optional: `sha256sum -c
+SHA256SUMS.txt`), then:
+
+    tar xzf AxellDuoCompressor-3.0.0-linux-x86_64.tar.gz
+    cd AxellDuoCompressor-3.0.0-linux-x86_64
     ./install.sh
+
+Or let the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo) install and update it.
 
 The installer copies `Axell Duo Compressor.vst3` to `~/.vst3` and removes an installed `Duo Vocal Comp.vst3` (same
 plugin identity: the DAW would otherwise see two plugins claiming one ID). In REAPER: Options > Preferences >
