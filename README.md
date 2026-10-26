@@ -1,5 +1,7 @@
 # Axell Duo Compressor (VST3, Linux)
 
+[![CI](https://github.com/zmardanian/axell-duo-compressor/actions/workflows/ci.yml/badge.svg)](https://github.com/zmardanian/axell-duo-compressor/actions/workflows/ci.yml)
+
 A FET peak compressor, an opto leveling amplifier and a true-peak limiter in one plugin, built for rap and
 boom-bap vocals and just as much at home on bass, drums, mix bus and master. Formerly **Duo Vocal Comp**: projects
 saved with Duo Vocal Comp 1.0 open in Axell Duo Compressor with every setting and render bit-identically
