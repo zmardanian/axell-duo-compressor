@@ -73,15 +73,17 @@ int main()
         const juce::StringArray added3 { "fetThr", "fetKnee", "fetRange", "fetHold", "fetDet", "fetKey", "optoThr", "optoKnee",
                                          "optoRange", "optoHold", "optoKey", "scLpf", "scBellF", "scBellG", "scBellQ", "look",
                                          "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel", "compare" };
+        // Axell Duo Compressor 3.0
+        const juce::StringArray added4 { "voiceHold" };
         auto& params = p.getParameters();
-        const int total = frozen.size() + added.size() + added3.size();
-        check (params.size() == total, "parameter count = 43 (15 frozen + 5 v2 + 23 v3)");
+        const int total = frozen.size() + added.size() + added3.size() + added4.size();
+        check (params.size() == total, "parameter count = 44 (15 frozen + 5 v2 + 23 v3 + 1 v4)");
         for (int i = 0; i < params.size() && i < total; ++i)
         {
             auto* wp = dynamic_cast<juce::AudioProcessorParameterWithID*> (params[i]);
-            const int nf = frozen.size(), n2 = nf + added.size();
-            const auto expected = i < nf ? frozen[i] : i < n2 ? added[i - nf] : added3[i - n2];
-            const int hint = i < nf ? 1 : i < n2 ? 2 : 3;
+            const int nf = frozen.size(), n2 = nf + added.size(), n3 = n2 + added3.size();
+            const auto expected = i < nf ? frozen[i] : i < n2 ? added[i - nf] : i < n3 ? added3[i - n2] : added4[i - n3];
+            const int hint = i < nf ? 1 : i < n2 ? 2 : i < n3 ? 3 : 4;
             check (wp != nullptr && wp->getParameterID() == expected,
                    "parameter index " + juce::String (i) + " is '" + expected + "'");
             if (wp != nullptr)
@@ -203,6 +205,7 @@ int main()
                    && std::abs (v ("fetThr") + 12.0f) < 1e-5f && v ("fetKnee") < 0.0f && v ("fetRange") >= 60.0f,
                "draft-format project: 2.0 parameters at their 1.x-equivalent defaults");
         check (v ("optoModel") < 0.5f, "draft-format project: opto model Classic (the law it was made with)");
+        check (v ("voiceHold") < 0.5f, "draft-format project: VOICE HOLD off (it played without it)");
     }
 
     //== 3b. a project saved by Duo Vocal Comp 1.0.0 (20 parameters, the os value saved) keeps its oversampling
@@ -220,7 +223,7 @@ int main()
                                           || id.endsWith ("Hold") || id.endsWith ("Det") || id.endsWith ("Key")))
                 xml->removeChildElement (e, true);
             else if (juce::StringArray { "optoThr", "optoKnee", "optoRange", "optoHold", "optoKey", "scLpf", "scBellF", "scBellG",
-                                         "scBellQ", "look", "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel" }.contains (id))
+                                         "scBellQ", "look", "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel", "voiceHold" }.contains (id))
                 xml->removeChildElement (e, true);
             e = next;
         }
@@ -231,8 +234,29 @@ int main()
         check (p.apvts.getRawParameterValue ("os")->load() < 0.5f && p.apvts.getRawParameterValue ("limOn")->load() < 0.5f,
                "1.0.0-format project: saved 1x kept, 2.0 parameters at defaults");
         check (p.apvts.getRawParameterValue ("optoModel")->load() < 0.5f, "1.0.0-format project: opto model Classic");
+        check (p.apvts.getRawParameterValue ("voiceHold")->load() < 0.5f, "1.0.0-format project: VOICE HOLD off");
         DuoCompProcessor fresh;
         check (fresh.apvts.getRawParameterValue ("optoModel")->load() > 0.5f, "new instance: opto model Measured");
+        check (fresh.apvts.getRawParameterValue ("voiceHold")->load() > 0.5f && fresh.readParams().voiceHold,
+               "new instance: VOICE HOLD on");
+        // a 2.x project (every parameter but voiceHold saved) loads with VOICE HOLD off, on any instance
+        {
+            DuoCompProcessor two;
+            juce::MemoryBlock st2;
+            two.getStateInformation (st2);
+            auto x2 = juce::AudioProcessor::getXmlFromBinary (st2.getData(), (int) st2.getSize());
+            for (auto* e = x2->getFirstChildElement(); e != nullptr; e = e->getNextElement())
+                if (e->getStringAttribute ("id") == "voiceHold")
+                {
+                    x2->removeChildElement (e, true);
+                    break;
+                }
+            juce::MemoryBlock mb2;
+            juce::AudioProcessor::copyXmlToBinary (*x2, mb2);
+            DuoCompProcessor q;
+            q.setStateInformation (mb2.getData(), (int) mb2.getSize());
+            check (q.apvts.getRawParameterValue ("voiceHold")->load() < 0.5f, "2.x project: VOICE HOLD off (it sounds as it did)");
+        }
     }
 
     //== 4. latency reporting follows the oversampling parameter (fade + message-thread timer)

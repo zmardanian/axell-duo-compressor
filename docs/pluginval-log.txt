@@ -1,13 +1,13 @@
-Random seed: 0x47d4e3b
+Random seed: 0x7a90ffb
 Validation started
 Strictness level: 10
 -----------------------------------------------------------------
-Starting tests in: pluginval / Scan for plugins located in: /home/Alex/axell-duo-compressor/build/AxellDuoCompressor_artefacts/Release/VST3/Axell Duo Compressor.vst3...
+Starting tests in: pluginval / Scan for plugins located in: /var/home/Alex/axell-duo-compressor/build/AxellDuoCompressor_artefacts/Release/VST3/Axell Duo Compressor.vst3...
 Num plugins found: 1
 
-Testing plugin: VST3-Axell Duo Compressor-76fd928d-dae8b54b
-Axell Yobag: Axell Duo Compressor v2.1.0
-Completed tests in pluginval / Scan for plugins located in: /home/Alex/axell-duo-compressor/build/AxellDuoCompressor_artefacts/Release/VST3/Axell Duo Compressor.vst3
+Testing plugin: VST3-Axell Duo Compressor-b7ef38f5-dae8b54b
+Axell Yobag: Axell Duo Compressor v3.0.0
+Completed tests in pluginval / Scan for plugins located in: /var/home/Alex/axell-duo-compressor/build/AxellDuoCompressor_artefacts/Release/VST3/Axell Duo Compressor.vst3
 -----------------------------------------------------------------
 Starting tests in: pluginval / Open plugin (cold)...
 Completed tests in pluginval / Open plugin (cold)

@@ -1,5 +1,26 @@
 # Changelog
 
+## 3.0.0 (2026-10-26)
+
+### New
+- **VOICE HOLD**: in the pauses of the voice the gain reduction holds at the level of your voice instead of releasing,
+  so the compressor no longer lifts the room, the breaths and the headphone bleed between phrases. On a real rap take
+  (gated, FET INPUT +17 dB, PEAK REDUCTION 70) the pauses came up **+23.4 dB** against the voice without it and
+  **+5.9 dB** with it; the voice's own gain reduction stayed the same (14.1 / 14.2 dB). The voice decision is Axell
+  Gate 2.0's (the suite's shared voice detector, causal, 10 ms), so no latency is added. On for new instances and the
+  vocal presets; off for beat, bus, master and ducking presets (the voice network takes drum hits for a voice), and
+  off for projects saved before 3.0, which sound exactly as they did.
+- Preset "Vocal: Sibilance-Aware Leveling": opto GAIN 4.5 -> 4.8 dB, so it stays level-matched (+-1.5 dB) with VOICE
+  HOLD on (the quieter pauses lower its average loudness by about 0.3 dB).
+- **Axell's Dojo look**: the family emblem, a brush-written title with the plugin's seal (双, "pair") and Duo's own
+  ember-coloured ground.
+
+### Verified
+- DSP suite 2766 checks at 44.1-192 kHz with the new section V11 (VOICE HOLD at the stage and engine level, a drum
+  loop, block-size invariance, no allocation), plugin suite 131 (parameter 44 `voiceHold`, version hint 4; 1.x and 2.x
+  projects load with it off), ASan + UBSan clean, black-box audit 26/26 (1.0.0 sessions still render bit-identically),
+  pluginval strictness 10, Steinberg's VST3 validator 47/47.
+
 ## 2.1.0 (2026-10-15)
 
 ### New

@@ -1090,6 +1090,7 @@ void testPresets (Recorder& r)
 
 } // namespace
 #include "V2Tests.h"
+#include "V3Tests.h"
 namespace
 {
 //==============================================================================
@@ -1240,6 +1241,7 @@ int main (int argc, char** argv)
                 testOversamplingFilters (rec);
                 testPresets (rec);
                 v2::testV2 (rec);
+                v3::testV3 (rec);
             });
         for (auto& t : threads)
             t.join();

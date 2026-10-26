@@ -39,7 +39,8 @@ int main (int argc, char** argv)
         { "a.bumpSlope", &p.fetAll.bumpSlope }, { "a.bumpMaxDb", &p.fetAll.bumpMaxDb } };
     std::map<std::string, int*> i { { "fetRatio", &p.fetRatio }, { "optoMode", &p.optoMode }, { "order", &p.order }, { "osLog2", &p.osLog2 } };
     std::map<std::string, bool*> b { { "fetOn", &p.fetOn }, { "optoOn", &p.optoOn }, { "autoMakeup", &p.autoMakeup }, { "fetClean", &p.fetClean },
-        { "fetExt", &p.fetExt }, { "optoExt", &p.optoExt }, { "limOn", &p.limOn }, { "midSide", &p.midSide } };
+        { "fetExt", &p.fetExt }, { "optoExt", &p.optoExt }, { "limOn", &p.limOn }, { "midSide", &p.midSide },
+        { "optoMeasured", &p.optoMeasured }, { "fetMeasured", &p.fetMeasured }, { "voiceHold", &p.voiceHold } };
     const char* keyFile = nullptr;
     for (int a = 5; a < argc; ++a)
     {

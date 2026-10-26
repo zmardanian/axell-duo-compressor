@@ -6,6 +6,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 PUB="${DUO_PUBLIC_DIR:-$HOME/axell-duo-compressor-public}"
+CORE="${AXELL_CORE:-$(realpath ../axell-core)}"
 VER=$(sed -n 's/^project(AxellDuoCompressor VERSION \([0-9.]*\)).*/\1/p' CMakeLists.txt)
 FINAL="$PUB"; UPDATE=0
 if [ -d "$PUB/.git" ]; then UPDATE=1; PUB="$(mktemp -d)/stage"
@@ -22,6 +23,11 @@ cp tools/duo_render.cpp tools/retune_presets.cpp "$PUB/tools/"
 cp tools/validation/*.py tools/validation/*.json "$PUB/tools/validation/"
 cp tools/listening/index.html tools/listening/make_stimuli.py "$PUB/tools/listening/"
 cp tools/benchmark/*.py "$PUB/tools/benchmark/"
+# 3.0: the Axell core (VOICE HOLD's voice decision, the brand look), vendored so the repository builds on its own
+mkdir -p "$PUB/external/axell-core"
+for d in CMakeLists.txt LICENSE README.md include src resources tests tools; do cp -r "$CORE/$d" "$PUB/external/axell-core/"; done
+rm -rf "$PUB/external/axell-core/tools/__pycache__"
+echo "axell-core $(git -C "$CORE" rev-parse --short HEAD)" > "$PUB/external/axell-core/VERSION"
 cat > "$PUB/.gitignore" <<'IGN'
 build/
 build-*/

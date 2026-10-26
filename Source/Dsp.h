@@ -549,6 +549,8 @@ public:
         smoothK = 1.0f - onePole (0.02f, fs);
         memRiseK = 1.0f - onePole (2.0f, fs);
         memFallK = 1.0f - onePole (4.0f, fs);
+        voiceAvgK = 1.0f - onePole (0.25f, fs);
+        pauseGlideK = 1.0f - onePole (0.0125f, fs);
         setParams (settings);
     }
 
@@ -604,6 +606,7 @@ public:
         held.fill (0.0f);
         holdCount.fill (0);
         grHold.fill (0);
+        voiceAvg.fill (0.0f);
         hCur.fill (0.0f);
         hStep.fill (0.0f);
         ctlCount = 0;
@@ -631,6 +634,10 @@ public:
     }
 
     float grDb (int ch) const noexcept { return gr[(size_t) ch]; }
+    // 3.0 VOICE HOLD: set per sample while the voice pauses (axell-core VoicePresence). The release stops and the gain
+    // reduction glides (12.5 ms) to the voice's own recent average (0.25 s), so a pause sits where the voice sits instead
+    // of being lifted by the release. Never set: the 2.x path, bit for bit.
+    void setPause (bool p) noexcept { pause = p; }
     double sampleRate() const noexcept { return fs; }
     // static gain reduction for a steady signal whose detector level (after INPUT) is levelDb (displays)
     float staticGainReductionDb (float levelDb) const noexcept
@@ -729,7 +736,7 @@ private:
             float& m = memory[(size_t) c];
             // hold (2.0): while the demand stays at the current GR (within 0.05 dB) the hold restarts; the
             // release begins `hold` after the demand fell. Hold 0 = 1.x.
-            bool holding = false;
+            bool holding = pause;
             if (holdSamples > 0)
             {
                 int& hc = grHold[(size_t) c];
@@ -748,6 +755,10 @@ private:
                 g += (target - g) * atkK;
             else if (! holding)
                 g += (target - g) * oneMinusExpSmall (relRate / (1.0f + 0.4f * m));
+            if (! pause)
+                voiceAvg[(size_t) c] += (g - voiceAvg[(size_t) c]) * voiceAvgK;
+            else if (voiceAvg[(size_t) c] > g)
+                g += (voiceAvg[(size_t) c] - g) * pauseGlideK;
             // memory follows the compression demand (target), so it stops charging the moment
             // the signal drops - otherwise a long release would keep slowing itself down
             const float w = std::clamp ((target - 2.0f) * 0.125f, 0.0f, 1.0f);
@@ -825,7 +836,9 @@ private:
     std::array<int, kMaxCh> holdCount {}, grHold {};
     float ratio = 4.0f, knee = 6.0f, threshold = kThresholdDb, range = -1.0f, quietLevel = 0.158489319f;
     float atkK = 1.0f, relRate = 0.0f, link = 1.0f;
-    float memRiseK = 0.0f, memFallK = 0.0f;
+    float memRiseK = 0.0f, memFallK = 0.0f, voiceAvgK = 0.0f, pauseGlideK = 0.0f;
+    bool pause = false;
+    std::array<float, kMaxCh> voiceAvg {};
     float inGain = 1.0f, inTarget = 1.0f, outGain = 1.0f, outTarget = 1.0f;
     float color = 0.0f, colorTarget = 0.0f, smoothK = 0.001f;
     std::array<float, kMaxCh> gr {}, memory {};
@@ -909,6 +922,8 @@ public:
         ctlCount = 0;
         dc.prepare (fs);
         smoothK = 1.0f - onePole (0.02f, fs);
+        voiceAvgK = 1.0f - onePole (0.25f, baseFs);      // the gain computer runs at the base rate
+        pauseGlideK = 1.0f - onePole (0.0125f, baseFs);
         setParams (settings);
     }
 
@@ -955,6 +970,9 @@ public:
         color = colorTarget;
     }
 
+    // 3.0 VOICE HOLD (see FetStage::setPause): the release holds through the voice's pauses
+    void setPause (bool p) noexcept { pause = p; }
+
     void resetState() noexcept
     {
         hil.resetState();
@@ -968,6 +986,7 @@ public:
         ms.fill (0.0f);
         grFast.fill (0.0f);
         grSlow.fill (0.0f);
+        voiceAvg.fill (0.0f);
         memory.fill (0.0f);
         grCur.fill (0.0f);
         grStep.fill (0.0f);
@@ -1060,7 +1079,7 @@ private:
             // slow tail 0.5 s .. 5 s, set per step from the light-cell memory (no stepping)
             const float tauSlow = slowMin + slowSpan * m;
             // hold (2.0): as in the FET stage; hold 0 = 1.x
-            bool holding = false;
+            bool holding = pause;   // 3.0 VOICE HOLD (see FetStage::setPause)
             if (holdSteps > 0)
             {
                 int& hc = holdCount[(size_t) c];
@@ -1083,6 +1102,12 @@ private:
                 sl += (target - sl) * atkK;
             else if (! holding)
                 sl += (target - sl) * oneMinusExpSmall (invFs / tauSlow);
+            // VOICE HOLD: the fast part glides to its recent voice average; the slow memory only holds (gliding it too
+            // carried the pause's level into the next phrase: +1 dB of level spread on the voice, measured)
+            if (! pause)
+                voiceAvg[(size_t) c] += (f - voiceAvg[(size_t) c]) * voiceAvgK;
+            else if (voiceAvg[(size_t) c] > f)
+                f += (voiceAvg[(size_t) c] - f) * pauseGlideK;
             const float g = fastShare * f + (1.0f - fastShare) * sl;
             // memory follows the compression demand: full build-up at 10 dB
             const float w = std::clamp (target * 0.1f, 0.0f, 1.0f);
@@ -1135,7 +1160,9 @@ private:
     float makeup = 1.0f, makeupTarget = 1.0f, color = 0.0f, colorTarget = 0.0f, smoothK = 0.001f;
     float detK = 0.0f, atkK = 0.0f, relFastK = 0.0f, memRiseK = 0.0f, memFallK = 0.0f, invFs = 0.0f;
     float fastShare = 0.6f, slowMin = 0.5f, slowSpan = 4.5f, onsetGain = 0.0f, onsetFastK = 0.0f, onsetSlowK = 0.0f;
-    std::array<float, kMaxCh> onsetFast {}, onsetSlow {};
+    std::array<float, kMaxCh> onsetFast {}, onsetSlow {}, voiceAvg {};
+    float voiceAvgK = 0.0f, pauseGlideK = 0.0f;
+    bool pause = false;
     Settings::Model modelApplied { -1.0f };
     std::array<float, kMaxCh> ms {}, grFast {}, grSlow {}, memory {}, grCur {}, grStep {};
     std::array<float, kMaxCh> gainCur { 1.0f, 1.0f }, gainStep {};

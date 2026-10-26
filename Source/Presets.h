@@ -71,7 +71,7 @@ constexpr Row kRows[] = {
     { "Vocal: Ad-libs & Hype", C::vocal, "Shouted ad-libs and hype tracks: 8:1 FET (~11 dB), thin low end in the detector, extra grit.",
       true, 4.5f, 2.0f, 0.1f, 70.f, 1, true, 66.3f, 5.5f, 0, 0, 160.f, 55.f, 100.f, 0.0f, 100.f, 40.f, 2 },
     { "Vocal: Sibilance-Aware Leveling", C::vocal, "Opto with strong HF emphasis (~4 dB): reacts more to harsh S/T sounds, gentle FET (~3 dB).",
-      true, -4.5f, 6.0f, 0.5f, 200.f, 0, true, 58.0f, 4.5f, 0, 0, 90.f, 15.f, 100.f, 0.0f, 100.f, 80.f, 2 },
+      true, -4.5f, 6.0f, 0.5f, 200.f, 0, true, 58.0f, 4.8f, 0, 0, 90.f, 15.f, 100.f, 0.0f, 100.f, 80.f, 2 },
     { "Vocal: Transparent Peak Control", C::vocal, "Clean 4:1 FET only (~6 dB), slow attack keeps consonants natural, no colour, opto off.",
       true, -0.5f, 5.0f, 0.8f, 200.f, 0, false, 0.0f, 0.0f, 0, 0, 90.f, 0.f, 100.f, 0.0f, 100.f, 0.f, 2 },
     { "Vocal: Sung Hook", C::vocal, "Melodic hooks/choruses: smooth opto (~5 dB) does most of it, light FET (~4 dB), slower release.",
@@ -138,6 +138,9 @@ inline std::array<FactoryPreset, kNumFactoryPresets> factoryPresets()
         p.mixPct = r.mix;    p.outDb = r.out;       p.linkPct = r.link;
         p.emphasisPct = r.emph; p.osLog2 = r.os;
         p.optoMeasured = true; // every factory preset uses the measured opto law (PR retuned for the same opto GR)
+        // 3.0 VOICE HOLD: on for the vocal presets and Init (the new-instance default), off for beats, buses, masters
+        // and ducking - the voice network takes drum hits for a voice and would hold their release
+        p.voiceHold = r.cat == PresetCategory::vocal || std::string_view (r.name) == "Init";
         for (const auto& x : preset_detail::kExtras)
             if (std::string_view (x.name) == r.name)
                 x.apply (p);

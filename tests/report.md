@@ -1,8 +1,8 @@
 # Axell Duo Compressor - DSP test report
 
-Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Release.
+Generated 2026-10-26 06:50 by `DuoDspTests` in 139.3 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Release.
 
-**Result: ALL PASS** - 1950 checks passed, 0 failed (every check runs once per sample rate / channel configuration).
+**Result: ALL PASS** - 2070 checks passed, 0 failed (every check runs once per sample rate / channel configuration).
 
 ## Summary (worst case over all configurations)
 
@@ -102,66 +102,66 @@ Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are mea
 | O Oversampling filters | wet path (stages off) flatness 20 Hz-20 kHz, 2x | < 0.0100 dB | 0.000157 dB | 44.1 k mono | PASS 10/10 |
 | O Oversampling filters | latency 4x | (info) | 33.000 .. 79.000 samples | all | - |
 | O Oversampling filters | wet path (stages off) flatness 20 Hz-20 kHz, 4x | < 0.0100 dB | 0.000205 dB | 44.1 k mono | PASS 10/10 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Rap Lead: output vs input loudness | -1.500 .. 1.500 dB | 0.3678 dB | 44.1 k mono | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Rap Lead: output vs input loudness | -1.500 .. 1.500 dB | -0.5451 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Rap Lead: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Rap Lead: FET peak GR | (info) | 6.720 .. 8.229 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Rap Lead: opto average GR | (info) | 2.583 .. 3.046 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Boom Bap Double: output vs input loudness | -1.500 .. 1.500 dB | -0.5530 dB | 192 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Rap Lead: opto average GR | (info) | 2.583 .. 2.992 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Boom Bap Double: output vs input loudness | -1.500 .. 1.500 dB | -1.023 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Boom Bap Double: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Boom Bap Double: FET peak GR | (info) | 9.544 .. 10.917 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Boom Bap Double: opto average GR | (info) | 4.237 .. 4.595 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Aggressive Parallel (All): output vs input loudness | -1.500 .. 1.500 dB | -0.1501 dB | 192 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Boom Bap Double: opto average GR | (info) | 4.111 .. 4.426 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Aggressive Parallel (All): output vs input loudness | -1.500 .. 1.500 dB | -0.2458 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Aggressive Parallel (All): output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Aggressive Parallel (All): FET peak GR | (info) | 17.133 .. 19.173 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Aggressive Parallel (All): opto average GR | (info) | 0.8962 .. 1.733 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Gentle Leveling: output vs input loudness | -1.500 .. 1.500 dB | -0.2489 dB | 96 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Aggressive Parallel (All): opto average GR | (info) | 0.5818 .. 1.416 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Gentle Leveling: output vs input loudness | -1.500 .. 1.500 dB | -0.5290 dB | 96 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Gentle Leveling: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Gentle Leveling: FET peak GR | (info) | 2.961 .. 4.464 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Gentle Leveling: opto average GR | (info) | 3.489 .. 4.024 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Spoken Word: output vs input loudness | -1.500 .. 1.500 dB | -0.3512 dB | 96 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Gentle Leveling: FET peak GR | (info) | 2.971 .. 4.464 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Gentle Leveling: opto average GR | (info) | 3.568 .. 4.053 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Spoken Word: output vs input loudness | -1.500 .. 1.500 dB | -0.6795 dB | 96 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Spoken Word: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Spoken Word: FET peak GR | (info) | 4.859 .. 6.375 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Spoken Word: opto average GR | (info) | 3.513 .. 4.012 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Classic Serial (FET > Opto): output vs input loudness | -1.500 .. 1.500 dB | -0.2367 dB | 48 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Spoken Word: opto average GR | (info) | 3.561 .. 3.989 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Classic Serial (FET > Opto): output vs input loudness | -1.500 .. 1.500 dB | -0.6081 dB | 96 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Classic Serial (FET > Opto): output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Classic Serial (FET > Opto): FET peak GR | (info) | 4.866 .. 6.383 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Classic Serial (FET > Opto): opto average GR | (info) | 2.499 .. 3.087 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Opto First, FET Catch: output vs input loudness | -1.500 .. 1.500 dB | 0.5990 dB | 44.1 k mono | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Classic Serial (FET > Opto): opto average GR | (info) | 2.524 .. 3.070 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Opto First, FET Catch: output vs input loudness | -1.500 .. 1.500 dB | -0.7113 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Opto First, FET Catch: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Opto First, FET Catch: FET peak GR | (info) | 3.656 .. 4.756 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Opto First, FET Catch: opto average GR | (info) | 3.651 .. 3.966 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: New York Parallel: output vs input loudness | -1.500 .. 1.500 dB | -0.1011 dB | 96 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Opto First, FET Catch: FET peak GR | (info) | 3.594 .. 4.753 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Opto First, FET Catch: opto average GR | (info) | 3.909 .. 4.126 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: New York Parallel: output vs input loudness | -1.500 .. 1.500 dB | -0.2169 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: New York Parallel: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: New York Parallel: FET peak GR | (info) | 13.638 .. 15.491 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: New York Parallel: opto average GR | (info) | 0.8532 .. 1.630 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Upfront Hip-Hop: output vs input loudness | -1.500 .. 1.500 dB | -0.2725 dB | 192 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: New York Parallel: opto average GR | (info) | 0.7638 .. 1.494 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Upfront Hip-Hop: output vs input loudness | -1.500 .. 1.500 dB | -0.7945 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Upfront Hip-Hop: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Upfront Hip-Hop: FET peak GR | (info) | 7.409 .. 8.924 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Upfront Hip-Hop: opto average GR | (info) | 2.599 .. 3.051 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Ad-libs & Hype: output vs input loudness | -1.500 .. 1.500 dB | -0.7305 dB | 192 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Upfront Hip-Hop: opto average GR | (info) | 2.609 .. 3.013 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Ad-libs & Hype: output vs input loudness | -1.500 .. 1.500 dB | -1.327 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Ad-libs & Hype: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Ad-libs & Hype: FET peak GR | (info) | 10.682 .. 12.031 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Ad-libs & Hype: opto average GR | (info) | 3.779 .. 4.145 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sibilance-Aware Leveling: output vs input loudness | -1.500 .. 1.500 dB | -1.315 dB | 192 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Ad-libs & Hype: opto average GR | (info) | 3.672 .. 3.958 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sibilance-Aware Leveling: output vs input loudness | -1.500 .. 1.500 dB | -1.346 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sibilance-Aware Leveling: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sibilance-Aware Leveling: FET peak GR | (info) | 2.597 .. 4.109 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sibilance-Aware Leveling: opto average GR | (info) | 3.922 .. 4.539 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Transparent Peak Control: output vs input loudness | -1.500 .. 1.500 dB | 0.5690 dB | 44.1 k mono | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sibilance-Aware Leveling: FET peak GR | (info) | 2.598 .. 4.109 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sibilance-Aware Leveling: opto average GR | (info) | 3.943 .. 4.636 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Transparent Peak Control: output vs input loudness | -1.500 .. 1.500 dB | -0.7624 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Transparent Peak Control: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Transparent Peak Control: FET peak GR | (info) | 5.507 .. 7.018 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Transparent Peak Control: FET peak GR | (info) | 5.510 .. 7.018 dB | all | - |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Transparent Peak Control: opto average GR | (info) | 0.0000 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sung Hook: output vs input loudness | -1.500 .. 1.500 dB | 0.3233 dB | 44.1 k mono | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sung Hook: output vs input loudness | -1.500 .. 1.500 dB | -0.3960 dB | 96 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sung Hook: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sung Hook: FET peak GR | (info) | 3.720 .. 5.234 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sung Hook: opto average GR | (info) | 4.585 .. 5.072 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lo-fi Grit (All): output vs input loudness | -1.500 .. 1.500 dB | -0.3374 dB | 192 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sung Hook: FET peak GR | (info) | 3.723 .. 5.234 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Sung Hook: opto average GR | (info) | 4.680 .. 5.071 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lo-fi Grit (All): output vs input loudness | -1.500 .. 1.500 dB | -0.5962 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lo-fi Grit (All): output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lo-fi Grit (All): FET peak GR | (info) | 14.814 .. 16.506 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lo-fi Grit (All): opto average GR | (info) | 1.295 .. 2.187 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Broadcast Voice: output vs input loudness | -1.500 .. 1.500 dB | -0.3444 dB | 96 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lo-fi Grit (All): opto average GR | (info) | 1.012 .. 1.863 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Broadcast Voice: output vs input loudness | -1.500 .. 1.500 dB | -0.7198 dB | 96 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Broadcast Voice: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Broadcast Voice: FET peak GR | (info) | 5.651 .. 7.411 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Broadcast Voice: opto average GR | (info) | 4.551 .. 5.127 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Broadcast Voice: opto average GR | (info) | 4.526 .. 5.030 dB | all | - |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Mix Bus: Glue: output vs input loudness | -1.500 .. 1.500 dB | -0.1132 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Mix Bus: Glue: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Mix Bus: Glue: FET peak GR | (info) | 1.808 .. 2.361 dB | all | - |
@@ -194,10 +194,10 @@ Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are mea
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Mix Bus: Mid/Side Glue: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Mix Bus: Mid/Side Glue: FET peak GR | (info) | 2.986 .. 3.569 dB | all | - |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Mix Bus: Mid/Side Glue: opto average GR | (info) | 1.740 .. 1.841 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lookahead Peak Control: output vs input loudness | -1.500 .. 1.500 dB | -0.6355 dB | 96 k stereo | PASS 10/10 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lookahead Peak Control: output vs input loudness | -1.500 .. 1.500 dB | -1.018 dB | 96 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lookahead Peak Control: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lookahead Peak Control: FET peak GR | (info) | 7.403 .. 9.000 dB | all | - |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lookahead Peak Control: opto average GR | (info) | 2.099 .. 2.734 dB | all | - |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Vocal: Lookahead Peak Control: opto average GR | (info) | 1.931 .. 2.532 dB | all | - |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Drum Bus: Boom Bap Smash: output vs input loudness | -1.500 .. 1.500 dB | -0.3025 dB | 192 k stereo | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Drum Bus: Boom Bap Smash: output finite | no NaN/Inf | 1.000  | 44.1 k mono | PASS 10/10 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS) | Drum Bus: Boom Bap Smash: FET peak GR | (info) | 14.677 .. 15.450 dB | all | - |
@@ -261,6 +261,23 @@ Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are mea
 | V 2.0 features | all 2.0 features: block 512 vs 37 (difference) | < -140.0 dBFS | -600.0 dBFS | 44.1 k mono | PASS 10/10 |
 | V 2.0 features | all 2.0 features: output finite | yes | 1.000  | 44.1 k mono | PASS 10/10 |
 | V 2.0 features | all 2.0 features: heap allocations inside process() | = 0.0000  | 0.0000  | 44.1 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | factory presets: VOICE HOLD on exactly for the vocal presets and Init | yes | 1.000  | 44.1 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | engine default: VOICE HOLD off (the 2.x path; the plugin turns it on for new instances) | yes | 1.000  | 44.1 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | FET: gain reduction on the loud tone | (info) | 17.257 .. 17.308 dB | all | - |
+| V11 Voice hold (3.0) | FET without pause: share of the GR left 0.4 s after the drop (released) | < 0.1500  | 0.0996  | 88.2 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | FET in a pause: gain reduction re the voice's (held) | -2.000 .. 0.5000 dB | 0.0000 dB | 44.1 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | opto: gain reduction on the loud tone | (info) | 21.333 .. 21.335 dB | all | - |
+| V11 Voice hold (3.0) | opto in a pause: holds more than it would release | > 10.667 dB | 14.462 dB | 88.2 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | opto in a pause: gain reduction re the voice's (held) | -3.000 .. 0.5000 dB | 3.81e-05 dB | 48 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | pauses re voice, off: lift | (info) | 18.699 .. 19.460 dB | all | - |
+| V11 Voice hold (3.0) | pauses re voice, on: lift | (info) | 0.5698 .. 0.7449 dB | all | - |
+| V11 Voice hold (3.0) | VOICE HOLD lowers the pauses' lift by | > 8.000 dB | 18.081 dB | 48 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | VOICE HOLD: voice level unchanged | -0.7500 .. 0.7500 dB | -0.0459 dB | 48 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | VOICE HOLD: latency unchanged | = 0.0000 samples | 0.0000 samples | 44.1 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | drum loop: VOICE HOLD on vs off (peak difference; beat/bus presets turn it off) | (info) | -13.504 .. -8.993 dBFS | all | - |
+| V11 Voice hold (3.0) | VOICE HOLD: block 512 vs 37 (difference) | < -140.0 dBFS | -600.0 dBFS | 44.1 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | VOICE HOLD: output finite | yes | 1.000  | 44.1 k mono | PASS 10/10 |
+| V11 Voice hold (3.0) | VOICE HOLD: heap allocations inside process() | = 0.0000  | 0.0000  | 44.1 k mono | PASS 10/10 |
 | 9 Stereo identity | identical L/R in: differing output samples (defaults) | = 0.0000 samples | 0.0000 samples | 44.1 k stereo | PASS 5/5 |
 | 9 Stereo identity | identical L/R in: differing samples (4x, link 0, All, auto makeup) | = 0.0000 samples | 0.0000 samples | 44.1 k stereo | PASS 5/5 |
 | 9 Stereo identity | mono instance vs dual-mono stereo: max |diff| | < 1e-06  | 0.0000  | 44.1 k stereo | PASS 5/5 |
@@ -272,15 +289,15 @@ Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are mea
 | V 2.0 features | Mid/Side, link 0: loud side compressed by | > 3.000 dB | 8.993 dB | 44.1 k stereo | PASS 5/5 |
 | O Oversampling filters | 2x decimator (stopband from base Nyquist): stopband peak | < -100.0 dB | -100.2 dB | 88.2 k mono | PASS 6/6 |
 | O Oversampling filters | 2x decimator (stopband from base Nyquist): passband ripple | < 0.0010 dB | 0.000101 dB | 88.2 k mono | PASS 6/6 |
-| 10 CPU | 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | < 2.000 % | 1.765 % | 48 k stereo | PASS 1/1 |
-| 10 CPU | 48 kHz / 128 / stereo / 2x: real-time factor | (info) | 56.669 x | all | - |
-| 10 CPU | silence after program (denormal safety): CPU silence / CPU program | < 1.500 x | 0.7934 x | 48 k stereo | PASS 1/1 |
-| 10 CPU | 48 kHz / 128 / stereo / 1x: CPU of one core | (info) | 1.153 % | all | - |
-| 10 CPU | 48 kHz / 128 / stereo / 4x: CPU of one core | (info) | 2.996 % | all | - |
-| 10 CPU | 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | < 8.000 % | 6.135 % | 48 k stereo | PASS 1/1 |
-| 10 CPU | stereo / 128 / 2x at 44.100 kHz: CPU of one core | (info) | 1.620 % | all | - |
-| 10 CPU | stereo / 128 / 2x at 96.000 kHz: CPU of one core | (info) | 3.492 % | all | - |
-| 10 CPU | stereo / 128 / 2x at 192.0 kHz: CPU of one core | (info) | 7.003 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | < 2.000 % | 1.820 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | 48 kHz / 128 / stereo / 2x: real-time factor | (info) | 54.947 x | all | - |
+| 10 CPU | silence after program (denormal safety): CPU silence / CPU program | < 1.500 x | 0.7985 x | 48 k stereo | PASS 1/1 |
+| 10 CPU | 48 kHz / 128 / stereo / 1x: CPU of one core | (info) | 1.180 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 4x: CPU of one core | (info) | 3.083 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | < 8.000 % | 6.197 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | stereo / 128 / 2x at 44.100 kHz: CPU of one core | (info) | 1.669 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 96.000 kHz: CPU of one core | (info) | 3.593 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 192.0 kHz: CPU of one core | (info) | 7.237 % | all | - |
 
 ## Detail per configuration
 
@@ -380,66 +397,66 @@ Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are mea
 | O Oversampling filters: wet path (stages off) flatness 20 Hz-20 kHz, 2x | 0.000157 | 0.000157 | 0.000102 | 0.000102 | 7.09e-05 | 7.09e-05 | 6.93e-05 | 6.93e-05 | 5.01e-05 | 5.01e-05 |
 | O Oversampling filters: latency 4x | 79.000 | 79.000 | 79.000 | 79.000 | 33.000 | 33.000 | 33.000 | 33.000 | 33.000 | 33.000 |
 | O Oversampling filters: wet path (stages off) flatness 20 Hz-20 kHz, 4x | 0.000205 | 0.000205 | 0.000138 | 0.000138 | 0.000123 | 0.000123 | 0.000123 | 0.000123 | 0.000123 | 0.000123 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Rap Lead: output vs input loudness | 0.3678 | 0.0713 | 0.3023 | 0.0149 | 0.2755 | 0.0431 | 0.1934 | -0.0684 | 0.1262 | -0.0365 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Rap Lead: output vs input loudness | 0.0037 | -0.2747 | -0.0836 | -0.3370 | -0.2068 | -0.4000 | -0.2793 | -0.5010 | -0.3779 | -0.5451 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Rap Lead: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Rap Lead: FET peak GR | 6.720 | 7.254 | 7.121 | 7.121 | 7.533 | 7.533 | 7.783 | 8.229 | 7.577 | 7.820 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Rap Lead: opto average GR | 3.046 | 3.043 | 3.014 | 2.996 | 2.871 | 2.814 | 2.858 | 2.783 | 2.642 | 2.583 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Boom Bap Double: output vs input loudness | 0.1654 | -0.1668 | 0.1101 | -0.1869 | -0.0708 | -0.2951 | -0.1779 | -0.4380 | -0.3837 | -0.5530 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Rap Lead: opto average GR | 2.991 | 2.992 | 2.957 | 2.954 | 2.881 | 2.814 | 2.854 | 2.759 | 2.644 | 2.583 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Boom Bap Double: output vs input loudness | -0.1783 | -0.4882 | -0.2614 | -0.5165 | -0.5349 | -0.7214 | -0.6371 | -0.8583 | -0.8596 | -1.023 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Boom Bap Double: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Boom Bap Double: FET peak GR | 9.544 | 9.863 | 9.912 | 9.912 | 10.755 | 10.755 | 10.165 | 10.917 | 10.310 | 10.464 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Boom Bap Double: opto average GR | 4.595 | 4.537 | 4.536 | 4.468 | 4.440 | 4.374 | 4.466 | 4.335 | 4.329 | 4.237 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Aggressive Parallel (All): output vs input loudness | -0.0074 | -0.1123 | -0.0227 | -0.1231 | -0.0421 | -0.1207 | -0.0641 | -0.1494 | -0.0868 | -0.1501 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Boom Bap Double: FET peak GR | 9.544 | 9.863 | 9.912 | 9.912 | 10.755 | 10.755 | 10.165 | 10.917 | 10.311 | 10.464 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Boom Bap Double: opto average GR | 4.426 | 4.365 | 4.409 | 4.342 | 4.356 | 4.291 | 4.355 | 4.208 | 4.206 | 4.111 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Aggressive Parallel (All): output vs input loudness | -0.0404 | -0.1298 | -0.0588 | -0.1336 | -0.1111 | -0.1746 | -0.1442 | -0.2076 | -0.1838 | -0.2458 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Aggressive Parallel (All): output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Aggressive Parallel (All): FET peak GR | 17.133 | 17.556 | 17.740 | 17.740 | 18.549 | 18.549 | 18.376 | 19.173 | 18.337 | 18.591 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Aggressive Parallel (All): opto average GR | 1.733 | 1.603 | 1.643 | 1.498 | 1.402 | 1.242 | 1.347 | 1.163 | 1.028 | 0.8962 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Gentle Leveling: output vs input loudness | 0.1461 | -0.1742 | 0.0821 | -0.2269 | 0.0986 | -0.1321 | 0.0379 | -0.2489 | 0.0136 | -0.1552 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Aggressive Parallel (All): opto average GR | 1.416 | 1.327 | 1.330 | 1.214 | 1.013 | 0.9135 | 1.007 | 0.8687 | 0.7029 | 0.5818 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Gentle Leveling: output vs input loudness | -0.1148 | -0.4184 | -0.1816 | -0.4473 | -0.2188 | -0.4222 | -0.2654 | -0.5290 | -0.2963 | -0.4738 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Gentle Leveling: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Gentle Leveling: FET peak GR | 2.961 | 3.591 | 3.225 | 3.241 | 3.765 | 3.766 | 4.114 | 4.464 | 3.718 | 4.051 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Gentle Leveling: opto average GR | 3.961 | 4.024 | 3.907 | 3.990 | 3.787 | 3.791 | 3.766 | 3.721 | 3.514 | 3.489 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Spoken Word: output vs input loudness | 0.0661 | -0.2402 | -0.0025 | -0.3080 | 0.000166 | -0.2333 | -0.0698 | -0.3512 | -0.1182 | -0.2818 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Gentle Leveling: FET peak GR | 2.971 | 3.591 | 3.225 | 3.257 | 3.767 | 3.782 | 4.115 | 4.464 | 3.718 | 4.052 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Gentle Leveling: opto average GR | 4.002 | 4.053 | 3.923 | 4.003 | 3.877 | 3.845 | 3.828 | 3.738 | 3.587 | 3.568 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Spoken Word: output vs input loudness | -0.2197 | -0.5141 | -0.2922 | -0.5596 | -0.3691 | -0.5706 | -0.4321 | -0.6795 | -0.4972 | -0.6726 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Spoken Word: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Spoken Word: FET peak GR | 4.859 | 5.452 | 5.199 | 5.201 | 5.682 | 5.682 | 5.978 | 6.375 | 5.672 | 5.961 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Spoken Word: opto average GR | 3.991 | 4.012 | 3.936 | 3.983 | 3.812 | 3.788 | 3.785 | 3.739 | 3.551 | 3.513 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Classic Serial (FET > Opto): output vs input loudness | 0.1081 | -0.1790 | 0.0465 | -0.2367 | 0.1049 | -0.1243 | 0.0360 | -0.2180 | 0.0580 | -0.1059 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Spoken Word: FET peak GR | 4.859 | 5.452 | 5.199 | 5.201 | 5.682 | 5.683 | 5.978 | 6.375 | 5.672 | 5.961 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Spoken Word: opto average GR | 3.961 | 3.989 | 3.906 | 3.948 | 3.858 | 3.809 | 3.822 | 3.723 | 3.585 | 3.561 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Classic Serial (FET > Opto): output vs input loudness | -0.2242 | -0.4987 | -0.2984 | -0.5558 | -0.3282 | -0.5250 | -0.3898 | -0.6081 | -0.3996 | -0.5706 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Classic Serial (FET > Opto): output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Classic Serial (FET > Opto): FET peak GR | 4.866 | 5.457 | 5.207 | 5.208 | 5.690 | 5.690 | 5.986 | 6.383 | 5.678 | 5.966 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Classic Serial (FET > Opto): opto average GR | 3.072 | 3.087 | 3.035 | 3.046 | 2.836 | 2.809 | 2.823 | 2.767 | 2.544 | 2.499 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Opto First, FET Catch: output vs input loudness | 0.5990 | 0.2958 | 0.4789 | 0.1877 | 0.3787 | 0.0939 | 0.2797 | -0.0639 | 0.0193 | -0.2026 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Classic Serial (FET > Opto): opto average GR | 3.057 | 3.070 | 3.010 | 3.030 | 2.876 | 2.832 | 2.847 | 2.764 | 2.571 | 2.524 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Opto First, FET Catch: output vs input loudness | 0.2275 | -0.0440 | 0.0638 | -0.1661 | -0.0672 | -0.3044 | -0.1674 | -0.4792 | -0.4831 | -0.7113 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Opto First, FET Catch: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Opto First, FET Catch: FET peak GR | 3.783 | 3.665 | 3.819 | 3.656 | 4.427 | 4.242 | 4.528 | 4.756 | 4.537 | 4.503 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Opto First, FET Catch: opto average GR | 3.756 | 3.966 | 3.747 | 3.949 | 3.696 | 3.831 | 3.716 | 3.863 | 3.651 | 3.745 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: New York Parallel: output vs input loudness | 0.0287 | -0.0733 | 0.0082 | -0.0917 | 0.0091 | -0.0687 | -0.0155 | -0.1011 | -0.0278 | -0.0858 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Opto First, FET Catch: FET peak GR | 3.667 | 3.649 | 3.762 | 3.594 | 4.393 | 4.155 | 4.459 | 4.753 | 4.357 | 4.357 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Opto First, FET Catch: opto average GR | 3.939 | 4.126 | 3.937 | 4.109 | 3.940 | 4.041 | 3.957 | 4.066 | 3.909 | 4.004 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: New York Parallel: output vs input loudness | -0.0452 | -0.1300 | -0.0671 | -0.1410 | -0.1022 | -0.1674 | -0.1351 | -0.2014 | -0.1556 | -0.2169 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: New York Parallel: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: New York Parallel: FET peak GR | 13.638 | 14.227 | 14.211 | 14.211 | 14.787 | 14.787 | 14.887 | 15.491 | 14.750 | 14.999 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: New York Parallel: opto average GR | 1.630 | 1.542 | 1.574 | 1.480 | 1.316 | 1.191 | 1.284 | 1.141 | 0.9730 | 0.8532 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Upfront Hip-Hop: output vs input loudness | 0.1828 | -0.1221 | 0.1222 | -0.1634 | 0.0613 | -0.1705 | -0.0220 | -0.2611 | -0.1055 | -0.2725 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: New York Parallel: opto average GR | 1.494 | 1.431 | 1.442 | 1.358 | 1.172 | 1.095 | 1.169 | 1.061 | 0.8573 | 0.7638 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Upfront Hip-Hop: output vs input loudness | -0.1761 | -0.4309 | -0.2551 | -0.4757 | -0.4242 | -0.6102 | -0.5075 | -0.6937 | -0.6190 | -0.7945 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Upfront Hip-Hop: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Upfront Hip-Hop: FET peak GR | 7.409 | 7.891 | 7.877 | 7.877 | 8.349 | 8.349 | 8.431 | 8.924 | 8.318 | 8.522 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Upfront Hip-Hop: opto average GR | 3.051 | 3.030 | 3.021 | 2.985 | 2.885 | 2.813 | 2.873 | 2.785 | 2.681 | 2.599 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Ad-libs & Hype: output vs input loudness | 0.1054 | -0.2332 | 0.0747 | -0.2504 | -0.2121 | -0.4306 | -0.2836 | -0.5311 | -0.5358 | -0.7305 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Upfront Hip-Hop: opto average GR | 3.013 | 2.989 | 2.988 | 2.946 | 2.881 | 2.818 | 2.881 | 2.784 | 2.684 | 2.609 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Ad-libs & Hype: output vs input loudness | -0.2282 | -0.5132 | -0.2759 | -0.5211 | -0.6988 | -0.8817 | -0.8035 | -0.9796 | -1.116 | -1.327 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Ad-libs & Hype: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Ad-libs & Hype: FET peak GR | 10.682 | 11.192 | 10.969 | 10.969 | 12.031 | 12.031 | 11.127 | 11.874 | 11.371 | 11.528 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Ad-libs & Hype: opto average GR | 4.145 | 4.049 | 4.064 | 3.989 | 4.047 | 3.924 | 4.022 | 3.857 | 3.926 | 3.779 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sibilance-Aware Leveling: output vs input loudness | 0.0674 | -0.1834 | -0.0408 | -0.2784 | -0.5214 | -0.7011 | -0.6432 | -0.8797 | -1.181 | -1.315 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Ad-libs & Hype: opto average GR | 3.958 | 3.876 | 3.907 | 3.828 | 3.850 | 3.778 | 3.895 | 3.725 | 3.804 | 3.672 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sibilance-Aware Leveling: output vs input loudness | 0.1230 | -0.1121 | 0.0176 | -0.1927 | -0.5247 | -0.6811 | -0.6437 | -0.8534 | -1.194 | -1.346 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sibilance-Aware Leveling: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sibilance-Aware Leveling: FET peak GR | 2.597 | 3.192 | 2.931 | 2.937 | 3.414 | 3.414 | 3.710 | 4.109 | 3.410 | 3.698 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sibilance-Aware Leveling: opto average GR | 3.926 | 3.951 | 3.922 | 3.962 | 4.264 | 4.232 | 4.291 | 4.243 | 4.539 | 4.500 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Transparent Peak Control: output vs input loudness | 0.5690 | 0.2909 | 0.4429 | 0.1693 | 0.3056 | 0.0443 | 0.2076 | -0.1168 | -0.0960 | -0.3078 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sibilance-Aware Leveling: FET peak GR | 2.598 | 3.192 | 2.935 | 2.938 | 3.414 | 3.419 | 3.710 | 4.109 | 3.410 | 3.698 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sibilance-Aware Leveling: opto average GR | 3.964 | 3.977 | 3.943 | 3.979 | 4.371 | 4.299 | 4.384 | 4.279 | 4.636 | 4.609 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Transparent Peak Control: output vs input loudness | 0.1904 | -0.0738 | 0.0645 | -0.1676 | -0.1152 | -0.3520 | -0.2182 | -0.5397 | -0.5439 | -0.7624 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Transparent Peak Control: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Transparent Peak Control: FET peak GR | 5.507 | 6.129 | 5.849 | 5.851 | 6.306 | 6.307 | 6.607 | 7.018 | 6.340 | 6.622 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Transparent Peak Control: FET peak GR | 5.510 | 6.129 | 5.850 | 5.852 | 6.308 | 6.312 | 6.607 | 7.018 | 6.340 | 6.625 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Transparent Peak Control: opto average GR | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sung Hook: output vs input loudness | 0.3233 | 0.0061 | 0.2571 | -0.0509 | 0.2472 | 0.0137 | 0.1750 | -0.1030 | 0.1256 | -0.0363 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sung Hook: output vs input loudness | 0.0607 | -0.2308 | -0.0032 | -0.2676 | -0.0879 | -0.2902 | -0.1479 | -0.3960 | -0.2155 | -0.3880 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sung Hook: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sung Hook: FET peak GR | 3.720 | 4.317 | 4.055 | 4.062 | 4.539 | 4.539 | 4.835 | 5.234 | 4.535 | 4.823 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sung Hook: opto average GR | 5.027 | 5.072 | 4.974 | 5.045 | 4.871 | 4.859 | 4.846 | 4.800 | 4.617 | 4.585 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lo-fi Grit (All): output vs input loudness | -0.0385 | -0.2610 | -0.0116 | -0.2358 | -0.1218 | -0.2722 | -0.1458 | -0.3128 | -0.1882 | -0.3374 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sung Hook: FET peak GR | 3.723 | 4.317 | 4.060 | 4.062 | 4.539 | 4.545 | 4.835 | 5.234 | 4.535 | 4.824 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Sung Hook: opto average GR | 5.033 | 5.071 | 4.961 | 5.029 | 4.963 | 4.910 | 4.914 | 4.814 | 4.702 | 4.680 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lo-fi Grit (All): output vs input loudness | -0.1546 | -0.3546 | -0.1364 | -0.3216 | -0.3067 | -0.4450 | -0.3576 | -0.4812 | -0.4418 | -0.5962 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lo-fi Grit (All): output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lo-fi Grit (All): FET peak GR | 14.871 | 15.605 | 14.814 | 14.814 | 16.506 | 16.506 | 15.098 | 15.667 | 15.634 | 15.634 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lo-fi Grit (All): opto average GR | 2.187 | 2.045 | 2.041 | 1.936 | 1.811 | 1.689 | 1.750 | 1.610 | 1.439 | 1.295 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Broadcast Voice: output vs input loudness | 0.0821 | -0.2309 | 0.0063 | -0.2937 | 0.0187 | -0.2211 | -0.0615 | -0.3444 | -0.0939 | -0.2680 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lo-fi Grit (All): opto average GR | 1.863 | 1.745 | 1.758 | 1.664 | 1.426 | 1.386 | 1.439 | 1.304 | 1.143 | 1.012 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Broadcast Voice: output vs input loudness | -0.2214 | -0.5175 | -0.3015 | -0.5667 | -0.4013 | -0.6043 | -0.4715 | -0.7198 | -0.5438 | -0.7176 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Broadcast Voice: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Broadcast Voice: FET peak GR | 5.651 | 6.275 | 6.119 | 6.120 | 6.599 | 6.599 | 6.892 | 7.411 | 6.651 | 6.934 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Broadcast Voice: opto average GR | 5.125 | 5.127 | 5.085 | 5.072 | 4.913 | 4.859 | 4.894 | 4.817 | 4.610 | 4.551 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Broadcast Voice: opto average GR | 5.030 | 5.026 | 4.985 | 4.975 | 4.899 | 4.815 | 4.863 | 4.738 | 4.595 | 4.526 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Mix Bus: Glue: output vs input loudness | 0.0614 | 0.0056 | 0.0154 | -0.0541 | -0.0242 | -0.0690 | -0.0273 | -0.0867 | -0.0755 | -0.1132 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Mix Bus: Glue: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Mix Bus: Glue: FET peak GR | 1.922 | 1.926 | 1.846 | 2.021 | 1.808 | 1.810 | 2.359 | 2.361 | 2.038 | 2.053 |
@@ -472,10 +489,10 @@ Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are mea
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Mix Bus: Mid/Side Glue: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Mix Bus: Mid/Side Glue: FET peak GR | 3.072 | 2.986 | 3.310 | 3.176 | 3.356 | 3.212 | 3.569 | 3.429 | 3.511 | 3.494 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Mix Bus: Mid/Side Glue: opto average GR | 1.793 | 1.841 | 1.775 | 1.822 | 1.760 | 1.841 | 1.740 | 1.809 | 1.741 | 1.825 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lookahead Peak Control: output vs input loudness | -0.2172 | -0.5293 | -0.3050 | -0.5931 | -0.2372 | -0.4798 | -0.3386 | -0.6355 | -0.3469 | -0.5113 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lookahead Peak Control: output vs input loudness | -0.5372 | -0.8420 | -0.6338 | -0.8975 | -0.6708 | -0.8818 | -0.7514 | -1.018 | -0.7987 | -0.9668 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lookahead Peak Control: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lookahead Peak Control: FET peak GR | 7.403 | 8.026 | 7.871 | 7.871 | 8.351 | 8.351 | 8.644 | 9.000 | 8.403 | 8.686 |
-| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lookahead Peak Control: opto average GR | 2.734 | 2.723 | 2.684 | 2.662 | 2.477 | 2.421 | 2.458 | 2.385 | 2.154 | 2.099 |
+| P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Vocal: Lookahead Peak Control: opto average GR | 2.517 | 2.532 | 2.467 | 2.487 | 2.330 | 2.277 | 2.287 | 2.181 | 1.981 | 1.931 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Drum Bus: Boom Bap Smash: output vs input loudness | -0.1719 | -0.2205 | -0.1871 | -0.2371 | -0.2168 | -0.2631 | -0.2243 | -0.2727 | -0.2619 | -0.3025 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Drum Bus: Boom Bap Smash: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | P Factory presets (vocal -18 dBFS RMS / mix -14 dBFS RMS): Drum Bus: Boom Bap Smash: FET peak GR | 14.677 | 14.952 | 14.989 | 15.272 | 14.982 | 15.090 | 15.450 | 15.450 | 15.284 | 15.284 |
@@ -539,6 +556,23 @@ Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are mea
 | V 2.0 features: all 2.0 features: block 512 vs 37 (difference) | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 |
 | V 2.0 features: all 2.0 features: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | V 2.0 features: all 2.0 features: heap allocations inside process() | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| V11 Voice hold (3.0): factory presets: VOICE HOLD on exactly for the vocal presets and Init | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| V11 Voice hold (3.0): engine default: VOICE HOLD off (the 2.x path; the plugin turns it on for new instances) | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| V11 Voice hold (3.0): FET: gain reduction on the loud tone | 17.257 | 17.257 | 17.264 | 17.264 | 17.271 | 17.271 | 17.279 | 17.279 | 17.308 | 17.308 |
+| V11 Voice hold (3.0): FET without pause: share of the GR left 0.4 s after the drop (released) | 0.0994 | 0.0994 | 0.0993 | 0.0993 | 0.0996 | 0.0996 | 0.0995 | 0.0995 | 0.0995 | 0.0995 |
+| V11 Voice hold (3.0): FET in a pause: gain reduction re the voice's (held) | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| V11 Voice hold (3.0): opto: gain reduction on the loud tone | 21.333 | 21.333 | 21.333 | 21.333 | 21.335 | 21.335 | 21.335 | 21.335 | 21.333 | 21.333 |
+| V11 Voice hold (3.0): opto in a pause: holds more than it would release | 14.471 | 14.471 | 14.474 | 14.474 | 14.462 | 14.462 | 14.465 | 14.465 | 14.464 | 14.464 |
+| V11 Voice hold (3.0): opto in a pause: gain reduction re the voice's (held) | 3.43e-05 | 3.43e-05 | 3.81e-05 | 3.81e-05 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| V11 Voice hold (3.0): pauses re voice, off: lift | 18.699 | 18.699 | 18.703 | 18.703 | 18.759 | 18.759 | 18.911 | 18.911 | 19.460 | 19.460 |
+| V11 Voice hold (3.0): pauses re voice, on: lift | 0.6557 | 0.6557 | 0.6681 | 0.6681 | 0.5698 | 0.5698 | 0.6067 | 0.6067 | 0.7449 | 0.7449 |
+| V11 Voice hold (3.0): VOICE HOLD lowers the pauses' lift by | 18.089 | 18.089 | 18.081 | 18.081 | 18.224 | 18.224 | 18.337 | 18.337 | 18.740 | 18.740 |
+| V11 Voice hold (3.0): VOICE HOLD: voice level unchanged | -0.0449 | -0.0449 | -0.0459 | -0.0459 | -0.0350 | -0.0350 | -0.0327 | -0.0327 | -0.0249 | -0.0249 |
+| V11 Voice hold (3.0): VOICE HOLD: latency unchanged | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| V11 Voice hold (3.0): drum loop: VOICE HOLD on vs off (peak difference; beat/bus presets turn it off) | -11.360 | -11.360 | -11.413 | -11.413 | -13.504 | -13.504 | -8.993 | -8.993 | -9.404 | -9.404 |
+| V11 Voice hold (3.0): VOICE HOLD: block 512 vs 37 (difference) | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 |
+| V11 Voice hold (3.0): VOICE HOLD: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| V11 Voice hold (3.0): VOICE HOLD: heap allocations inside process() | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
 | 9 Stereo identity: identical L/R in: differing output samples (defaults) | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 |
 | 9 Stereo identity: identical L/R in: differing samples (4x, link 0, All, auto makeup) | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 |
 | 9 Stereo identity: mono instance vs dual-mono stereo: max |diff| | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 |
@@ -550,12 +584,12 @@ Generated 2026-10-15 07:38 by `DuoDspTests` in 113.4 s. Stage ballistics are mea
 | V 2.0 features: Mid/Side, link 0: loud side compressed by | - | 8.993 | - | 9.000 | - | 9.005 | - | 9.014 | - | 9.043 |
 | O Oversampling filters: 2x decimator (stopband from base Nyquist): stopband peak | - | - | - | - | -100.2 | -100.2 | -100.2 | -100.2 | -100.2 | -100.2 |
 | O Oversampling filters: 2x decimator (stopband from base Nyquist): passband ripple | - | - | - | - | 0.000101 | 0.000101 | 0.000101 | 0.000101 | 0.000101 | 0.000101 |
-| 10 CPU: 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | - | - | - | 1.765 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 2x: real-time factor | - | - | - | 56.669 | - | - | - | - | - | - |
-| 10 CPU: silence after program (denormal safety): CPU silence / CPU program | - | - | - | 0.7934 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 1x: CPU of one core | - | - | - | 1.153 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 4x: CPU of one core | - | - | - | 2.996 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | - | - | - | 6.135 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 44.100 kHz: CPU of one core | - | - | - | 1.620 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 96.000 kHz: CPU of one core | - | - | - | 3.492 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 192.0 kHz: CPU of one core | - | - | - | 7.003 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | - | - | - | 1.820 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 2x: real-time factor | - | - | - | 54.947 | - | - | - | - | - | - |
+| 10 CPU: silence after program (denormal safety): CPU silence / CPU program | - | - | - | 0.7985 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 1x: CPU of one core | - | - | - | 1.180 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x: CPU of one core | - | - | - | 3.083 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | - | - | - | 6.197 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 44.100 kHz: CPU of one core | - | - | - | 1.669 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 96.000 kHz: CPU of one core | - | - | - | 3.593 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 192.0 kHz: CPU of one core | - | - | - | 7.237 | - | - | - | - | - | - |

@@ -1,4 +1,6 @@
 #include "PluginEditor.h"
+
+#include <axell/gui/BrandTitle.h>
 #include "BinaryData.h"
 
 #include <cstring>
@@ -90,6 +92,10 @@ const char* look = "Compressor lookahead (0-10 ms): both stages see transients b
                    "(no overshoot). 0 = classic behaviour. Adds latency (compensated by the DAW).";
 const char* listen = "Hear what the compressors listen to (the side-chain after its filters and EMPHASIS; the external input "
                      "when a stage uses EXT). Use it to set the filters, then turn it off!";
+const char* voiceHold = "VOICE HOLD: in the pauses of the voice (the suite's shared voice detector, Axell Gate's) the gain "
+                        "reduction holds at the level of your voice instead of releasing - so the compressor no longer lifts "
+                        "the room, the breaths and the headphone bleed between phrases (measured: +23 dB of lift down to "
+                        "+5 dB). Your voice is compressed exactly as before.";
 const char* autoGain = "Slowly (2 s) adds back the average gain reduction so your vocal keeps its loudness while you tweak. "
                        "Off = set the makeup yourself.";
 const char* scHpf = "Stops low end (plosives, 808 bleed, mic bumps) from triggering both compressors. "
@@ -659,6 +665,7 @@ DuoCompEditor::DuoCompEditor (DuoCompProcessor& p)
       oversampling (p.apvts, "os", { "1x", "2x", "4x" }, col::global, tip::os),
       chMode (p.apvts, "chMode", { "STEREO", "MID-SIDE" }, col::global, tip::chMode),
       autoGain (p.apvts, "autoGain", "AUTO MAKEUP", col::global, "pill", tip::autoGain),
+      voiceHold (p.apvts, "voiceHold", "VOICE HOLD", col::global, "pill", tip::voiceHold),
       look (p.apvts, "look", "LOOKAHEAD", col::global, tip::look),
       color (p.apvts, "color", "COLOR", col::global, tip::color),
       link (p.apvts, "link", "LINK", col::global, tip::link),
@@ -677,7 +684,7 @@ DuoCompEditor::DuoCompEditor (DuoCompProcessor& p)
              &optoOn, &optoMode, &optoModel, &optoKey, &optoPR, &optoGain, &optoEmph, &optoThr, &optoKnee, &optoRange, &optoHold, &optoMeter,
              &limOn, &limCeil, &limRel, &limLook, &limMeter,
              &scListen, &scHpf, &scLpf, &scBellF, &scBellG, &scBellQ,
-             &order, &oversampling, &chMode, &autoGain, &look, &color, &link, &mix, &out, &inMeter, &outMeter,
+             &order, &oversampling, &chMode, &autoGain, &voiceHold, &look, &color, &link, &mix, &out, &inMeter, &outMeter,
              &graph, &transfer, &compare })
         content.addAndMakeVisible (c);
 
@@ -863,6 +870,7 @@ void DuoCompEditor::layout()
         auto g = globalArea.reduced (16, 0);
         autoGain.setBounds (g.getRight() - 140, g.getY() + 10, 140, 26);
         makeupArea = { g.getRight() - 300, g.getY() + 10, 152, 26 };
+        voiceHold.setBounds (g.getRight() - 300 - 8 - 130, g.getY() + 10, 130, 26);
         g = g.withTrimmedTop (48).withTrimmedBottom (10);
         auto left = g.removeFromLeft (232);
         left = left.withSizeKeepingCentre (left.getWidth(), 3 * (15 + 28) + 2 * 10);
@@ -889,20 +897,19 @@ void DuoCompEditor::Content::paint (juce::Graphics& g)
     // header
     g.setColour (col::header);
     g.fillRect (e.headerArea);
-    g.setColour (Colour (0xff23272e));
-    g.drawHorizontalLine (e.headerArea.getBottom() - 1, 0.0f, (float) kWidth);
-    g.setColour (col::text);
-    g.setFont (caps (21.0f, 2));
-    g.drawText ("AXELL DUO COMPRESSOR", 18, 8, 380, 26, Justification::centredLeft);
+    axell::brand::drawHeaderRule (g, (float) e.headerArea.getBottom() - 1.0f, 0.0f, (float) kWidth, col::grid);
+    // Axell's Dojo: the family emblem, its wave and dot in this plugin's colour
+    axell::brand::drawEmblem (g, { 12.0f, 6.0f, 46.0f, 46.0f }, juce::Colour (0xfff08a3c));
+    axell::brand::drawTitle (g, 68.0f, 28.0f, "Duo Compressor", juce::String (juce::CharPointer_UTF8 ("\xe5\x8f\x8c"))); // 双
     {
         const auto f = caps (10.0f, 1);
         g.setFont (f);
-        float x = 19.0f;
+        float x = 67.0f;
         auto word = [&] (const String& t, Colour c, float gapAfter)
         {
             g.setColour (c);
             const float w = GlyphArrangement::getStringWidth (f, t);
-            g.drawText (t, Rectangle<float> (x, 33.0f, w + 2.0f, 14.0f), Justification::centredLeft);
+            g.drawText (t, Rectangle<float> (x, 37.0f, w + 2.0f, 14.0f), Justification::centredLeft);
             x += w + gapAfter;
         };
         word ("FET", col::fet, 6.0f);

@@ -12,12 +12,15 @@ juce::Font font (float height, int weight = 0); // 0 regular, 1 semibold, 2 bold
 
 namespace col
 {
-const juce::Colour bg       (0xff121418);
-const juce::Colour header   (0xff171a1f);
-const juce::Colour panel    (0xff1c1f25);
-const juce::Colour panelTop (0xff21252c);
-const juce::Colour well     (0xff0d0f12);
-const juce::Colour track    (0xff2b2f37);
+// 3.0: this plugin's own ground - the surfaces take its hue (15 deg); text, meters and accents stay the family's
+inline juce::Colour themed (float sat, float val) { return juce::Colour::fromHSV (15.0f / 360.0f, sat, val, 1.0f); }
+const juce::Colour bg       = themed (0.62f, 0.115f);
+const juce::Colour header   = themed (0.58f, 0.135f);
+const juce::Colour panel    = themed (0.46f, 0.165f);
+const juce::Colour panelTop = themed (0.42f, 0.195f);
+const juce::Colour well     = themed (0.66f, 0.072f);
+const juce::Colour track    = themed (0.30f, 0.255f);
+const juce::Colour grid     = themed (0.38f, 0.215f);
 const juce::Colour text     (0xffe7e9ee);
 const juce::Colour dim      (0xff8d939e);
 const juce::Colour faint    (0xff5b616c);
@@ -229,7 +232,7 @@ private:
 
     // global
     Segmented order, oversampling, chMode;
-    DuoToggle autoGain;
+    DuoToggle autoGain, voiceHold;
     DuoKnob look, color, link, mix, out;
 
     LevelMeter inMeter { "IN", true }, outMeter { "OUT", false };

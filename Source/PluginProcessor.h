@@ -103,6 +103,7 @@ private:
     std::atomic<float>* pLink = nullptr;    std::atomic<float>* pEmph = nullptr;
     std::atomic<float>* pOs = nullptr;      std::atomic<float>* pListen = nullptr;
     std::atomic<float>* pAuto = nullptr;
+    std::atomic<float>* pVoiceHold = nullptr;
     // v3 parameters
     enum class V3 { fetThr, fetKnee, fetRange, fetHold, fetDet, fetKey, optoThr, optoKnee, optoRange, optoHold, optoKey,
                     scLpf, scBellF, scBellG, scBellQ, look, limOn, limCeil, limRel, limLook, chMode, optoModel, compare, count };

@@ -6,7 +6,7 @@ PASS  1.0.0 session compatibility: 'defaults @2x' renders like Duo Vocal Comp 1.
 PASS  1.0.0 session compatibility: 'rap lead-like' renders like Duo Vocal Comp 1.0.0: max |difference| 0, latency 71 / 71
 PASS  1.0.0 session compatibility: 'all-buttons parallel, opto first, 1x' renders like Duo Vocal Comp 1.0.0: max |difference| 0, latency 0 / 0
 PASS  1.0.0 session compatibility: '4x, 20:1, opto off' renders like Duo Vocal Comp 1.0.0: max |difference| 0, latency 79 / 79
-PASS  Clean detector, 30 Hz, 20 us / 50 ms, 4:1, ~6 dB GR: THD+N: Clean -142.2 dB (Vintage -43.5 dB)
+PASS  Clean detector, 30 Hz, 20 us / 50 ms, 4:1, ~6 dB GR: THD+N: Clean -142.2 dB (Vintage -50.4 dB)
 PASS  Clean detector, 100 Hz, 20 us / 50 ms, 4:1, ~6 dB GR: THD+N: Clean -143.4 dB (Vintage -46.4 dB)
 PASS  4x (default): worst non-harmonic component, 15 kHz -3 dBFS, 20:1 +24 dB, Color 100: -152.5 dBFS
 PASS  limiter -1 dBTP, drums +12 dB, 44100 Hz, content <= 0.47 fs: no sample and no true peak above the ceiling: sample peak -1.051 dBFS, true peak -1.048 dBTP (ideal reconstruction)
@@ -18,11 +18,11 @@ PASS  limiter -1 dBTP, drums +12 dB, 48000 Hz, full band, 1x (no oversampling fi
 PASS  lookahead 2 ms: reported latency = 4x latency + 2 ms: 175 = 79 + 96
 PASS  lookahead 5 ms: reported latency = 4x latency + 5 ms: 319 = 79 + 240
 PASS  lookahead 2 ms: onset overshoot of a 20:1 / 800 us FET reduced by > 10 dB: overshoot 23.4 dB -> 1.3 dB (5 ms: 0.0 dB)
-PASS  external key: loud key on the side-chain bus ducks the track: track -24.00 dBFS with a quiet key, -34.64 dBFS with a loud key
+PASS  external key: loud key on the side-chain bus ducks the track: track -24.00 dBFS with a quiet key, -34.66 dBFS with a loud key
 PASS  internal key: the side-chain bus is ignored: -24.00 vs -24.00 dBFS
 PASS  Mid/Side on identical channels = stereo mode: max |difference| 0
 PASS  Mid/Side, link 0: loud side compressed, quiet mid untouched: mid gain +0.00 dB, side gain -9.00 dB (re +6 dB FET input)
-PASS  live latency changes (lookahead, limiter, oversampling): output always aligned with the host's compensation: 8 host latency updates [0, 79, 136, 215, 223, 359, 439], misaligned 16-sample windows 0, audible 75 %
+PASS  live latency changes (lookahead, limiter, oversampling): output always aligned with the host's compensation: 8 host latency updates [0, 79, 136, 215, 223, 359, 439], misaligned 16-sample windows 0, audible 77 %
 PASS  every 2.0 feature on: fixed vs random host block sizes (1..4096): max |difference| 0
 
 AUDIT: 26/26 pass

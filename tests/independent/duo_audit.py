@@ -68,12 +68,13 @@ if os.path.isdir(V1):
     }
     sig = lowpassed(noise(fs * 4, 2, 9, 0.6), fs, 6000) * np.repeat(
         (0.2 + 0.8 * np.abs(np.sin(2 * np.pi * 1.7 * np.arange(fs * 4) / fs)))[:, None], 2, 1)
-    # a 1.x project stores every 1.x value and loads with Opto Model = Classic (state restore: plugin suite); on a
-    # fresh 2.0 instance that means: Peak Reduction as the 1.x default unless set, Opto Model Classic
+    # a 1.x project stores every 1.x value and loads with Opto Model = Classic and (3.0) VOICE HOLD off (state restore:
+    # plugin suite); on a fresh instance that means: Peak Reduction as the 1.x default unless set, Opto Model Classic,
+    # Voice Hold off
     for s_ in cases.values():
         s_.setdefault("Opto Peak Reduction", "30")
     r1 = [Run(f"v1_{i}", fs, sets=s) for i, s in enumerate(cases.values())]
-    r2 = [Run(f"v2_{i}", fs, sets={**s, "Opto Model": "Classic"}) for i, s in enumerate(cases.values())]
+    r2 = [Run(f"v2_{i}", fs, sets={**s, "Opto Model": "Classic", "Voice Hold": "Off"}) for i, s in enumerate(cases.values())]
     o1 = run_all(r1, {r.name: sig for r in r1}, jobname="v1", plugin=V1)
     o2 = run_all(r2, {r.name: sig for r in r2}, jobname="v2")
     for i, k in enumerate(cases):

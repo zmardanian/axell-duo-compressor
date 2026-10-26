@@ -246,3 +246,24 @@ crossfaded in 10 ms. Louder is judged better; compare removes that bias (DSP sui
 The engine pushes one frame per 5 ms (input and output peak, GR per stage) into a lock-free single-producer /
 single-consumer ring; the GUI drains it at 30 Hz. The transfer curve is computed in the GUI from the stages' own static
 curve functions (`staticGainReductionDb`) on GUI-owned stage objects - no shared state with the audio thread.
+
+## D31. VOICE HOLD (3.0)
+Problem: a compressor releases in every pause, so with 10-15 dB of gain reduction the room, breaths and headphone bleed
+between phrases come up by the same amount (measured on a real gated rap take: pauses +23.4 dB against the voice).
+A gate in front cannot fix it (its range is finite and it opens late on word starts). Solution: the Axell suite's voice
+decision (Axell Gate 2.0's network, room veto and voice/pause model, in axell-core, bit-identical to Gate's, causal
+with a 10 ms decision delay) marks pauses; in a pause the FET's release stops and its gain reduction glides (12.5 ms)
+to the voice's recent average (0.25 s), the opto's fast part does the same and its slow memory only holds (gliding it
+too carried the pause into the next phrase: +1 dB of level spread on the voice, measured). Result on the take: pauses
++5.9 dB, voice gain reduction unchanged. A pause counts only within 10 s of a voice (a long instrumental part
+releases normally). Limits: the voice network never saw drums and calls a drum loop 78 % voice, so VOICE HOLD is a
+vocal feature - the beat, bus, master and ducking presets turn it off. The 10 ms delay means the first 10 ms of a word
+start under the held (average) gain reduction instead of the released one, which is the point. Off in states saved
+before 3.0 (upgradeLegacyState).
+
+## D32. Axell's Dojo look (3.0)
+Shared with every Axell plugin through axell-core: the family emblem, the gold header rule, the title in Yuji Syuku
+(a brush-written face, SIL OFL 1.1, subset to 52 KB and embedded) with the plugin's hanko seal (双, "pair"), and the
+plugin's own ground - every surface colour derived from one hue (Duo: 15 degrees, ember). Text, meters and stage
+colours are unchanged, so every reading keeps its contrast.
+

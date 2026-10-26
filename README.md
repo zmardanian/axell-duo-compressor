@@ -33,6 +33,12 @@ to 0.48 fs (21 kHz at 44.1 kHz) - see [the limiter's limits](#the-limiters-limit
 Mid/Side, compressor lookahead 0-10 ms (catches transients before they arrive: 23 dB of onset overshoot down to
 1.3 dB with 2 ms), Color (analog-style harmonics), stereo link, parallel Mix (sample-aligned), output, auto makeup.
 
+**VOICE HOLD** (3.0): in the pauses of your voice the compressor holds its gain at your voice's level instead of
+releasing, so the room, breaths and headphone bleed between phrases are not pulled up (real take: pauses +23.4 dB
+against the voice without it, +5.9 dB with it, your voice compressed exactly the same). It uses Axell Gate's voice
+detector, adds no latency, and is on for new instances and the vocal presets. Turn it off on drums, beats and buses
+(their presets do): the detector is trained on voices and takes drum hits for one.
+
 **DISPLAY**: a 5-second history of input and output level with each stage's gain reduction, a transfer curve of the
 whole chain at the current settings, and **COMPARE**: hear your unprocessed track at exactly the processed track's
 loudness, so you judge what the compression does and not the level change.
@@ -113,6 +119,8 @@ JUCE 8.0.15 (fetched by CMake). The DSP lives in JUCE-free headers (`Source/Dsp.
 and is tested with plain g++.
 
 ## Credits
+VOICE HOLD's voice detector (Axell Gate 2.0's, in axell-core) is trained on CMU ARCTIC and the CSTR VCTK Corpus 0.92
+(CC BY 4.0); see THIRD_PARTY_NOTICES.md. Title face: Yuji Syuku (SIL OFL 1.1).
 Validation data: SignalTrain LA-2A dataset (Hawley, Colburn, Mimilakis; Zenodo 3824876, CC BY 4.0); 1176LN recordings
 of Martínez Ramírez, Benetos and Reiss (Applied Sciences 10(2) 638, 2020; Zenodo 3562442, CC BY 4.0). Product names
 are used only to identify the hardware the stages are modelled on and validated against; no code, data, graphics or

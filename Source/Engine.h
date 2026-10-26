@@ -16,6 +16,8 @@
 #include "Dsp.h"
 #include "Oversampling.h"
 
+#include <axell/dsp/VoicePresence.h>   // 3.0: the suite's shared voice decision (Axell Gate's), for VOICE HOLD
+
 #include <algorithm>
 #include <array>
 #include <atomic>
@@ -59,6 +61,7 @@ struct Params
     bool  compare = false;                      // level-matched compare: dry, loudness-matched to the processed signal
     bool  optoMeasured = false;                 // opto law calibrated on hardware recordings (plugin default for new instances)
     bool  fetMeasured = false;                  // FET ALL law calibrated on hardware recordings (plugin default for new instances)
+    bool  voiceHold = false;                    // 3.0: hold the gain through the voice's pauses (plugin default for new instances)
     FetStage::Settings::AllModel fetAll {};     // the Classic ALL law; validation tools override its fields
     OptoStage::Settings::Model optoModel {};    // the Classic (1.x) law; validation tools override its fields
 };
@@ -202,6 +205,9 @@ public:
         osKey.prepare (kChunk, fs);
         fet.prepare (fs);
         opto.prepare (fs);
+        voice.prepare (fs);
+        pauseSpan = (int) (10.0 * fs);
+        sinceVoice = pauseSpan;
         maxLa = (int) std::ceil (kMaxLookaheadMs * 0.001 * fs);
         maxLimLook = (int) std::ceil (kMaxLimLookMs * 0.001 * fs);
         lim.prepare (fs, maxLimLook);
@@ -263,6 +269,8 @@ public:
         osKey.reset();
         fet.resetState();
         opto.resetState();
+        voice.reset();
+        sinceVoice = pauseSpan;
         lim.resetState();
         for (auto& r : dryRing)
             std::fill (r.begin(), r.end(), 0.0f);
@@ -535,6 +543,27 @@ private:
             }
         }
 
+        // 0b. 3.0 VOICE HOLD: the shared voice decision (causal, ~10 ms behind) on the input, per base-rate sample
+        if (params.voiceHold)
+        {
+            for (int i = 0; i < n; ++i)
+            {
+                float m = 0.0f;
+                for (int c = 0; c < nCh; ++c)
+                    m += io[c][i];
+                voice.push (m / (float) nCh);
+                // a pause is a pause of a voice: only within 10 s of the last voice (drums, a bus or a long
+                // instrumental part never had one - they play exactly as without VOICE HOLD)
+                if (voice.voice())
+                    sinceVoice = 0;
+                else if (sinceVoice < pauseSpan)
+                    ++sinceVoice;
+                pauseBase[(size_t) i] = (! voice.voice() && sinceVoice < pauseSpan) ? 1 : 0;
+            }
+        }
+        else
+            pauseBase.fill (0);
+
         // 1. structural changes
         control (n);
 
@@ -567,6 +596,11 @@ private:
         {
             for (int c = 0; c < nCh; ++c)
                 x[c] = hi[c][s];
+            {
+                const bool pz = pauseBase[(size_t) (s >> log2)] != 0;
+                fet.setPause (pz);
+                opto.setPause (pz);
+            }
 
             float fg = 0.0f, og = 0.0f;
             if (! split)
@@ -802,6 +836,9 @@ private:
     int numCh = 2, maxBlock = 0;
     Params params;
     Oversampler os, osKey;
+    axell::voice::VoicePresence voice;
+    std::array<uint8_t, kChunk> pauseBase {};
+    int pauseSpan = 441000, sinceVoice = 441000;
     FetStage fet;
     OptoStage opto;
     TruePeakLimiter lim;
