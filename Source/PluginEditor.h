@@ -232,7 +232,7 @@ private:
 
     // global
     Segmented order, oversampling, chMode;
-    DuoToggle autoGain, voiceHold;
+    DuoToggle autoGain, voiceHold, essHold;
     DuoKnob look, color, link, mix, out;
 
     LevelMeter inMeter { "IN", true }, outMeter { "OUT", false };

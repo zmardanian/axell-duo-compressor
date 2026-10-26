@@ -75,15 +75,17 @@ int main()
                                          "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel", "compare" };
         // Axell Duo Compressor 3.0
         const juce::StringArray added4 { "voiceHold" };
+        // Axell Duo Compressor 4.0
+        const juce::StringArray added5 { "essHold" };
         auto& params = p.getParameters();
-        const int total = frozen.size() + added.size() + added3.size() + added4.size();
-        check (params.size() == total, "parameter count = 44 (15 frozen + 5 v2 + 23 v3 + 1 v4)");
+        const int total = frozen.size() + added.size() + added3.size() + added4.size() + added5.size();
+        check (params.size() == total, "parameter count = 45 (15 frozen + 5 v2 + 23 v3 + 1 v4 + 1 v5)");
         for (int i = 0; i < params.size() && i < total; ++i)
         {
             auto* wp = dynamic_cast<juce::AudioProcessorParameterWithID*> (params[i]);
-            const int nf = frozen.size(), n2 = nf + added.size(), n3 = n2 + added3.size();
-            const auto expected = i < nf ? frozen[i] : i < n2 ? added[i - nf] : i < n3 ? added3[i - n2] : added4[i - n3];
-            const int hint = i < nf ? 1 : i < n2 ? 2 : i < n3 ? 3 : 4;
+            const int nf = frozen.size(), n2 = nf + added.size(), n3 = n2 + added3.size(), n4 = n3 + added4.size();
+            const auto expected = i < nf ? frozen[i] : i < n2 ? added[i - nf] : i < n3 ? added3[i - n2] : i < n4 ? added4[i - n3] : added5[i - n4];
+            const int hint = i < nf ? 1 : i < n2 ? 2 : i < n3 ? 3 : i < n4 ? 4 : 5;
             check (wp != nullptr && wp->getParameterID() == expected,
                    "parameter index " + juce::String (i) + " is '" + expected + "'");
             if (wp != nullptr)
@@ -206,6 +208,7 @@ int main()
                "draft-format project: 2.0 parameters at their 1.x-equivalent defaults");
         check (v ("optoModel") < 0.5f, "draft-format project: opto model Classic (the law it was made with)");
         check (v ("voiceHold") < 0.5f, "draft-format project: VOICE HOLD off (it played without it)");
+        check (v ("essHold") < 0.5f, "draft-format project: ESS HOLD off (it played without it)");
     }
 
     //== 3b. a project saved by Duo Vocal Comp 1.0.0 (20 parameters, the os value saved) keeps its oversampling
@@ -223,7 +226,7 @@ int main()
                                           || id.endsWith ("Hold") || id.endsWith ("Det") || id.endsWith ("Key")))
                 xml->removeChildElement (e, true);
             else if (juce::StringArray { "optoThr", "optoKnee", "optoRange", "optoHold", "optoKey", "scLpf", "scBellF", "scBellG",
-                                         "scBellQ", "look", "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel", "voiceHold" }.contains (id))
+                                         "scBellQ", "look", "limOn", "limCeil", "limRel", "limLook", "chMode", "optoModel", "voiceHold", "essHold" }.contains (id))
                 xml->removeChildElement (e, true);
             e = next;
         }
@@ -235,10 +238,12 @@ int main()
                "1.0.0-format project: saved 1x kept, 2.0 parameters at defaults");
         check (p.apvts.getRawParameterValue ("optoModel")->load() < 0.5f, "1.0.0-format project: opto model Classic");
         check (p.apvts.getRawParameterValue ("voiceHold")->load() < 0.5f, "1.0.0-format project: VOICE HOLD off");
+        check (p.apvts.getRawParameterValue ("essHold")->load() < 0.5f, "1.0.0-format project: ESS HOLD off");
         DuoCompProcessor fresh;
         check (fresh.apvts.getRawParameterValue ("optoModel")->load() > 0.5f, "new instance: opto model Measured");
         check (fresh.apvts.getRawParameterValue ("voiceHold")->load() > 0.5f && fresh.readParams().voiceHold,
                "new instance: VOICE HOLD on");
+        check (fresh.apvts.getRawParameterValue ("essHold")->load() > 0.5f && fresh.readParams().essHold, "new instance: ESS HOLD on");
         // a 2.x project (every parameter but voiceHold saved) loads with VOICE HOLD off, on any instance
         {
             DuoCompProcessor two;
@@ -256,6 +261,25 @@ int main()
             DuoCompProcessor q;
             q.setStateInformation (mb2.getData(), (int) mb2.getSize());
             check (q.apvts.getRawParameterValue ("voiceHold")->load() < 0.5f, "2.x project: VOICE HOLD off (it sounds as it did)");
+        }
+        // a 3.x project (every parameter but essHold saved, VOICE HOLD on) loads with ESS HOLD off and VOICE HOLD kept
+        {
+            DuoCompProcessor three;
+            juce::MemoryBlock st3;
+            three.getStateInformation (st3);
+            auto x3 = juce::AudioProcessor::getXmlFromBinary (st3.getData(), (int) st3.getSize());
+            for (auto* e = x3->getFirstChildElement(); e != nullptr; e = e->getNextElement())
+                if (e->getStringAttribute ("id") == "essHold")
+                {
+                    x3->removeChildElement (e, true);
+                    break;
+                }
+            juce::MemoryBlock mb3;
+            juce::AudioProcessor::copyXmlToBinary (*x3, mb3);
+            DuoCompProcessor q;
+            q.setStateInformation (mb3.getData(), (int) mb3.getSize());
+            check (q.apvts.getRawParameterValue ("essHold")->load() < 0.5f && q.apvts.getRawParameterValue ("voiceHold")->load() > 0.5f,
+                   "3.x project: ESS HOLD off, VOICE HOLD kept (it sounds as it did)");
         }
     }
 

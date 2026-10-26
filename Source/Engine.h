@@ -17,6 +17,7 @@
 #include "Oversampling.h"
 
 #include <axell/dsp/VoicePresence.h>   // 3.0: the suite's shared voice decision (Axell Gate's), for VOICE HOLD
+#include <axell/dsp/SibilanceDetector.h> // 4.0: the suite's sibilance network (Axell Velvet 3.0 LIVE, causal), for ESS HOLD
 
 #include <algorithm>
 #include <array>
@@ -62,6 +63,7 @@ struct Params
     bool  optoMeasured = false;                 // opto law calibrated on hardware recordings (plugin default for new instances)
     bool  fetMeasured = false;                  // FET ALL law calibrated on hardware recordings (plugin default for new instances)
     bool  voiceHold = false;                    // 3.0: hold the gain through the voice's pauses (plugin default for new instances)
+    bool  essHold = false;                      // 4.0: hold the gain through the voice's esses (plugin default for new instances)
     FetStage::Settings::AllModel fetAll {};     // the Classic ALL law; validation tools override its fields
     OptoStage::Settings::Model optoModel {};    // the Classic (1.x) law; validation tools override its fields
 };
@@ -206,6 +208,7 @@ public:
         fet.prepare (fs);
         opto.prepare (fs);
         voice.prepare (fs);
+        essDet.prepare (fs, axell::voice::DetectorConfig::live());
         pauseSpan = (int) (10.0 * fs);
         sinceVoice = pauseSpan;
         maxLa = (int) std::ceil (kMaxLookaheadMs * 0.001 * fs);
@@ -270,6 +273,8 @@ public:
         fet.resetState();
         opto.resetState();
         voice.reset();
+        essDet.reset();
+        essP = 0.0f;
         sinceVoice = pauseSpan;
         lim.resetState();
         for (auto& r : dryRing)
@@ -563,6 +568,30 @@ private:
         }
         else
             pauseBase.fill (0);
+        if (! params.essHold)
+            essBase.fill (0);
+
+        // 0c. 4.0 ESS HOLD: the suite's sibilance network (Velvet 3.0 LIVE, causal, its frame 6 ms behind) marks the
+        // voice's esses; through them the gain holds exactly as in a pause (see FetStage::setPause), so the release
+        // between a vowel and its ess does not lift the ess above the vowels. Never set: the 3.x path, bit for bit.
+        if (params.essHold && ! essLive)
+        {
+            essDet.reset();   // switched on: start from silence, not from where it stopped
+            essP = 0.0f;
+        }
+        essLive = params.essHold;
+        if (params.essHold)
+        {
+            for (int i = 0; i < n; ++i)
+            {
+                float m = 0.0f;
+                for (int c = 0; c < nCh; ++c)
+                    m += io[c][i];
+                if (essDet.push (m / (float) nCh))
+                    essP = essDet.out().p;
+                essBase[(size_t) i] = essP > kEssHoldP ? 1 : 0;   // the hop's decision (smoothing it held the gain into the next vowel)
+            }
+        }
 
         // 1. structural changes
         control (n);
@@ -600,6 +629,9 @@ private:
                 const bool pz = pauseBase[(size_t) (s >> log2)] != 0;
                 fet.setPause (pz);
                 opto.setPause (pz);
+                const bool ez = essBase[(size_t) (s >> log2)] != 0;
+                fet.setEss (ez);
+                opto.setEss (ez);
             }
 
             float fg = 0.0f, og = 0.0f;
@@ -837,7 +869,11 @@ private:
     Params params;
     Oversampler os, osKey;
     axell::voice::VoicePresence voice;
-    std::array<uint8_t, kChunk> pauseBase {};
+    axell::voice::SibilanceDetector essDet;
+    float essP = 0.0f;
+    bool essLive = false;
+    static constexpr float kEssHoldP = 0.5f;   // the sibilance probability that counts as an ess (DECISIONS D33)
+    std::array<uint8_t, kChunk> pauseBase {}, essBase {};
     int pauseSpan = 441000, sinceVoice = 441000;
     FetStage fet;
     OptoStage opto;

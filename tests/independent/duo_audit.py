@@ -15,6 +15,23 @@ def report(name, ok, detail):
 def noise(n, ch, seed=1, amp=0.25):
     return np.random.default_rng(seed).uniform(-amp, amp, (n, ch))
 
+def voice_like(fs, secs, seed=4):
+    """stereo test voice: 0.22 s vowels (harmonics of 120-160 Hz through two formants) and 0.1 s esses (noise around 7 kHz),
+    1.6 s phrases, 0.8 s pauses (written from scratch here, independent of the plugin's own test signals)"""
+    rng = np.random.default_rng(seed); n = int(secs * fs); t = np.arange(n) / fs
+    ph = (t % 2.4); syl = ph % 0.32; on = (ph > 0.2) & (ph < 1.8)
+    f0 = 140 + 20 * np.sin(2 * np.pi * 0.6 * t); phase = 2 * np.pi * np.cumsum(f0) / fs
+    v = np.zeros(n)
+    for h in range(1, 40):
+        f = h * f0; w = np.exp(-((f - 650) / 250) ** 2) + 0.6 * np.exp(-((f - 1150) / 300) ** 2) + 0.2 * np.exp(-((f - 2600) / 500) ** 2)
+        v += w * np.sin(h * phase) / np.sqrt(h)
+    b, a = sg.butter(4, [5500 / (fs / 2), 9000 / (fs / 2)], "band")
+    e = sg.lfilter(b, a, rng.standard_normal(n))
+    env_v = np.clip(np.minimum(syl, 0.22 - syl) / 0.015, 0, 1) * (syl < 0.22)
+    env_e = np.sin(np.pi * np.clip((syl - 0.22) / 0.1, 0, 1)) * (syl >= 0.22)
+    x = (0.12 * env_v * v + 0.35 * env_e * e) * on + 1e-4 * rng.standard_normal(n)
+    return np.repeat(x[:, None], 2, 1)
+
 def lowpassed(x, fs, fc):
     return sg.sosfiltfilt(sg.butter(12, fc, fs=fs, output="sos"), x, axis=0)
 
@@ -40,6 +57,8 @@ def db(a):
 OFF = {"FET On": "Off", "Opto On": "Off", "Color": "0"}
 V1 = os.environ.get("DUO_V1_VST3", os.path.expanduser(
     "~/duo-vocal-comp-release/DuoVocalComp-1.0.0-linux-x86_64/Duo Vocal Comp.vst3"))
+V3 = os.environ.get("DUO_V3_VST3", os.path.expanduser(
+    "~/axell-duo-compressor-release/AxellDuoCompressor-3.0.0-linux-x86_64/Axell Duo Compressor.vst3"))
 
 # ---------------------------------------------------------------- 1. silence, transparency, reported latency
 fs = 48000
@@ -74,7 +93,7 @@ if os.path.isdir(V1):
     for s_ in cases.values():
         s_.setdefault("Opto Peak Reduction", "30")
     r1 = [Run(f"v1_{i}", fs, sets=s) for i, s in enumerate(cases.values())]
-    r2 = [Run(f"v2_{i}", fs, sets={**s, "Opto Model": "Classic", "Voice Hold": "Off"}) for i, s in enumerate(cases.values())]
+    r2 = [Run(f"v2_{i}", fs, sets={**s, "Opto Model": "Classic", "Voice Hold": "Off", "Ess Hold": "Off"}) for i, s in enumerate(cases.values())]
     o1 = run_all(r1, {r.name: sig for r in r1}, jobname="v1", plugin=V1)
     o2 = run_all(r2, {r.name: sig for r in r2}, jobname="v2")
     for i, k in enumerate(cases):
@@ -83,6 +102,32 @@ if os.path.isdir(V1):
                d == 0.0 and r1[i].latency == r2[i].latency, f"max |difference| {d:.3g}, latency {r1[i].latency} / {r2[i].latency}")
 else:
     report("1.0.0 compatibility", False, f"v1 bundle not found at {V1}")
+
+# ---------------------------------------------------------------- 2b. 3.0.0 compatibility (4.0: ESS HOLD)
+# a 3.x project loads with ESS HOLD off (plugin suite), so with it off this build must render exactly like the 3.0.0 bundle -
+# on a voice with esses, with VOICE HOLD on and off. With it on it must change the esses, not the level or the latency.
+if os.path.isdir(V3):
+    vx = voice_like(fs, 6.0)
+    cases3 = {
+        "vocal: rap lead-like, VOICE HOLD on": {"Oversampling": "4x", "FET Input": "6", "Opto Peak Reduction": "30", "Color": "30",
+                                               "Sidechain HPF": "80", "Voice Hold": "On"},
+        "vocal: heavy, VOICE HOLD off": {"Oversampling": "2x", "FET Input": "17", "Opto Peak Reduction": "70", "Voice Hold": "Off"},
+    }
+    q3 = [Run(f"w3_{i}", fs, sets=s) for i, s in enumerate(cases3.values())]
+    q4 = [Run(f"w4_{i}", fs, sets={**s, "Ess Hold": "Off"}) for i, s in enumerate(cases3.values())]
+    q5 = [Run(f"w5_{i}", fs, sets={**s, "Ess Hold": "On"}) for i, s in enumerate(cases3.values())]
+    o3 = run_all(q3, {r.name: vx for r in q3}, jobname="w3", plugin=V3)
+    o4 = run_all(q4 + q5, {r.name: vx for r in q4 + q5}, jobname="w4")
+    for i, k in enumerate(cases3):
+        d = np.abs(o3[f"w3_{i}"] - o4[f"w4_{i}"]).max()
+        report(f"3.0.0 session compatibility: '{k}', ESS HOLD off renders like Axell Duo Compressor 3.0.0",
+               d == 0.0 and q3[i].latency == q4[i].latency, f"max |difference| {d:.3g}, latency {q3[i].latency} / {q4[i].latency}")
+        on, off = o4[f"w5_{i}"], o4[f"w4_{i}"]
+        lv = 10 * np.log10(np.mean(on ** 2) / np.mean(off ** 2))
+        report(f"ESS HOLD on: '{k}': same latency, level within 0.5 dB", q5[i].latency == q4[i].latency and abs(lv) < 0.5,
+               f"latency {q5[i].latency} / {q4[i].latency}, level {lv:+.2f} dB")
+else:
+    report("3.0.0 compatibility", False, f"3.0.0 bundle not found at {V3}")
 
 # ---------------------------------------------------------------- 3. Clean detector: bass distortion
 runs, ins = [], {}

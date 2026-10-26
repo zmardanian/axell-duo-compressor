@@ -15,7 +15,17 @@ saved with Duo Vocal Comp 1.0 open in Axell Duo Compressor with every setting an
 
 ![Axell Duo Compressor](docs/screenshots/duo-150pct.png)
 
-## What's new in 3.0
+## What's new in 4.0
+
+- **ESS HOLD**: every compressor lifts the esses above the vowels - between a vowel and its ess it starts to release,
+  and the S, SH and CH sounds come up against their own word. ESS HOLD uses the suite's sibilance detector (Axell
+  Velvet's, zero latency) to hold the gain reduction at the word's level through each ess, then glides back (10 ms) to
+  exactly what 3.0 would do. On 28 of the artist's raw takes through the suite's own vocal chains, the esses' lift over
+  their word went **+3.28 -> +0.60 dB**, **+1.42 -> -0.09 dB** and **+1.35 -> +0.03 dB** (Amber, Rap Lead, Boom Bap
+  Lead); vowels -0.01..-0.05 dB, pauses unchanged. The de-esser after it has less to do, and fewer esses come back
+  later in the chain. On for new instances and the vocal presets; projects from before 4.0 sound exactly as before.
+
+## What was new in 3.0
 
 - **VOICE HOLD**: a compressor releases in every pause, so the room, breaths and headphone bleed between phrases come
   up by as much as the voice is compressed. With VOICE HOLD the suite's voice detector (Axell Gate's) marks the
@@ -55,6 +65,11 @@ releasing, so the room, breaths and headphone bleed between phrases are not pull
 against the voice without it, +5.9 dB with it, your voice compressed exactly the same). It uses Axell Gate's voice
 detector, adds no latency, and is on for new instances and the vocal presets. Turn it off on drums, beats and buses
 (their presets do): the detector is trained on voices and takes drum hits for one.
+
+**ESS HOLD** (4.0): through each ess of your voice the compressor holds the gain reduction of the word it belongs to
+instead of releasing, so the S, SH and CH sounds are not pushed above your vowels; after the ess it glides back (10 ms)
+to exactly what it would otherwise do. It uses Axell Velvet's sibilance detector (zero latency) and is on for new
+instances and the vocal presets; off on beats and buses (the detector fires on hi-hats now and then).
 
 **DISPLAY**: a 5-second history of input and output level with each stage's gain reduction, a transfer curve of the
 whole chain at the current settings, and **COMPARE**: hear your unprocessed track at exactly the processed track's
@@ -125,17 +140,18 @@ ceiling 0.3 dB lower. Details: `docs/DECISIONS.md` D21.
 | **2.0.0** | 2026-10-14 | Renamed Axell Duo Compressor (same plugin identity). True-peak limiter (8x detection), Clean FET detector, threshold / knee / range / hold, side-chain EQ + external key, lookahead, Mid/Side, latency handshake, 4x default, **Measured** opto law calibrated on hardware LA-2A recordings | 1.0 sessions bit-identical; aliasing -149.5 dBFS at 4x; Clean detector THD+N -142 dB (Vintage -43); LA-2A held-out: gain tracking 0.60 dB, STFT 0.449 / loudness 0.43 dB (published neural models 0.551-0.796 / 0.36-1.31) |
 | **2.1.0** | 2026-10-15 | Level / gain-reduction history and transfer curve, level-matched COMPARE (BS.1770) | COMPARE within 0.1 dB; benchmark vs UADx 1176 / LA-2A: 30-85 dB less aliasing, LA-2A on par, 1176 behind (1.46 vs 1.09 dB) |
 | **3.0.0** | 2026-10-26 | VOICE HOLD with the suite's voice detector (Axell Gate's, in the shared core); Axell's Dojo look | Real take: pauses +23.4 -> +5.9 dB, voice unchanged; 2766 DSP + 131 plugin checks, ASan clean, audit 26/26 (1.0 sessions still bit-identical), pluginval L10, validator 47/47 |
+| **4.0.0** | 2026-10-26 | ESS HOLD with the suite's sibilance detector (Axell Velvet's LIVE network, in the shared core): the word's gain held through each ess, a shadow of the 3.x path to return to; tuned on 28 of the artist's takes | Esses over their word: +3.28 -> +0.60 / +1.42 -> -0.09 / +1.35 -> +0.03 dB (three vocal chains), vowels within 0.05 dB; 2948 DSP + 137 plugin checks, ASan clean, audit 30/30 (3.0 sessions bit-identical), pluginval L10, validator 47/47 |
 
 Every design decision with its measurement: [docs/DECISIONS.md](docs/DECISIONS.md); all changes: [CHANGELOG.md](CHANGELOG.md).
 
 ## Install (Linux)
 
-Download `AxellDuoCompressor-3.0.0-linux-x86_64.tar.gz` from the
+Download `AxellDuoCompressor-4.0.0-linux-x86_64.tar.gz` from the
 [latest release](https://github.com/zmardanian/axell-duo-compressor/releases/latest) (optional: `sha256sum -c
 SHA256SUMS.txt`), then:
 
-    tar xzf AxellDuoCompressor-3.0.0-linux-x86_64.tar.gz
-    cd AxellDuoCompressor-3.0.0-linux-x86_64
+    tar xzf AxellDuoCompressor-4.0.0-linux-x86_64.tar.gz
+    cd AxellDuoCompressor-4.0.0-linux-x86_64
     ./install.sh
 
 Or let the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo) install and update it.

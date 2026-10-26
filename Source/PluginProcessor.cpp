@@ -171,6 +171,10 @@ APVTS::ParameterLayout DuoCompProcessor::createLayout()
     // the compressor no longer lifts the room, the breaths and the bleed between phrases. New instances: on; states
     // saved before 3.0 load with it off (upgradeLegacyState), so they sound as they did
     p.push_back (std::make_unique<AudioParameterBool> (ParameterID { "voiceHold", 4 }, "Voice Hold", true));
+    // 4.0: ESS HOLD - the gain reduction holds through the voice's esses (the suite's shared sibilance network) at the
+    // word's own, so the release no longer lifts the esses above the vowels. New instances: on; states saved before
+    // 4.0 load with it off (upgradeLegacyState), so they sound as they did
+    p.push_back (std::make_unique<AudioParameterBool> (ParameterID { "essHold", 5 }, "Ess Hold", true));
 
     return { p.begin(), p.end() };
 }
@@ -203,6 +207,7 @@ DuoCompProcessor::DuoCompProcessor()
     pListen   = apvts.getRawParameterValue ("scListen");
     pAuto     = apvts.getRawParameterValue ("autoGain");
     pVoiceHold = apvts.getRawParameterValue ("voiceHold");
+    pEssHold  = apvts.getRawParameterValue ("essHold");
     for (size_t i = 0; i < v3Ids.size(); ++i)
         pV3[i] = apvts.getRawParameterValue (v3Ids[i]);
 
@@ -281,6 +286,10 @@ duo::Params DuoCompProcessor::readParams() const
     p.optoMeasured = juce::roundToInt (v (V3::optoModel)) == 1;
     p.compare     = v (V3::compare) > 0.5f;
     p.voiceHold   = pVoiceHold->load() > 0.5f;
+    p.essHold     = pEssHold->load() > 0.5f;
+#ifdef DUO_RESEARCH_FORCE_ESS_HOLD
+    p.essHold = true;   // research build only: A/B against the release on identical sessions
+#endif
     return p;
 }
 
@@ -493,6 +502,7 @@ void DuoCompProcessor::applyParams (const duo::Params& p)
     set ("chMode", p.midSide ? 1.0f : 0.0f);
     set ("optoModel", p.optoMeasured ? 1.0f : 0.0f);
     set ("voiceHold", p.voiceHold ? 1.0f : 0.0f);
+    set ("essHold", p.essHold ? 1.0f : 0.0f);
 }
 
 int DuoCompProcessor::getNumPrograms()
@@ -590,7 +600,8 @@ void DuoCompProcessor::copyActiveToOther()
 // A state saved before a parameter existed gets the value that version played with, not today's default:
 // the oversampling default became 4x in 2.0 (a state without "os" played at 2x), and the opto default became the
 // Measured law (a state without "optoModel" played with the Classic one), and 3.0's VOICE HOLD is on for new
-// instances (a state without "voiceHold" played without it). Every other 2.0 parameter's default is the 1.x behaviour.
+// instances (a state without "voiceHold" played without it), and so is 4.0's ESS HOLD (a state without "essHold" played
+// without it). Every other 2.0 parameter's default is the 1.x behaviour.
 void DuoCompProcessor::upgradeLegacyState (juce::ValueTree& tree)
 {
     auto add = [&tree] (const char* id, float value)
@@ -605,6 +616,7 @@ void DuoCompProcessor::upgradeLegacyState (juce::ValueTree& tree)
     add ("os", 1.0f);
     add ("optoModel", 0.0f);
     add ("voiceHold", 0.0f);   // 3.0
+    add ("essHold", 0.0f);     // 4.0
 }
 
 // APVTS::replaceState skips a parameter whose *snapped* value already matches the tree, so a

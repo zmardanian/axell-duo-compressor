@@ -267,3 +267,40 @@ Shared with every Axell plugin through axell-core: the family emblem, the gold h
 plugin's own ground - every surface colour derived from one hue (Duo: 15 degrees, ember). Text, meters and stage
 colours are unchanged, so every reading keeps its contrast.
 
+
+## D33. ESS HOLD (4.0)
+Problem: a compressor lifts the esses above the vowels. Between a vowel and its ess the detector sees less level, the
+release starts, and the ess (and the make-up gain) come up against the word it belongs to. The suite's own vocal
+chains, rendered stage by stage on 28 of the artist's raw takes (the Dojo's chains through its batch renderer), showed
+Duo as the largest single source of hot esses: the esses' level over the vowels of their own word (the loudest vowel
+frame within +-150 ms) rose +3.28 dB in the "Amber" chain, +1.42 dB in "Rap Lead" and +1.35 dB in "Boom Bap Lead"
+(medians over the takes). Velvet after it then had to cut that much more, and every compressor or limiter after
+Velvet (a vocal bus, a master) added more again - in the artist's own session the esses ended 8 dB hotter than in the
+dry take.
+
+Solution: the suite's sibilance network (Axell Velvet 3.0's LIVE detector in axell-core, causal, 12 ms frames every
+2 ms, its decision 6 ms behind) marks the esses. Through an ess both stages stop releasing and the gain reduction
+glides (12.5 ms) up to the word's own: its recent peak reduction (a peak hold decaying with 0.3 s). Meanwhile a shadow
+plays the 3.x path (same attack, release and hold); when the ess ends the gain reduction glides back to the shadow in
+10 ms, so the next vowel is compressed exactly as in 3.x. The flag follows the detector's 2 ms decision directly.
+
+Tuning (all on the 28 takes, the three chains' Duo stages, A/B against 3.0.0 on identical inputs):
+- threshold 0.3 / 0.5 / 0.7 x word window 0.08 / 0.15 / 0.3 s: the longer window removes more of the lift (Amber
+  +1.24 -> +0.70 dB at 0.5) but held the gain into the next vowel (vowels within 120 ms after an ess -0.9 dB);
+- the shadow and 10 ms return took that to -0.39 dB; a 20 ms smoothing of the flag was the rest (it held into the
+  vowel): without it -0.11 dB. Chosen: 0.5, 0.3 s, 10 ms, no flag smoothing.
+
+| chain (Duo stage) | ess lift over its word, 3.0 -> 4.0 | vowels | vowels just after esses | pauses (absolute) |
+|---|---|---|---|---|
+| Amber | +3.28 -> +0.60 dB | -0.02 dB | -0.11 dB | unchanged |
+| Rap Lead | +1.42 -> -0.09 dB | -0.01 dB | -0.18 dB | unchanged |
+| Boom Bap Lead | +1.35 -> +0.03 dB | -0.05 dB | -0.07 dB | unchanged |
+
+True peak, loudness range, tone (fundamental band, 5-16 kHz) unchanged within 0.05 dB. DSP suite (synthetic voice):
+88-100 % of the lift removed at 44.1-96 kHz, vowels +0.03..+0.08 dB.
+
+Off by default in the engine; on for new instances and the presets where VOICE HOLD is on (vocal presets, Init); off
+for beat, bus, master and ducking presets - the network fires on hi-hats on 0.2-4 % of a beat's 2 ms frames (17 of the
+artist's beats), and on 8 beats the three bus presets' output moved by -31..-50 dB with it (0.02 dB of level): small,
+but a beat should not change at all. Projects saved before 4.0 load with it off (upgradeLegacyState) and render
+bit-identically to 3.0.0 (independent audit). No latency; the detector adds a few % of one core at 48 kHz.

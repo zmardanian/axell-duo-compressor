@@ -141,6 +141,8 @@ inline std::array<FactoryPreset, kNumFactoryPresets> factoryPresets()
         // 3.0 VOICE HOLD: on for the vocal presets and Init (the new-instance default), off for beats, buses, masters
         // and ducking - the voice network takes drum hits for a voice and would hold their release
         p.voiceHold = r.cat == PresetCategory::vocal || std::string_view (r.name) == "Init";
+        // 4.0 ESS HOLD: the same rule - the sibilance network fires on hi-hats now and then (0.2-4 % of a beat's time)
+        p.essHold = p.voiceHold;
         for (const auto& x : preset_detail::kExtras)
             if (std::string_view (x.name) == r.name)
                 x.apply (p);

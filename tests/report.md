@@ -1,8 +1,8 @@
 # Axell Duo Compressor - DSP test report
 
-Generated 2026-10-26 06:50 by `DuoDspTests` in 139.3 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Release.
+Generated 2026-10-26 17:39 by `DuoDspTests` in 163.2 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Release.
 
-**Result: ALL PASS** - 2070 checks passed, 0 failed (every check runs once per sample rate / channel configuration).
+**Result: ALL PASS** - 2211 checks passed, 0 failed (every check runs once per sample rate / channel configuration).
 
 ## Summary (worst case over all configurations)
 
@@ -278,6 +278,24 @@ Generated 2026-10-26 06:50 by `DuoDspTests` in 139.3 s. Stage ballistics are mea
 | V11 Voice hold (3.0) | VOICE HOLD: block 512 vs 37 (difference) | < -140.0 dBFS | -600.0 dBFS | 44.1 k mono | PASS 10/10 |
 | V11 Voice hold (3.0) | VOICE HOLD: output finite | yes | 1.000  | 44.1 k mono | PASS 10/10 |
 | V11 Voice hold (3.0) | VOICE HOLD: heap allocations inside process() | = 0.0000  | 0.0000  | 44.1 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | factory presets: ESS HOLD on exactly where VOICE HOLD is (the vocal presets and Init) | yes | 1.000  | 44.1 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | engine default: ESS HOLD off (the 3.x path; the plugin turns it on for new instances) | yes | 1.000  | 44.1 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | FET: gain reduction at the ess's start | (info) | 13.021 .. 13.024 dB | all | - |
+| V12 Ess hold (4.0) | FET without ESS HOLD: share of that GR left at the end of the 80 ms ess (releasing) | < 0.7500  | 0.6184  | 88.2 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | FET with ESS HOLD: GR at the end of the ess re its start (held, up to the word's peak) | -0.2500 .. 6.000 dB | 3.069 dB | 96 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | opto: gain reduction at the ess's start | (info) | 17.748 .. 17.751 dB | all | - |
+| V12 Ess hold (4.0) | opto with ESS HOLD: holds more than it would release | > 0.5000 dB | 10.318 dB | 96 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | opto with ESS HOLD: GR at the end of the ess re its start (held, up to the word's peak) | -0.2500 .. 6.000 dB | 1.887 dB | 96 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | esses re vowels, off: lift | (info) | -0.7708 .. 2.985 dB | all | - |
+| V12 Ess hold (4.0) | esses re vowels, on: lift | (info) | -1.589 .. 0.3359 dB | all | - |
+| V12 Ess hold (4.0) | ESS HOLD removes of the esses' lift (dB, against 60 % of the lift without it) | > 0.8933 dB | 1.526 dB | 96 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | ESS HOLD never lifts the esses more | < 0.0000 dB | -0.8187 dB | 192 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | ESS HOLD: vowel level unchanged | -0.5000 .. 0.5000 dB | 0.0760 dB | 48 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | ESS HOLD: latency unchanged | = 0.0000 samples | 0.0000 samples | 44.1 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | ESS HOLD off: deterministic (two engines, same input) | = 0.0000  | 0.0000  | 44.1 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | ESS HOLD: block 512 vs 37 (difference) | < -140.0 dBFS | -600.0 dBFS | 44.1 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | ESS HOLD: output finite | yes | 1.000  | 44.1 k mono | PASS 10/10 |
+| V12 Ess hold (4.0) | ESS HOLD: heap allocations inside process() | = 0.0000  | 0.0000  | 44.1 k mono | PASS 10/10 |
 | 9 Stereo identity | identical L/R in: differing output samples (defaults) | = 0.0000 samples | 0.0000 samples | 44.1 k stereo | PASS 5/5 |
 | 9 Stereo identity | identical L/R in: differing samples (4x, link 0, All, auto makeup) | = 0.0000 samples | 0.0000 samples | 44.1 k stereo | PASS 5/5 |
 | 9 Stereo identity | mono instance vs dual-mono stereo: max |diff| | < 1e-06  | 0.0000  | 44.1 k stereo | PASS 5/5 |
@@ -289,15 +307,17 @@ Generated 2026-10-26 06:50 by `DuoDspTests` in 139.3 s. Stage ballistics are mea
 | V 2.0 features | Mid/Side, link 0: loud side compressed by | > 3.000 dB | 8.993 dB | 44.1 k stereo | PASS 5/5 |
 | O Oversampling filters | 2x decimator (stopband from base Nyquist): stopband peak | < -100.0 dB | -100.2 dB | 88.2 k mono | PASS 6/6 |
 | O Oversampling filters | 2x decimator (stopband from base Nyquist): passband ripple | < 0.0010 dB | 0.000101 dB | 88.2 k mono | PASS 6/6 |
-| 10 CPU | 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | < 2.000 % | 1.820 % | 48 k stereo | PASS 1/1 |
-| 10 CPU | 48 kHz / 128 / stereo / 2x: real-time factor | (info) | 54.947 x | all | - |
-| 10 CPU | silence after program (denormal safety): CPU silence / CPU program | < 1.500 x | 0.7985 x | 48 k stereo | PASS 1/1 |
-| 10 CPU | 48 kHz / 128 / stereo / 1x: CPU of one core | (info) | 1.180 % | all | - |
-| 10 CPU | 48 kHz / 128 / stereo / 4x: CPU of one core | (info) | 3.083 % | all | - |
-| 10 CPU | 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | < 8.000 % | 6.197 % | 48 k stereo | PASS 1/1 |
-| 10 CPU | stereo / 128 / 2x at 44.100 kHz: CPU of one core | (info) | 1.669 % | all | - |
-| 10 CPU | stereo / 128 / 2x at 96.000 kHz: CPU of one core | (info) | 3.593 % | all | - |
-| 10 CPU | stereo / 128 / 2x at 192.0 kHz: CPU of one core | (info) | 7.237 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | < 2.000 % | 1.941 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | 48 kHz / 128 / stereo / 2x: real-time factor | (info) | 51.531 x | all | - |
+| 10 CPU | silence after program (denormal safety): CPU silence / CPU program | < 1.500 x | 0.7937 x | 48 k stereo | PASS 1/1 |
+| 10 CPU | 48 kHz / 128 / stereo / 1x: CPU of one core | (info) | 1.304 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 4x: CPU of one core | (info) | 3.232 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | < 8.000 % | 6.510 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | 48 kHz / 128 / stereo / 4x, a new instance (VOICE HOLD + ESS HOLD on): CPU of one core | < 8.000 % | 6.534 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | ESS HOLD's own cost (its sibilance detector): CPU of one core | (info) | 1.621 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 44.100 kHz: CPU of one core | (info) | 1.765 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 96.000 kHz: CPU of one core | (info) | 3.725 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 192.0 kHz: CPU of one core | (info) | 7.487 % | all | - |
 
 ## Detail per configuration
 
@@ -573,6 +593,24 @@ Generated 2026-10-26 06:50 by `DuoDspTests` in 139.3 s. Stage ballistics are mea
 | V11 Voice hold (3.0): VOICE HOLD: block 512 vs 37 (difference) | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 |
 | V11 Voice hold (3.0): VOICE HOLD: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 | V11 Voice hold (3.0): VOICE HOLD: heap allocations inside process() | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| V12 Ess hold (4.0): factory presets: ESS HOLD on exactly where VOICE HOLD is (the vocal presets and Init) | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| V12 Ess hold (4.0): engine default: ESS HOLD off (the 3.x path; the plugin turns it on for new instances) | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| V12 Ess hold (4.0): FET: gain reduction at the ess's start | 13.021 | 13.021 | 13.021 | 13.021 | 13.023 | 13.023 | 13.024 | 13.024 | 13.024 | 13.024 |
+| V12 Ess hold (4.0): FET without ESS HOLD: share of that GR left at the end of the 80 ms ess (releasing) | 0.6181 | 0.6181 | 0.6181 | 0.6181 | 0.6184 | 0.6184 | 0.6183 | 0.6183 | 0.6183 | 0.6183 |
+| V12 Ess hold (4.0): FET with ESS HOLD: GR at the end of the ess re its start (held, up to the word's peak) | 3.060 | 3.060 | 3.059 | 3.059 | 3.065 | 3.065 | 3.069 | 3.069 | 3.062 | 3.062 |
+| V12 Ess hold (4.0): opto: gain reduction at the ess's start | 17.748 | 17.748 | 17.748 | 17.748 | 17.751 | 17.751 | 17.750 | 17.750 | 17.749 | 17.749 |
+| V12 Ess hold (4.0): opto with ESS HOLD: holds more than it would release | 10.319 | 10.319 | 10.320 | 10.320 | 10.319 | 10.319 | 10.318 | 10.318 | 10.319 | 10.319 |
+| V12 Ess hold (4.0): opto with ESS HOLD: GR at the end of the ess re its start (held, up to the word's peak) | 1.887 | 1.887 | 1.887 | 1.887 | 1.888 | 1.888 | 1.887 | 1.887 | 1.888 | 1.888 |
+| V12 Ess hold (4.0): esses re vowels, off: lift | 2.909 | 2.909 | 2.985 | 2.985 | 1.754 | 1.754 | 1.489 | 1.489 | -0.7708 | -0.7708 |
+| V12 Ess hold (4.0): esses re vowels, on: lift | 0.3359 | 0.3359 | 0.2819 | 0.2819 | -0.0116 | -0.0116 | -0.0376 | -0.0376 | -1.589 | -1.589 |
+| V12 Ess hold (4.0): ESS HOLD removes of the esses' lift (dB, against 60 % of the lift without it) | 2.573 | 2.573 | 2.703 | 2.703 | 1.765 | 1.765 | 1.526 | 1.526 | 0.8187 | 0.8187 |
+| V12 Ess hold (4.0): ESS HOLD never lifts the esses more | -2.573 | -2.573 | -2.703 | -2.703 | -1.765 | -1.765 | -1.526 | -1.526 | -0.8187 | -0.8187 |
+| V12 Ess hold (4.0): ESS HOLD: vowel level unchanged | 0.0697 | 0.0697 | 0.0760 | 0.0760 | 0.0551 | 0.0551 | 0.0445 | 0.0445 | 0.0270 | 0.0270 |
+| V12 Ess hold (4.0): ESS HOLD: latency unchanged | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| V12 Ess hold (4.0): ESS HOLD off: deterministic (two engines, same input) | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| V12 Ess hold (4.0): ESS HOLD: block 512 vs 37 (difference) | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 | -600.0 |
+| V12 Ess hold (4.0): ESS HOLD: output finite | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| V12 Ess hold (4.0): ESS HOLD: heap allocations inside process() | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
 | 9 Stereo identity: identical L/R in: differing output samples (defaults) | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 |
 | 9 Stereo identity: identical L/R in: differing samples (4x, link 0, All, auto makeup) | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 |
 | 9 Stereo identity: mono instance vs dual-mono stereo: max |diff| | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 | - | 0.0000 |
@@ -584,12 +622,14 @@ Generated 2026-10-26 06:50 by `DuoDspTests` in 139.3 s. Stage ballistics are mea
 | V 2.0 features: Mid/Side, link 0: loud side compressed by | - | 8.993 | - | 9.000 | - | 9.005 | - | 9.014 | - | 9.043 |
 | O Oversampling filters: 2x decimator (stopband from base Nyquist): stopband peak | - | - | - | - | -100.2 | -100.2 | -100.2 | -100.2 | -100.2 | -100.2 |
 | O Oversampling filters: 2x decimator (stopband from base Nyquist): passband ripple | - | - | - | - | 0.000101 | 0.000101 | 0.000101 | 0.000101 | 0.000101 | 0.000101 |
-| 10 CPU: 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | - | - | - | 1.820 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 2x: real-time factor | - | - | - | 54.947 | - | - | - | - | - | - |
-| 10 CPU: silence after program (denormal safety): CPU silence / CPU program | - | - | - | 0.7985 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 1x: CPU of one core | - | - | - | 1.180 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 4x: CPU of one core | - | - | - | 3.083 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | - | - | - | 6.197 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 44.100 kHz: CPU of one core | - | - | - | 1.669 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 96.000 kHz: CPU of one core | - | - | - | 3.593 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 192.0 kHz: CPU of one core | - | - | - | 7.237 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | - | - | - | 1.941 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 2x: real-time factor | - | - | - | 51.531 | - | - | - | - | - | - |
+| 10 CPU: silence after program (denormal safety): CPU silence / CPU program | - | - | - | 0.7937 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 1x: CPU of one core | - | - | - | 1.304 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x: CPU of one core | - | - | - | 3.232 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | - | - | - | 6.510 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x, a new instance (VOICE HOLD + ESS HOLD on): CPU of one core | - | - | - | 6.534 | - | - | - | - | - | - |
+| 10 CPU: ESS HOLD's own cost (its sibilance detector): CPU of one core | - | - | - | 1.621 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 44.100 kHz: CPU of one core | - | - | - | 1.765 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 96.000 kHz: CPU of one core | - | - | - | 3.725 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 192.0 kHz: CPU of one core | - | - | - | 7.487 | - | - | - | - | - | - |

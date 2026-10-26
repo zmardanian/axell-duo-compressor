@@ -96,6 +96,11 @@ const char* voiceHold = "VOICE HOLD: in the pauses of the voice (the suite's sha
                         "reduction holds at the level of your voice instead of releasing - so the compressor no longer lifts "
                         "the room, the breaths and the headphone bleed between phrases (measured: +23 dB of lift down to "
                         "+5 dB). Your voice is compressed exactly as before.";
+const char* essHold = "ESS HOLD: through the esses of the voice (the suite's shared sibilance detector, Axell Velvet's) the "
+                      "gain reduction holds at the level of the word they belong to instead of releasing - so the compressor "
+                      "no longer pushes the S, SH and CH sounds above your vowels (on 28 of the artist's takes the esses' lift "
+                      "over their word went from +1.4..+3.3 dB to -0.1..+0.6 dB; the vowels unchanged). The de-esser after "
+                      "it has less to do. Off for beats and buses (the detector fires on hi-hats now and then).";
 const char* autoGain = "Slowly (2 s) adds back the average gain reduction so your vocal keeps its loudness while you tweak. "
                        "Off = set the makeup yourself.";
 const char* scHpf = "Stops low end (plosives, 808 bleed, mic bumps) from triggering both compressors. "
@@ -666,6 +671,7 @@ DuoCompEditor::DuoCompEditor (DuoCompProcessor& p)
       chMode (p.apvts, "chMode", { "STEREO", "MID-SIDE" }, col::global, tip::chMode),
       autoGain (p.apvts, "autoGain", "AUTO MAKEUP", col::global, "pill", tip::autoGain),
       voiceHold (p.apvts, "voiceHold", "VOICE HOLD", col::global, "pill", tip::voiceHold),
+      essHold (p.apvts, "essHold", "ESS HOLD", col::global, "pill", tip::essHold),
       look (p.apvts, "look", "LOOKAHEAD", col::global, tip::look),
       color (p.apvts, "color", "COLOR", col::global, tip::color),
       link (p.apvts, "link", "LINK", col::global, tip::link),
@@ -684,7 +690,7 @@ DuoCompEditor::DuoCompEditor (DuoCompProcessor& p)
              &optoOn, &optoMode, &optoModel, &optoKey, &optoPR, &optoGain, &optoEmph, &optoThr, &optoKnee, &optoRange, &optoHold, &optoMeter,
              &limOn, &limCeil, &limRel, &limLook, &limMeter,
              &scListen, &scHpf, &scLpf, &scBellF, &scBellG, &scBellQ,
-             &order, &oversampling, &chMode, &autoGain, &voiceHold, &look, &color, &link, &mix, &out, &inMeter, &outMeter,
+             &order, &oversampling, &chMode, &autoGain, &voiceHold, &essHold, &look, &color, &link, &mix, &out, &inMeter, &outMeter,
              &graph, &transfer, &compare })
         content.addAndMakeVisible (c);
 
@@ -871,6 +877,7 @@ void DuoCompEditor::layout()
         autoGain.setBounds (g.getRight() - 140, g.getY() + 10, 140, 26);
         makeupArea = { g.getRight() - 300, g.getY() + 10, 152, 26 };
         voiceHold.setBounds (g.getRight() - 300 - 8 - 130, g.getY() + 10, 130, 26);
+        essHold.setBounds (g.getRight() - 300 - 8 - 130 - 8 - 120, g.getY() + 10, 120, 26);
         g = g.withTrimmedTop (48).withTrimmedBottom (10);
         auto left = g.removeFromLeft (232);
         left = left.withSizeKeepingCentre (left.getWidth(), 3 * (15 + 28) + 2 * 10);

@@ -1091,6 +1091,7 @@ void testPresets (Recorder& r)
 } // namespace
 #include "V2Tests.h"
 #include "V3Tests.h"
+#include "V4Tests.h"
 namespace
 {
 //==============================================================================
@@ -1164,6 +1165,18 @@ void benchmark (Recorder& r)
         q.limOn = true;
         r.less ("48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core",
                 time (48000.0, 2, 128, q, 20.0, false, nullptr) / 20.0 * 100.0, 8.0, "%");
+    }
+    {
+        // a new instance (4.0): 4x, Measured opto, VOICE HOLD and ESS HOLD on (the two detectors run on every sample)
+        auto q = p;
+        q.osLog2 = 2;
+        q.optoMeasured = true;
+        q.voiceHold = true;
+        const double base = time (48000.0, 2, 128, q, 20.0, false, nullptr) / 20.0 * 100.0;
+        q.essHold = true;
+        const double withEss = time (48000.0, 2, 128, q, 20.0, false, nullptr) / 20.0 * 100.0;
+        r.less ("48 kHz / 128 / stereo / 4x, a new instance (VOICE HOLD + ESS HOLD on): CPU of one core", withEss, 8.0, "%");
+        r.info ("ESS HOLD's own cost (its sibilance detector): CPU of one core", withEss - base, "%");
     }
     p.osLog2 = 1;
     for (double fs : { 44100.0, 96000.0, 192000.0 })
@@ -1242,6 +1255,7 @@ int main (int argc, char** argv)
                 testPresets (rec);
                 v2::testV2 (rec);
                 v3::testV3 (rec);
+                v4::testV4 (rec);
             });
         for (auto& t : threads)
             t.join();

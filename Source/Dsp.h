@@ -1,4 +1,7 @@
 #pragma once
+// 4.0 ESS HOLD (DECISIONS D33), set on the artist's 28 takes: the word's time window (its recent peak reduction) and
+// the time in which the gain reduction glides back to the 3.x path after an ess
+constexpr float kEssWordSec = 0.30f, kEssCatchSec = 0.010f;
 // Axell Duo Compressor - DSP core (framework independent, no JUCE: unit-testable with plain g++)
 // Stage 1: FET (1176-style) peak compressor
 // Stage 2: Opto (LA-2A-style) leveling amplifier with two-stage, program-dependent release
@@ -550,6 +553,8 @@ public:
         memRiseK = 1.0f - onePole (2.0f, fs);
         memFallK = 1.0f - onePole (4.0f, fs);
         voiceAvgK = 1.0f - onePole (0.25f, fs);
+        wordK = 1.0f - onePole (kEssWordSec, fs);
+        catchK = 1.0f - onePole (kEssCatchSec, fs);
         pauseGlideK = 1.0f - onePole (0.0125f, fs);
         setParams (settings);
     }
@@ -607,6 +612,9 @@ public:
         holdCount.fill (0);
         grHold.fill (0);
         voiceAvg.fill (0.0f);
+        wordGr.fill (0.0f);
+        shadowGr.fill (0.0f);
+        catching.fill (false);
         hCur.fill (0.0f);
         hStep.fill (0.0f);
         ctlCount = 0;
@@ -638,6 +646,11 @@ public:
     // reduction glides (12.5 ms) to the voice's own recent average (0.25 s), so a pause sits where the voice sits instead
     // of being lifted by the release. Never set: the 2.x path, bit for bit.
     void setPause (bool p) noexcept { pause = p; }
+    // 4.0 ESS HOLD: set per sample through the voice's esses (axell-core sibilance network). The release stops and the
+    // gain reduction glides (12.5 ms) up to the word's own (its recent peak, kEssWordSec), so an ess is compressed like
+    // the word it belongs to instead of being lifted by the release; after the ess it glides (kEssCatchSec) back to the
+    // 3.x path, which a shadow played meanwhile. Never set: the 3.x path, bit for bit.
+    void setEss (bool e) noexcept { ess = e; }
     double sampleRate() const noexcept { return fs; }
     // static gain reduction for a steady signal whose detector level (after INPUT) is levelDb (displays)
     float staticGainReductionDb (float levelDb) const noexcept
@@ -736,29 +749,65 @@ private:
             float& m = memory[(size_t) c];
             // hold (2.0): while the demand stays at the current GR (within 0.05 dB) the hold restarts; the
             // release begins `hold` after the demand fell. Hold 0 = 1.x.
-            bool holding = pause;
+            bool holdBase = pause;   // the 3.x hold (pause, HOLD); ESS HOLD adds the esses
             if (holdSamples > 0)
             {
                 int& hc = grHold[(size_t) c];
                 if (target >= g - kHoldTolDb)
                 {
                     hc = holdSamples;
-                    holding = true;
+                    holdBase = true;
                 }
                 else if (hc > 0)
                 {
                     --hc;
-                    holding = true;
+                    holdBase = true;
                 }
             }
+            const bool holding = holdBase || ess;
+            const float relK = oneMinusExpSmall (relRate / (1.0f + 0.4f * m));
             if (target > g)
                 g += (target - g) * atkK;
             else if (! holding)
-                g += (target - g) * oneMinusExpSmall (relRate / (1.0f + 0.4f * m));
+                g += (target - g) * relK;
             if (! pause)
                 voiceAvg[(size_t) c] += (g - voiceAvg[(size_t) c]) * voiceAvgK;
             else if (voiceAvg[(size_t) c] > g)
                 g += (voiceAvg[(size_t) c] - g) * pauseGlideK;
+            {
+                // ESS HOLD: through an ess the GR glides up to the word's; a shadow plays the 3.x path meanwhile, and
+                // after the ess the GR glides (catchK) back to it, so the next vowel is compressed exactly as in 3.x
+                float& w = wordGr[(size_t) c];
+                float& sh = shadowGr[(size_t) c];
+                bool& cu = catching[(size_t) c];
+                const bool inEss = ess && ! pause;
+                if (inEss || cu)
+                {
+                    if (target > sh)
+                        sh += (target - sh) * atkK;
+                    else if (! holdBase)
+                        sh += (target - sh) * relK;
+                }
+                if (inEss)
+                {
+                    if (w > g)
+                        g += (w - g) * pauseGlideK;
+                    cu = true;
+                }
+                else
+                {
+                    if (cu)
+                    {
+                        if (g > sh)
+                            g += (sh - g) * catchK;
+                        if (pause || g - sh < 0.01f)
+                            cu = false;
+                    }
+                    w = g > w ? g : w + (g - w) * wordK;
+                }
+                if (! cu)
+                    sh = g;
+            }
             // memory follows the compression demand (target), so it stops charging the moment
             // the signal drops - otherwise a long release would keep slowing itself down
             const float w = std::clamp ((target - 2.0f) * 0.125f, 0.0f, 1.0f);
@@ -836,8 +885,10 @@ private:
     std::array<int, kMaxCh> holdCount {}, grHold {};
     float ratio = 4.0f, knee = 6.0f, threshold = kThresholdDb, range = -1.0f, quietLevel = 0.158489319f;
     float atkK = 1.0f, relRate = 0.0f, link = 1.0f;
-    float memRiseK = 0.0f, memFallK = 0.0f, voiceAvgK = 0.0f, pauseGlideK = 0.0f;
-    bool pause = false;
+    float memRiseK = 0.0f, memFallK = 0.0f, voiceAvgK = 0.0f, pauseGlideK = 0.0f, wordK = 0.0f, catchK = 0.0f;
+    bool pause = false, ess = false;
+    std::array<float, kMaxCh> wordGr {}, shadowGr {};
+    std::array<bool, kMaxCh> catching {};
     std::array<float, kMaxCh> voiceAvg {};
     float inGain = 1.0f, inTarget = 1.0f, outGain = 1.0f, outTarget = 1.0f;
     float color = 0.0f, colorTarget = 0.0f, smoothK = 0.001f;
@@ -923,6 +974,8 @@ public:
         dc.prepare (fs);
         smoothK = 1.0f - onePole (0.02f, fs);
         voiceAvgK = 1.0f - onePole (0.25f, baseFs);      // the gain computer runs at the base rate
+        wordK = 1.0f - onePole (kEssWordSec, baseFs);
+        catchK = 1.0f - onePole (kEssCatchSec, baseFs);
         pauseGlideK = 1.0f - onePole (0.0125f, baseFs);
         setParams (settings);
     }
@@ -972,6 +1025,8 @@ public:
 
     // 3.0 VOICE HOLD (see FetStage::setPause): the release holds through the voice's pauses
     void setPause (bool p) noexcept { pause = p; }
+    // 4.0 ESS HOLD (see FetStage::setEss)
+    void setEss (bool e) noexcept { ess = e; }
 
     void resetState() noexcept
     {
@@ -987,6 +1042,10 @@ public:
         grFast.fill (0.0f);
         grSlow.fill (0.0f);
         voiceAvg.fill (0.0f);
+        wordGr.fill (0.0f);
+        shadowF.fill (0.0f);
+        shadowS.fill (0.0f);
+        catching.fill (false);
         memory.fill (0.0f);
         grCur.fill (0.0f);
         grStep.fill (0.0f);
@@ -1079,21 +1138,23 @@ private:
             // slow tail 0.5 s .. 5 s, set per step from the light-cell memory (no stepping)
             const float tauSlow = slowMin + slowSpan * m;
             // hold (2.0): as in the FET stage; hold 0 = 1.x
-            bool holding = pause;   // 3.0 VOICE HOLD (see FetStage::setPause)
+            bool holdBase = pause;   // 3.0 VOICE HOLD (see FetStage::setPause); 4.0 ESS HOLD adds the esses (setEss)
             if (holdSteps > 0)
             {
                 int& hc = holdCount[(size_t) c];
                 if (target >= fastShare * f + (1.0f - fastShare) * sl - 0.05f)
                 {
                     hc = holdSteps;
-                    holding = true;
+                    holdBase = true;
                 }
                 else if (hc > 0)
                 {
                     --hc;
-                    holding = true;
+                    holdBase = true;
                 }
             }
+            const bool holding = holdBase || ess;
+            const float relSlowK = oneMinusExpSmall (invFs / tauSlow);
             if (target > f)
                 f += (target - f) * atkK;
             else if (! holding)
@@ -1101,13 +1162,57 @@ private:
             if (target > sl)
                 sl += (target - sl) * atkK;
             else if (! holding)
-                sl += (target - sl) * oneMinusExpSmall (invFs / tauSlow);
+                sl += (target - sl) * relSlowK;
             // VOICE HOLD: the fast part glides to its recent voice average; the slow memory only holds (gliding it too
             // carried the pause's level into the next phrase: +1 dB of level spread on the voice, measured)
             if (! pause)
                 voiceAvg[(size_t) c] += (f - voiceAvg[(size_t) c]) * voiceAvgK;
             else if (voiceAvg[(size_t) c] > f)
                 f += (voiceAvg[(size_t) c] - f) * pauseGlideK;
+            {
+                // ESS HOLD (see FetStage): shadows of both parts play the 3.x path through the ess; afterwards both
+                // glide back to them
+                float& w = wordGr[(size_t) c];
+                float& shf = shadowF[(size_t) c];
+                float& shs = shadowS[(size_t) c];
+                bool& cu = catching[(size_t) c];
+                const bool inEss = ess && ! pause;
+                if (inEss || cu)
+                {
+                    if (target > shf)
+                        shf += (target - shf) * atkK;
+                    else if (! holdBase)
+                        shf += (target - shf) * relFastK;
+                    if (target > shs)
+                        shs += (target - shs) * atkK;
+                    else if (! holdBase)
+                        shs += (target - shs) * relSlowK;
+                }
+                if (inEss)
+                {
+                    if (w > f)
+                        f += (w - f) * pauseGlideK;
+                    cu = true;
+                }
+                else
+                {
+                    if (cu)
+                    {
+                        if (f > shf)
+                            f += (shf - f) * catchK;
+                        if (sl > shs)
+                            sl += (shs - sl) * catchK;
+                        if (pause || (f - shf < 0.01f && sl - shs < 0.01f))
+                            cu = false;
+                    }
+                    w = f > w ? f : w + (f - w) * wordK;
+                }
+                if (! cu)
+                {
+                    shf = f;
+                    shs = sl;
+                }
+            }
             const float g = fastShare * f + (1.0f - fastShare) * sl;
             // memory follows the compression demand: full build-up at 10 dB
             const float w = std::clamp (target * 0.1f, 0.0f, 1.0f);
@@ -1161,8 +1266,10 @@ private:
     float detK = 0.0f, atkK = 0.0f, relFastK = 0.0f, memRiseK = 0.0f, memFallK = 0.0f, invFs = 0.0f;
     float fastShare = 0.6f, slowMin = 0.5f, slowSpan = 4.5f, onsetGain = 0.0f, onsetFastK = 0.0f, onsetSlowK = 0.0f;
     std::array<float, kMaxCh> onsetFast {}, onsetSlow {}, voiceAvg {};
-    float voiceAvgK = 0.0f, pauseGlideK = 0.0f;
-    bool pause = false;
+    float voiceAvgK = 0.0f, pauseGlideK = 0.0f, wordK = 0.0f, catchK = 0.0f;
+    bool pause = false, ess = false;
+    std::array<float, kMaxCh> wordGr {}, shadowF {}, shadowS {};
+    std::array<bool, kMaxCh> catching {};
     Settings::Model modelApplied { -1.0f };
     std::array<float, kMaxCh> ms {}, grFast {}, grSlow {}, memory {}, grCur {}, grStep {};
     std::array<float, kMaxCh> gainCur { 1.0f, 1.0f }, gainStep {};

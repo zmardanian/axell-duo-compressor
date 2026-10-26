@@ -1,5 +1,25 @@
 # Changelog
 
+## 4.0.0 (2026-10-26)
+
+### New
+- **ESS HOLD**: through the esses of the voice the gain reduction holds at the level of the word they belong to
+  instead of releasing, so the compressor no longer pushes the S, SH and CH sounds above the vowels. Measured on 28 of
+  the artist's raw takes through the suite's own vocal chains (median, esses over the vowels of their word):
+  **+3.28 -> +0.60 dB** (Amber chain), **+1.42 -> -0.09 dB** (Rap Lead), **+1.35 -> +0.03 dB** (Boom Bap Lead); the
+  vowels moved by -0.01..-0.05 dB, the pauses not at all. After each ess the compressor glides back (10 ms) to exactly
+  what 3.0 would do. The detector is Axell Velvet 3.0's LIVE sibilance network (shared through the suite's core), so
+  no latency is added. On for new instances and the vocal presets; off for beat, bus, master and ducking presets and
+  for projects saved before 4.0, which render bit-identically to 3.0.0.
+
+### Verified
+- DSP suite 2948 checks at 44.1-192 kHz with the new section V12 (ESS HOLD at the stage and engine level, 3.x path
+  unchanged, block-size invariance, no allocation) and a CPU check of a new instance (VOICE HOLD + ESS HOLD on, 4x:
+  6.5 % of one core; ESS HOLD's detector 1.6 %), plugin suite 137 (parameter 45 `essHold`, version hint 5; 1.x, 2.x and
+  3.x projects load with it off), ASan + UBSan clean, independent audit 30/30 (new: 3.0.0 sessions render
+  bit-identically to the 3.0.0 bundle with VOICE HOLD on and off; ESS HOLD on keeps level and latency), pluginval
+  strictness 10, Steinberg's VST3 validator 47/47.
+
 ## 3.0.0 (2026-10-26)
 
 ### New
