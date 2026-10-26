@@ -1,6 +1,6 @@
 # Axell Duo Compressor - DSP test report
 
-Generated 2026-10-26 17:39 by `DuoDspTests` in 163.2 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Release.
+Generated 2026-10-26 21:18 by `DuoDspTests` in 155.3 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Release.
 
 **Result: ALL PASS** - 2211 checks passed, 0 failed (every check runs once per sample rate / channel configuration).
 
@@ -307,17 +307,17 @@ Generated 2026-10-26 17:39 by `DuoDspTests` in 163.2 s. Stage ballistics are mea
 | V 2.0 features | Mid/Side, link 0: loud side compressed by | > 3.000 dB | 8.993 dB | 44.1 k stereo | PASS 5/5 |
 | O Oversampling filters | 2x decimator (stopband from base Nyquist): stopband peak | < -100.0 dB | -100.2 dB | 88.2 k mono | PASS 6/6 |
 | O Oversampling filters | 2x decimator (stopband from base Nyquist): passband ripple | < 0.0010 dB | 0.000101 dB | 88.2 k mono | PASS 6/6 |
-| 10 CPU | 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | < 2.000 % | 1.941 % | 48 k stereo | PASS 1/1 |
-| 10 CPU | 48 kHz / 128 / stereo / 2x: real-time factor | (info) | 51.531 x | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | < 2.000 % | 1.903 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | 48 kHz / 128 / stereo / 2x: real-time factor | (info) | 52.544 x | all | - |
 | 10 CPU | silence after program (denormal safety): CPU silence / CPU program | < 1.500 x | 0.7937 x | 48 k stereo | PASS 1/1 |
-| 10 CPU | 48 kHz / 128 / stereo / 1x: CPU of one core | (info) | 1.304 % | all | - |
-| 10 CPU | 48 kHz / 128 / stereo / 4x: CPU of one core | (info) | 3.232 % | all | - |
-| 10 CPU | 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | < 8.000 % | 6.510 % | 48 k stereo | PASS 1/1 |
-| 10 CPU | 48 kHz / 128 / stereo / 4x, a new instance (VOICE HOLD + ESS HOLD on): CPU of one core | < 8.000 % | 6.534 % | 48 k stereo | PASS 1/1 |
-| 10 CPU | ESS HOLD's own cost (its sibilance detector): CPU of one core | (info) | 1.621 % | all | - |
-| 10 CPU | stereo / 128 / 2x at 44.100 kHz: CPU of one core | (info) | 1.765 % | all | - |
-| 10 CPU | stereo / 128 / 2x at 96.000 kHz: CPU of one core | (info) | 3.725 % | all | - |
-| 10 CPU | stereo / 128 / 2x at 192.0 kHz: CPU of one core | (info) | 7.487 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 1x: CPU of one core | (info) | 1.256 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 4x: CPU of one core | (info) | 3.194 % | all | - |
+| 10 CPU | 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | < 8.000 % | 6.427 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | 48 kHz / 128 / stereo / 4x, a new instance (VOICE HOLD + ESS HOLD on): CPU of one core | < 8.000 % | 5.565 % | 48 k stereo | PASS 1/1 |
+| 10 CPU | ESS HOLD's own cost (its sibilance detector): CPU of one core | (info) | 1.099 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 44.100 kHz: CPU of one core | (info) | 1.751 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 96.000 kHz: CPU of one core | (info) | 3.740 % | all | - |
+| 10 CPU | stereo / 128 / 2x at 192.0 kHz: CPU of one core | (info) | 7.461 % | all | - |
 
 ## Detail per configuration
 
@@ -622,14 +622,14 @@ Generated 2026-10-26 17:39 by `DuoDspTests` in 163.2 s. Stage ballistics are mea
 | V 2.0 features: Mid/Side, link 0: loud side compressed by | - | 8.993 | - | 9.000 | - | 9.005 | - | 9.014 | - | 9.043 |
 | O Oversampling filters: 2x decimator (stopband from base Nyquist): stopband peak | - | - | - | - | -100.2 | -100.2 | -100.2 | -100.2 | -100.2 | -100.2 |
 | O Oversampling filters: 2x decimator (stopband from base Nyquist): passband ripple | - | - | - | - | 0.000101 | 0.000101 | 0.000101 | 0.000101 | 0.000101 | 0.000101 |
-| 10 CPU: 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | - | - | - | 1.941 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 2x: real-time factor | - | - | - | 51.531 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 2x, 60 s program: CPU of one core | - | - | - | 1.903 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 2x: real-time factor | - | - | - | 52.544 | - | - | - | - | - | - |
 | 10 CPU: silence after program (denormal safety): CPU silence / CPU program | - | - | - | 0.7937 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 1x: CPU of one core | - | - | - | 1.304 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 4x: CPU of one core | - | - | - | 3.232 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | - | - | - | 6.510 | - | - | - | - | - | - |
-| 10 CPU: 48 kHz / 128 / stereo / 4x, a new instance (VOICE HOLD + ESS HOLD on): CPU of one core | - | - | - | 6.534 | - | - | - | - | - | - |
-| 10 CPU: ESS HOLD's own cost (its sibilance detector): CPU of one core | - | - | - | 1.621 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 44.100 kHz: CPU of one core | - | - | - | 1.765 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 96.000 kHz: CPU of one core | - | - | - | 3.725 | - | - | - | - | - | - |
-| 10 CPU: stereo / 128 / 2x at 192.0 kHz: CPU of one core | - | - | - | 7.487 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 1x: CPU of one core | - | - | - | 1.256 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x: CPU of one core | - | - | - | 3.194 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x, every 2.0 feature on (limiter, lookahead, M/S, Clean, SC EQ): CPU of one core | - | - | - | 6.427 | - | - | - | - | - | - |
+| 10 CPU: 48 kHz / 128 / stereo / 4x, a new instance (VOICE HOLD + ESS HOLD on): CPU of one core | - | - | - | 5.565 | - | - | - | - | - | - |
+| 10 CPU: ESS HOLD's own cost (its sibilance detector): CPU of one core | - | - | - | 1.099 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 44.100 kHz: CPU of one core | - | - | - | 1.751 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 96.000 kHz: CPU of one core | - | - | - | 3.740 | - | - | - | - | - | - |
+| 10 CPU: stereo / 128 / 2x at 192.0 kHz: CPU of one core | - | - | - | 7.461 | - | - | - | - | - | - |
