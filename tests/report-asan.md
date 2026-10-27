@@ -1,6 +1,6 @@
 # Axell Duo Compressor - DSP test report
 
-Generated 2026-10-26 21:48 by `DuoDspTests` in 1795.0 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Debug+ASan+UBSan.
+Generated 2026-10-27 03:27 by `DuoDspTests` in 1902.1 s. Stage ballistics are measured on the stage at the default 2x internal rate with a sample-exact step; everything else runs through the complete engine (oversampling, mix, output). Build: Debug+ASan+UBSan.
 
 **Result: ALL PASS** - 2207 checks passed, 0 failed (every check runs once per sample rate / channel configuration).
 

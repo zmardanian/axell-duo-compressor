@@ -907,7 +907,9 @@ void DuoCompEditor::Content::paint (juce::Graphics& g)
     axell::brand::drawHeaderRule (g, (float) e.headerArea.getBottom() - 1.0f, 0.0f, (float) kWidth, col::grid);
     // Axell's Dojo: the family emblem, its wave and dot in this plugin's colour
     axell::brand::drawEmblem (g, { 12.0f, 6.0f, 46.0f, 46.0f }, juce::Colour (0xfff08a3c));
-    axell::brand::drawTitle (g, 68.0f, 28.0f, "Duo Compressor", juce::String (juce::CharPointer_UTF8 ("\xe5\x8f\x8c"))); // 双
+    axell::brand::drawVersion (g, axell::brand::drawTitle (g, 68.0f, 28.0f, "Duo Compressor",
+                                                           juce::String (juce::CharPointer_UTF8 ("\xe5\x8f\x8c"))), // 双
+                               28.0f, AXELL_VERSION_STRING);
     {
         const auto f = caps (10.0f, 1);
         g.setFont (f);
