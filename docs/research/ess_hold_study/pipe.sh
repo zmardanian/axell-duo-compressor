@@ -1,6 +1,6 @@
 #!/bin/bash
 # pipe.sh <name> <stage files...>: renders every take through the stages cumulatively, keeping each step
-W=/var/home/Alex/axell-v4-work/v4; cd $W
+W=${AXELL_STUDY_DIR:-$HOME/axell-v4-work/v4}; cd $W
 DOJO=${DOJO:-$HOME/.local/share/AxellSignature/Dojo/app/axell-signature-dojo}
 name=$1; shift; prev=takes; k=0
 for st in "$@"; do
