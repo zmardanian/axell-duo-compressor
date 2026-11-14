@@ -536,10 +536,14 @@ const juce::String DuoCompProcessor::getProgramName (int index)
 
 juce::File DuoCompProcessor::userPresetFolder()
 {
+#if JUCE_WINDOWS
+    juce::File root = juce::File::getSpecialLocation (juce::File::userApplicationDataDirectory);   // %APPDATA%
+#else
     auto base = juce::SystemStats::getEnvironmentVariable ("XDG_DATA_HOME", {});
     juce::File root = base.isNotEmpty() ? juce::File (base)
                                         : juce::File::getSpecialLocation (juce::File::userHomeDirectory)
                                               .getChildFile (".local/share");
+#endif
     return root.getChildFile ("AxellDuoCompressor").getChildFile ("Presets");
 }
 

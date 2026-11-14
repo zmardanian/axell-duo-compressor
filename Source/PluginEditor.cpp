@@ -126,7 +126,7 @@ const char* transfer = "Input level (across) against output level (up) for a ste
 const char* limMeter = "Limiter gain reduction in dB. The line marks the recent peak - click to reset.";
 const char* optoMeter = "Opto gain reduction in dB. The line marks the recent peak - click to reset.";
 const char* presets = "Presets: rap/vocal and mix-bus/master starting points, all level-matched. "
-                      "Save your own; they live in ~/.local/share/AxellDuoCompressor/Presets.";
+                      "Save your own; they live in " AXELL_PRESETS_PATH ("AxellDuoCompressor") ".";
 const char* ab = "A/B compare: click A or B to switch between two complete settings.";
 const char* copy = "Copy the current slot's settings into the other slot.";
 } // namespace tip
