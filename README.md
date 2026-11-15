@@ -1,52 +1,66 @@
-# Axell Duo Compressor (VST3, Linux + Windows)
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/hero-dark.png">
+  <img alt="Axell Duo Compressor - Two classic compressors and a true-peak limiter, in one." src="docs/img/type/hero-light.png" width="720">
+</picture>
+</p>
 
-[![CI](https://github.com/zmardanian/axell-duo-compressor/actions/workflows/ci.yml/badge.svg)](https://github.com/zmardanian/axell-duo-compressor/actions/workflows/ci.yml)
-<!-- badges -->
-[![Latest release](https://img.shields.io/github/v/release/zmardanian/axell-duo-compressor?style=flat-square&label=release&color=9c7434)](https://github.com/zmardanian/axell-duo-compressor/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/zmardanian/axell-duo-compressor/total?style=flat-square&color=2a1f17)](https://github.com/zmardanian/axell-duo-compressor/releases)
-![Linux + Windows](https://img.shields.io/badge/Linux%20%2B%20Windows-x86__64-2a1f17?style=flat-square)
-![VST3](https://img.shields.io/badge/format-VST3-2a1f17?style=flat-square)
-[![Licence AGPL-3.0](https://img.shields.io/badge/licence-AGPL--3.0-6b5a4a?style=flat-square)](LICENSE)
-<!-- /badges -->
+<p align="center">
+  <a href="https://github.com/zmardanian/axell-duo-compressor/releases/latest"><img src="https://img.shields.io/github/v/release/zmardanian/axell-duo-compressor?style=flat-square&label=release&color=a5521a" alt="latest release"></a>
+  <a href="https://github.com/zmardanian/axell-duo-compressor/releases"><img src="https://img.shields.io/github/downloads/zmardanian/axell-duo-compressor/total?style=flat-square&color=2a1f17" alt="downloads"></a>
+  <img src="https://img.shields.io/badge/Windows%20%C2%B7%20Linux-x86__64-2a1f17?style=flat-square" alt="Windows and Linux">
+  <a href="https://github.com/zmardanian/axell-duo-compressor/actions/workflows/ci.yml"><img src="https://github.com/zmardanian/axell-duo-compressor/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/licence-AGPL--3.0-6b5a4a?style=flat-square" alt="AGPL-3.0">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/duo-100pct-hidpi2x.png" alt="Axell Duo Compressor" width="100%">
+</p>
+
+<p align="center">
+  <b>Two legends and a limiter, in one plugin.</b><br>
+  A FET peak compressor, an opto leveling amplifier calibrated on recordings of real hardware, and a true-peak limiter - built for rap and boom-bap vocals, and just as much at home on bass, drums, the bus and the master.
+</p>
+
+<p align="center">
+  <a href="https://github.com/zmardanian/axell-duo-compressor/releases/latest"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/dl-windows-dark.png">
+  <img alt="Download for Windows" src="docs/img/type/dl-windows-light.png" height="58">
+</picture></a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/zmardanian/axell-duo-compressor/releases/latest"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/dl-linux-dark.png">
+  <img alt="Download for Linux" src="docs/img/type/dl-linux-light.png" height="58">
+</picture></a>
+</p>
+
+<p align="center"><sub>Free and open source (AGPL-3.0)  ·  Windows 10 / 11 and Linux  ·  any VST3 host - FL Studio, Ableton Live, Cubase, Studio One, Bitwig, REAPER</sub></p>
+
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/h-why-dark.png">
+  <img alt="01 Why it's different - Character with control." src="docs/img/type/h-why-light.png" height="68">
+</picture>
+
+- **An opto that follows the hardware** - calibrated on LA-2A recordings, it tracks the real unit's gain reduction to 0.6 dB RMS on music it never saw.
+- **ESS HOLD** - compressors lift esses above the vowels; Duo holds the word's gain through each ess: +3.28 -> +0.60 dB on 28 real takes.
+- **VOICE HOLD** - the room stays down between your phrases: pauses +23.4 -> +5.9 dB on a real take, the voice's compression unchanged.
+- **Clean where it should be** - aliasing -149.5 dBFS at 4x on a brutal test; silence in, exactly silence out.
+- **Your old sessions are safe** - projects from Duo Vocal Comp 1.0 render bit-identically.
+
+
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/h-does-dark.png">
+  <img alt="02 What it does - What it does." src="docs/img/type/h-does-light.png" height="68">
+</picture>
 
 A FET peak compressor, an opto leveling amplifier and a true-peak limiter in one plugin, built for rap and
 boom-bap vocals and just as much at home on bass, drums, mix bus and master. Formerly **Duo Vocal Comp**: projects
 saved with Duo Vocal Comp 1.0 open in Axell Duo Compressor with every setting and render bit-identically
 (checked through a VST3 host, difference exactly 0).
-
-> **Part of Axell's Dojo** - the Axell Signature suite for rap vocals, beats and masters, on Linux and Windows:
-> [Penta EQ](https://github.com/zmardanian/axell-penta-eq) · **Duo Compressor** ·
-> [Gate](https://github.com/zmardanian/axell-gate) · [De-Reverb](https://github.com/zmardanian/axell-dereverb) ·
-> [Velvet](https://github.com/zmardanian/axell-velvet) · [Master](https://github.com/zmardanian/axell-master) ·
-> [Space](https://github.com/zmardanian/axell-space) ·
-> [Forbidden Seal](https://github.com/zmardanian/axell-forbidden-seal) ·
-> [Axell 76](https://github.com/zmardanian/axell-76)
-> Installed, updated and tuned to your voice by the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo)
-> (one Windows installer carries the whole suite). The plugins share one core library (`external/axell-core`):
-> a breakthrough in one plugin becomes a feature of the next.
-
-![Axell Duo Compressor](docs/screenshots/duo-150pct.png)
-
-## What's new in 4.0
-
-- **ESS HOLD**: every compressor lifts the esses above the vowels - between a vowel and its ess it starts to release,
-  and the S, SH and CH sounds come up against their own word. ESS HOLD uses the suite's sibilance detector (Axell
-  Velvet's, zero latency) to hold the gain reduction at the word's level through each ess, then glides back (10 ms) to
-  exactly what 3.0 would do. On 28 of the artist's raw takes through the suite's own vocal chains, the esses' lift over
-  their word went **+3.28 -> +0.60 dB**, **+1.42 -> -0.09 dB** and **+1.35 -> +0.03 dB** (Amber, Rap Lead, Boom Bap
-  Lead); vowels -0.01..-0.05 dB, pauses unchanged. The de-esser after it has less to do, and fewer esses come back
-  later in the chain. On for new instances and the vocal presets; projects from before 4.0 sound exactly as before.
-
-## What was new in 3.0
-
-- **VOICE HOLD**: a compressor releases in every pause, so the room, breaths and headphone bleed between phrases come
-  up by as much as the voice is compressed. With VOICE HOLD the suite's voice detector (Axell Gate's) marks the
-  pauses and the gain reduction holds at the voice's own level. On a real rap take: pauses **+23.4 -> +5.9 dB** re the
-  voice, the voice's compression unchanged, no latency added. On for new instances and the vocal presets; projects
-  from before 3.0 load with it off and sound exactly as before.
-- **Axell's Dojo look**: the family emblem, a brush-written title with Duo's seal (双, "pair"), an ember ground.
-
-## What it does
 
 **FET** (modelled on the classic 1176-type peak limiter) catches peaks: INPUT drives into the threshold, 20-800 µs
 attack, 50-1100 ms program-dependent release, ratios 4 / 8 / 12 / 20 / ALL ("all buttons in").
@@ -91,7 +105,46 @@ Presets for vocals, mix bus, mastering, bass and side-chain ducking; A/B compare
 `~/.local/share/AxellDuoCompressor/Presets` (Duo Vocal Comp presets are listed too). Latency is reported to the DAW
 and changes only after the DAW has been told (no misaligned audio when you switch lookahead, limiter or oversampling).
 
-## Measured quality
+<table>
+<tr><td align="center" width="50%"><img src="docs/screenshots/duo-150pct.png" alt="At 150 %" width="100%"><br><sub>At 150 %</sub></td><td align="center" width="50%"><img src="docs/screenshots/duo-states.png" alt="Every stage, every state" width="100%"><br><sub>Every stage, every state</sub></td></tr>
+</table>
+
+
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/h-new-dark.png">
+  <img alt="03 What's new - New in 4.0." src="docs/img/type/h-new-light.png" height="68">
+</picture>
+
+### What's new in 4.0
+
+- **ESS HOLD**: every compressor lifts the esses above the vowels - between a vowel and its ess it starts to release,
+  and the S, SH and CH sounds come up against their own word. ESS HOLD uses the suite's sibilance detector (Axell
+  Velvet's, zero latency) to hold the gain reduction at the word's level through each ess, then glides back (10 ms) to
+  exactly what 3.0 would do. On 28 of the artist's raw takes through the suite's own vocal chains, the esses' lift over
+  their word went **+3.28 -> +0.60 dB**, **+1.42 -> -0.09 dB** and **+1.35 -> +0.03 dB** (Amber, Rap Lead, Boom Bap
+  Lead); vowels -0.01..-0.05 dB, pauses unchanged. The de-esser after it has less to do, and fewer esses come back
+  later in the chain. On for new instances and the vocal presets; projects from before 4.0 sound exactly as before.
+
+### What was new in 3.0
+
+- **VOICE HOLD**: a compressor releases in every pause, so the room, breaths and headphone bleed between phrases come
+  up by as much as the voice is compressed. With VOICE HOLD the suite's voice detector (Axell Gate's) marks the
+  pauses and the gain reduction holds at the voice's own level. On a real rap take: pauses **+23.4 -> +5.9 dB** re the
+  voice, the voice's compression unchanged, no latency added. On for new instances and the vocal presets; projects
+  from before 3.0 load with it off and sound exactly as before.
+- **Axell's Dojo look**: the family emblem, a brush-written title with Duo's seal (双, "pair"), an ember ground.
+
+
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/h-measured-dark.png">
+  <img alt="04 Measured - Every claim, measured." src="docs/img/type/h-measured-light.png" height="68">
+</picture>
+
+### Measured quality
 
 | | |
 |---|---|
@@ -109,7 +162,7 @@ All from the automated suites (`tests/`: 2766 DSP checks at 44.1-192 kHz, mono a
 audit through a VST3 host (`tests/independent/duo_audit.py`), pluginval at strictness 10 and Steinberg's VST3
 validator.
 
-## Validation against hardware
+### Validation against hardware
 
 Measured against recordings of real hardware published by researchers (details and method:
 [docs/research/validation.md](docs/research/validation.md)):
@@ -125,7 +178,7 @@ Measured against recordings of real hardware published by researchers (details a
 - **Blind test kit**: ABX and MUSHRA-style trials, hardware vs plugin, loudness-matched
   (`tools/listening/`). Listener results are still to be collected.
 
-## Benchmark against the UADx 1176 and LA-2A
+### Benchmark against the UADx 1176 and LA-2A
 
 Measured side by side with Universal Audio's UADx emulations of the same two units, in the same host, with the same
 analysis ([docs/research/benchmark.md](docs/research/benchmark.md)):
@@ -136,7 +189,8 @@ analysis ([docs/research/benchmark.md](docs/research/benchmark.md)):
   closer in spectral match and on fast onsets after short dips.
 - **Behind for the 1176**: gain-trajectory error 1.46 dB vs UAD's 1.09 dB at the one setting with public hardware data.
 
-## The limiter's limits
+### The limiter's limits
+
 No low-latency detector can predict exactly how a signal reconstructs between samples when it contains energy
 right below Nyquist (above 0.48 fs: 21.2-22.05 kHz at 44.1 kHz). With synthetic full-band material (white-noise
 snares and hats at full scale up to Nyquist) the measured worst true peak is +0.31 dB over the ceiling at 2x/4x
@@ -144,22 +198,33 @@ snares and hats at full scale up to Nyquist) the measured worst true peak is +0.
 audio rarely has much energy that high; if you need a hard guarantee for such material, use 2x or 4x and set the
 ceiling 0.3 dB lower. Details: `docs/DECISIONS.md` D21.
 
-## Engineering progress
 
-| Version | Date | Engineering | Measured |
-|---|---|---|---|
-| **1.0.0** (Duo Vocal Comp) | 2026 | FET and opto stages in series (order swap), side-chain HPF, Color, Mix, stereo link, HF emphasis, 1x/2x/4x, auto makeup, 22 presets | - |
-| **2.0.0** | 2026-10-14 | Renamed Axell Duo Compressor (same plugin identity). True-peak limiter (8x detection), Clean FET detector, threshold / knee / range / hold, side-chain EQ + external key, lookahead, Mid/Side, latency handshake, 4x default, **Measured** opto law calibrated on hardware LA-2A recordings | 1.0 sessions bit-identical; aliasing -149.5 dBFS at 4x; Clean detector THD+N -142 dB (Vintage -43); LA-2A held-out: gain tracking 0.60 dB, STFT 0.449 / loudness 0.43 dB (published neural models 0.551-0.796 / 0.36-1.31) |
-| **2.1.0** | 2026-10-15 | Level / gain-reduction history and transfer curve, level-matched COMPARE (BS.1770) | COMPARE within 0.1 dB; benchmark vs UADx 1176 / LA-2A: 30-85 dB less aliasing, LA-2A on par, 1176 behind (1.46 vs 1.09 dB) |
-| **3.0.0** | 2026-10-26 | VOICE HOLD with the suite's voice detector (Axell Gate's, in the shared core); Axell's Dojo look | Real take: pauses +23.4 -> +5.9 dB, voice unchanged; 2766 DSP + 131 plugin checks, ASan clean, audit 26/26 (1.0 sessions still bit-identical), pluginval L10, validator 47/47 |
-| **4.0.0** | 2026-10-26 | ESS HOLD with the suite's sibilance detector (Axell Velvet's LIVE network, in the shared core): the word's gain held through each ess, a shadow of the 3.x path to return to; tuned on 28 of the artist's takes | Esses over their word: +3.28 -> +0.60 / +1.42 -> -0.09 / +1.35 -> +0.03 dB (three vocal chains), vowels within 0.05 dB; 2948 DSP + 137 plugin checks, ASan clean, audit 30/30 (3.0 sessions bit-identical), pluginval L10, validator 47/47 |
-| **4.0.1** | 2026-10-26 | Faster pitch analysis in the shared core (the suite's sibilance detector (ESS HOLD)): eight lags in registers, same summation order | Output byte-identical to 4.0.0; CPU 6.43 -> 5.61 % of one core (-12.7 %) |
-| **4.0.2** | 2026-10-27 | The version on the interface (small and quiet after the title) | Audio byte-identical to 4.0.1 |
-| **4.0.3** | 2026-11-15 | Faster shared core (detector flatness: one log per frame; inline FFT products; exact true-peak meter shortcut) | Output byte-identical to 4.0.2 (136 renders: 27 presets + 40 random settings); new instance (holds on) 5.58 -> 5.31 % of one core, ESS HOLD detector -9.3 % |
+<br>
 
-Every design decision with its measurement: [docs/DECISIONS.md](docs/DECISIONS.md); all changes: [CHANGELOG.md](CHANGELOG.md).
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/h-install-dark.png">
+  <img alt="05 Get it - Windows first. Linux too." src="docs/img/type/h-install-light.png" height="68">
+</picture>
 
-## Install (Linux)
+### Windows
+
+> [!TIP]
+> **The whole suite in one go:** the [Axell Signature Suite installer](https://github.com/zmardanian/axell-signature-dojo/releases/latest) puts every Axell plugin and the Dojo on Windows 10 / 11 in one step, each one optional - and the Dojo keeps them up to date. Every VST3 host loads them: FL Studio, Ableton Live, Cubase, Studio One, Bitwig, REAPER.
+
+Windows 10 / 11, 64-bit. Download `AxellDuoCompressor-<version>-windows-x64.tar.gz` from the
+[latest release](https://github.com/zmardanian/axell-duo-compressor/releases/latest) (optional: check it against `SHA256SUMS.txt`),
+extract it (Windows 11 opens .tar.gz directly; on Windows 10 use 7-Zip or `tar -xzf` in a terminal) and copy the folder
+`Axell Duo Compressor.vst3` into `C:\Program Files\Common Files\VST3`. Then rescan plugins in your DAW.
+Or install the whole suite in one go with the Axell Signature Suite installer from the
+[Axell Signature Dojo releases](https://github.com/zmardanian/axell-signature-dojo/releases/latest) - the Dojo then keeps it up to date.
+
+Your own presets are kept in `%APPDATA%\AxellDuoCompressor\Presets`.
+
+Every Windows build is made by GitHub Actions from this repository, passes the same test suites and pluginval
+(strictness 10) as the Linux build, and is checked to sound the same as it (largest difference far below -90 dBFS,
+most often bit-identical). The plugin is not code-signed yet; DAWs load it directly.
+
+### Linux
 
 Download `AxellDuoCompressor-4.0.3-linux-x86_64.tar.gz` from the
 [latest release](https://github.com/zmardanian/axell-duo-compressor/releases/latest) (optional: `sha256sum -c
@@ -176,22 +241,80 @@ plugin identity: the DAW would otherwise see two plugins claiming one ID). In RE
 Plug-ins > VST > Re-scan.
 
 
-## Install (Windows)
+<br>
 
-Windows 10 / 11, 64-bit. Download `AxellDuoCompressor-<version>-windows-x64.tar.gz` from the
-[latest release](https://github.com/zmardanian/axell-duo-compressor/releases/latest) (optional: check it against `SHA256SUMS.txt`),
-extract it (Windows 11 opens .tar.gz directly; on Windows 10 use 7-Zip or `tar -xzf` in a terminal) and copy the folder
-`Axell Duo Compressor.vst3` into `C:\Program Files\Common Files\VST3`. Then rescan plugins in your DAW.
-Or install the whole suite in one go with the Axell Signature Suite installer from the
-[Axell Signature Dojo releases](https://github.com/zmardanian/axell-signature-dojo/releases/latest) - the Dojo then keeps it up to date.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/h-history-dark.png">
+  <img alt="06 Version history - Every version, earned." src="docs/img/type/h-history-light.png" height="68">
+</picture>
 
-Your own presets are kept in `%APPDATA%\AxellDuoCompressor\Presets`.
+| Version | Date | Engineering | Measured |
+|---|---|---|---|
+| **1.0.0** (Duo Vocal Comp) | 2026 | FET and opto stages in series (order swap), side-chain HPF, Color, Mix, stereo link, HF emphasis, 1x/2x/4x, auto makeup, 22 presets | - |
+| **2.0.0** | 2026-10-14 | Renamed Axell Duo Compressor (same plugin identity). True-peak limiter (8x detection), Clean FET detector, threshold / knee / range / hold, side-chain EQ + external key, lookahead, Mid/Side, latency handshake, 4x default, **Measured** opto law calibrated on hardware LA-2A recordings | 1.0 sessions bit-identical; aliasing -149.5 dBFS at 4x; Clean detector THD+N -142 dB (Vintage -43); LA-2A held-out: gain tracking 0.60 dB, STFT 0.449 / loudness 0.43 dB (published neural models 0.551-0.796 / 0.36-1.31) |
+| **2.1.0** | 2026-10-15 | Level / gain-reduction history and transfer curve, level-matched COMPARE (BS.1770) | COMPARE within 0.1 dB; benchmark vs UADx 1176 / LA-2A: 30-85 dB less aliasing, LA-2A on par, 1176 behind (1.46 vs 1.09 dB) |
+| **3.0.0** | 2026-10-26 | VOICE HOLD with the suite's voice detector (Axell Gate's, in the shared core); Axell's Dojo look | Real take: pauses +23.4 -> +5.9 dB, voice unchanged; 2766 DSP + 131 plugin checks, ASan clean, audit 26/26 (1.0 sessions still bit-identical), pluginval L10, validator 47/47 |
+| **4.0.0** | 2026-10-26 | ESS HOLD with the suite's sibilance detector (Axell Velvet's LIVE network, in the shared core): the word's gain held through each ess, a shadow of the 3.x path to return to; tuned on 28 of the artist's takes | Esses over their word: +3.28 -> +0.60 / +1.42 -> -0.09 / +1.35 -> +0.03 dB (three vocal chains), vowels within 0.05 dB; 2948 DSP + 137 plugin checks, ASan clean, audit 30/30 (3.0 sessions bit-identical), pluginval L10, validator 47/47 |
+| **4.0.1** | 2026-10-26 | Faster pitch analysis in the shared core (the suite's sibilance detector (ESS HOLD)): eight lags in registers, same summation order | Output byte-identical to 4.0.0; CPU 6.43 -> 5.61 % of one core (-12.7 %) |
+| **4.0.2** | 2026-10-27 | The version on the interface (small and quiet after the title) | Audio byte-identical to 4.0.1 |
+| **4.0.3** | 2026-11-15 | Faster shared core (detector flatness: one log per frame; inline FFT products; exact true-peak meter shortcut) | Output byte-identical to 4.0.2 (136 renders: 27 presets + 40 random settings); new instance (holds on) 5.58 -> 5.31 % of one core, ESS HOLD detector -9.3 % |
 
-Every Windows build is made by GitHub Actions from this repository, passes the same test suites and pluginval
-(strictness 10) as the Linux build, and is checked to sound the same as it (largest difference far below -90 dBFS,
-most often bit-identical). The plugin is not code-signed yet; DAWs load it directly.
+Every design decision with its measurement: [docs/DECISIONS.md](docs/DECISIONS.md); all changes: [CHANGELOG.md](CHANGELOG.md).
 
-## Build (Bazzite / any Linux, inside a distrobox)
+
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/h-suite-dark.png">
+  <img alt="07 The suite - Nine plugins, one core." src="docs/img/type/h-suite-light.png" height="68">
+</picture>
+
+<p align="center">
+<table>
+<tr><td align="center"><a href="https://github.com/zmardanian/axell-penta-eq"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/penta-eq-dark.png">
+  <img alt="Penta EQ" src="docs/img/suite/penta-eq-light.png" width="120">
+</picture></a><br><sub>analog-matched EQ</sub></td><td align="center"><a href="https://github.com/zmardanian/axell-duo-compressor"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/duo-compressor-dark.png">
+  <img alt="Duo Compressor" src="docs/img/suite/duo-compressor-light.png" width="120">
+</picture></a><br><sub>FET + opto + limiter</sub></td><td align="center"><a href="https://github.com/zmardanian/axell-gate"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/gate-dark.png">
+  <img alt="Gate" src="docs/img/suite/gate-light.png" width="120">
+</picture></a><br><sub>voice-aware gate</sub></td><td align="center"><a href="https://github.com/zmardanian/axell-dereverb"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/dereverb-dark.png">
+  <img alt="De-Reverb" src="docs/img/suite/dereverb-light.png" width="120">
+</picture></a><br><sub>small-room de-reverb</sub></td><td align="center"><a href="https://github.com/zmardanian/axell-velvet"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/velvet-dark.png">
+  <img alt="Velvet" src="docs/img/suite/velvet-light.png" width="120">
+</picture></a><br><sub>neural de-esser + warmth</sub></td></tr>
+<tr><td align="center"><a href="https://github.com/zmardanian/axell-master"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/master-dark.png">
+  <img alt="Master" src="docs/img/suite/master-light.png" width="120">
+</picture></a><br><sub>mastering limiter</sub></td><td align="center"><a href="https://github.com/zmardanian/axell-space"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/space-dark.png">
+  <img alt="Space" src="docs/img/suite/space-light.png" width="120">
+</picture></a><br><sub>vocal reverb + delay</sub></td><td align="center"><a href="https://github.com/zmardanian/axell-forbidden-seal"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/forbidden-seal-dark.png">
+  <img alt="Forbidden Seal" src="docs/img/suite/forbidden-seal-light.png" width="120">
+</picture></a><br><sub>saturation</sub></td><td align="center"><a href="https://github.com/zmardanian/axell-76"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/76-dark.png">
+  <img alt="76" src="docs/img/suite/76-light.png" width="120">
+</picture></a><br><sub>1176 FET compressor</sub></td><td align="center"><a href="https://github.com/zmardanian/axell-signature-dojo"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/suite/signature-dojo-dark.png">
+  <img alt="Signature Dojo" src="docs/img/suite/signature-dojo-light.png" width="120">
+</picture></a><br><sub>the suite's home</sub></td></tr>
+</table>
+</p>
+
+Nine plugins and their home, built as one family: they share a core library, so a breakthrough in one becomes a feature of the next - the sibilance network of Velvet guards the esses in Duo, Master, Space and Forbidden Seal; Gate's voice detector holds Duo's and Master's gain through your pauses. The [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo) installs, updates and tunes the whole suite to your voice - on Windows from a single installer.
+
+
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/h-build-dark.png">
+  <img alt="08 Build from source - For developers." src="docs/img/type/h-build-light.png" height="68">
+</picture>
 
     bash scripts/setup-toolbox.sh      # creates the juce-build distrobox (Ubuntu 24.04) once
     bash scripts/build.sh
@@ -201,7 +324,16 @@ most often bit-identical). The plugin is not code-signed yet; DAWs load it direc
 JUCE 8.0.15 (fetched by CMake). The DSP lives in JUCE-free headers (`Source/Dsp.h`, `Engine.h`, `Oversampling.h`)
 and is tested with plain g++.
 
-## Credits
+
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/type/h-credits-dark.png">
+  <img alt="09 Credits & contact - Credits & contact." src="docs/img/type/h-credits-light.png" height="68">
+</picture>
+
+### Credits
+
 VOICE HOLD's voice detector (Axell Gate 2.0's, in axell-core) is trained on CMU ARCTIC and the CSTR VCTK Corpus 0.92
 (CC BY 4.0); see THIRD_PARTY_NOTICES.md. Title face: Yuji Syuku (SIL OFL 1.1).
 Validation data: SignalTrain LA-2A dataset (Hawley, Colburn, Mimilakis; Zenodo 3824876, CC BY 4.0); 1176LN recordings
@@ -209,6 +341,9 @@ of Martínez Ramírez, Benetos and Reiss (Applied Sciences 10(2) 638, 2020; Zeno
 are used only to identify the hardware the stages are modelled on and validated against; no code, data, graphics or
 impulse responses of any commercial product are used.
 
-## Contact
+### Contact
 
 Axell Yobag - axellpetre@protonmail.com (questions, bug reports, feedback). Issues on GitHub are welcome too.
+
+
+<br>

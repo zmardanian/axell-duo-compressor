@@ -19,7 +19,7 @@ mkdir -p "$PUB/tests/independent" "$PUB/docs" "$PUB/tools/validation" "$PUB/tool
 cp tests/*.cpp tests/*.h tests/lsan.supp tests/report.md tests/report-asan.md "$PUB/tests/"
 cp tests/independent/*.cpp tests/independent/*.py tests/independent/README.md tests/independent/audit-report.txt "$PUB/tests/independent/"
 cp docs/ENGINEERING_SPEC.md docs/DECISIONS.md docs/pluginval-log.txt "$PUB/docs/"
-cp -r docs/research docs/screenshots "$PUB/docs/"
+cp -r docs/research docs/screenshots docs/img "$PUB/docs/"   # img: the README typography
 cp tools/duo_render.cpp tools/retune_presets.cpp "$PUB/tools/"
 cp tools/validation/*.py tools/validation/*.json "$PUB/tools/validation/"
 cp tools/listening/index.html tools/listening/make_stimuli.py "$PUB/tools/listening/"
