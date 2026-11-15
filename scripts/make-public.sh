@@ -13,7 +13,7 @@ if [ -d "$PUB/.git" ]; then UPDATE=1; PUB="$(mktemp -d)/stage"
 elif [ -e "$PUB" ]; then echo "$PUB exists but is not a git repository - remove it first."; exit 1; fi
 mkdir -p "$PUB"
 for f in CMakeLists.txt LICENSE README.md CHANGELOG.md THIRD_PARTY_NOTICES.md; do cp "$f" "$PUB/"; done
-cp -r Resources Source scripts .github "$PUB/"   # .github: the CI workflow (GitHub Actions)
+cp -r Resources Source scripts .github cmake "$PUB/"   # .github: the CI workflow (GitHub Actions); cmake: JuceFixes.cmake
 mkdir -p "$PUB/tools"; cp tools/xplat.py "$PUB/tools/"   # the Linux/Windows sound-match check (CI)
 mkdir -p "$PUB/tests/independent" "$PUB/docs" "$PUB/tools/validation" "$PUB/tools/listening" "$PUB/tools/benchmark"
 cp tests/*.cpp tests/*.h tests/lsan.supp tests/report.md tests/report-asan.md "$PUB/tests/"
@@ -26,7 +26,7 @@ cp tools/listening/index.html tools/listening/make_stimuli.py "$PUB/tools/listen
 cp tools/benchmark/*.py "$PUB/tools/benchmark/"
 # 3.0: the Axell core (VOICE HOLD's voice decision, the brand look), vendored so the repository builds on its own
 mkdir -p "$PUB/external/axell-core"
-for d in CMakeLists.txt LICENSE README.md include src resources tests tools; do cp -r "$CORE/$d" "$PUB/external/axell-core/"; done
+for d in CMakeLists.txt LICENSE README.md cmake include src resources tests tools; do cp -r "$CORE/$d" "$PUB/external/axell-core/"; done
 rm -rf "$PUB/external/axell-core/tools/__pycache__"
 echo "axell-core $(git -C "$CORE" rev-parse --short HEAD)" > "$PUB/external/axell-core/VERSION"
 # privacy: report logs name build paths - the home folder becomes ~; then nothing personal may be left anywhere

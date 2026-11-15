@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.3 - 2026-11-15
+- **Lighter, the same sound** (a suite-wide optimisation; the rule: byte-for-byte the same output). ESS HOLD's
+  sibilance detector takes one logarithm per frame instead of 192, the shared FFT multiplies complex numbers inline,
+  and the true-peak meter skips in-between points that provably cannot raise its reading.
+- Output byte-for-byte the same as 4.0.2: 136 renders through the released 4.0.2 and the new build (all 27 factory
+  presets and 40 random settings of every parameter, on a vocal and a mix).
+- CPU at 48 kHz (DSP suite benchmark): a new instance (VOICE HOLD + ESS HOLD on, 4x) 5.58 -> 5.31 % of one core
+  (-4.9 %); ESS HOLD's own detector 1.18 -> 1.07 % (-9.3 %); every 2.0 feature on 6.31 -> 6.22 %.
+- Verified: DSP 2211 checks over every rate / channel configuration (ASan + UBSan 2207, clean), plugin 137,
+  independent audit 30/30, core 143/143, pluginval strictness 10 (+10 extra runs, 0 crashes), VST3 validator 47/47.
+
 ## 4.0.2 (2026-10-27)
 - **Version on the interface**: the plugin's version, small and quiet after the title - so you can always see which build is loaded. The audio is byte-for-byte the same as 4.0.1 (checked through the released 4.0.1 and the new build).
 

@@ -317,3 +317,13 @@ the sound at all, so every speed-up must give byte-identical output.
   oversampler taps padded to a multiple of eight to drop the scalar tail (slower), AVX2 without FMA (no faster, and it
   would drop older CPUs). FMA or -ffast-math were not considered: they change the output.
 
+
+## D35 4.0.3: the same sound, less work
+Part of the suite-wide optimisation campaign (profile of a 60 s vocal: FET detector 26 %, opto control 17 %,
+chunk 27 %, oversampler 16 %). Rule: byte-identical output.
+- **Kept (axell-core):** the sibilance detector's flatness from one log per frame (D1), inline FFT products (V1), the
+  true-peak meter skipping phases that provably cannot raise the block's peak (M1, exact).
+- **Verified:** 136 renders vs the released 4.0.2 (27 presets + 40 seeded random settings, vocal + mix):
+  byte-identical; plugin process time -2.4 %; DSP benchmark holds-on instance -4.9 %.
+- **Inspected, no byte-identical room:** the FET detector and opto control (already compile-time channel counts with
+  interleaved dependency chains, measured in 2.x).

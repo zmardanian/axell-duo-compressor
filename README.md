@@ -155,17 +155,18 @@ ceiling 0.3 dB lower. Details: `docs/DECISIONS.md` D21.
 | **4.0.0** | 2026-10-26 | ESS HOLD with the suite's sibilance detector (Axell Velvet's LIVE network, in the shared core): the word's gain held through each ess, a shadow of the 3.x path to return to; tuned on 28 of the artist's takes | Esses over their word: +3.28 -> +0.60 / +1.42 -> -0.09 / +1.35 -> +0.03 dB (three vocal chains), vowels within 0.05 dB; 2948 DSP + 137 plugin checks, ASan clean, audit 30/30 (3.0 sessions bit-identical), pluginval L10, validator 47/47 |
 | **4.0.1** | 2026-10-26 | Faster pitch analysis in the shared core (the suite's sibilance detector (ESS HOLD)): eight lags in registers, same summation order | Output byte-identical to 4.0.0; CPU 6.43 -> 5.61 % of one core (-12.7 %) |
 | **4.0.2** | 2026-10-27 | The version on the interface (small and quiet after the title) | Audio byte-identical to 4.0.1 |
+| **4.0.3** | 2026-11-15 | Faster shared core (detector flatness: one log per frame; inline FFT products; exact true-peak meter shortcut) | Output byte-identical to 4.0.2 (136 renders: 27 presets + 40 random settings); new instance (holds on) 5.58 -> 5.31 % of one core, ESS HOLD detector -9.3 % |
 
 Every design decision with its measurement: [docs/DECISIONS.md](docs/DECISIONS.md); all changes: [CHANGELOG.md](CHANGELOG.md).
 
 ## Install (Linux)
 
-Download `AxellDuoCompressor-4.0.2-linux-x86_64.tar.gz` from the
+Download `AxellDuoCompressor-4.0.3-linux-x86_64.tar.gz` from the
 [latest release](https://github.com/zmardanian/axell-duo-compressor/releases/latest) (optional: `sha256sum -c
 SHA256SUMS.txt`), then:
 
-    tar xzf AxellDuoCompressor-4.0.2-linux-x86_64.tar.gz
-    cd AxellDuoCompressor-4.0.2-linux-x86_64
+    tar xzf AxellDuoCompressor-4.0.3-linux-x86_64.tar.gz
+    cd AxellDuoCompressor-4.0.3-linux-x86_64
     ./install.sh
 
 Or let the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo) install and update it.
