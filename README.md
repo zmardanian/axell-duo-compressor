@@ -1,20 +1,29 @@
-# Axell Duo Compressor (VST3, Linux)
+# Axell Duo Compressor (VST3, Linux + Windows)
 
 [![CI](https://github.com/zmardanian/axell-duo-compressor/actions/workflows/ci.yml/badge.svg)](https://github.com/zmardanian/axell-duo-compressor/actions/workflows/ci.yml)
+<!-- badges -->
+[![Latest release](https://img.shields.io/github/v/release/zmardanian/axell-duo-compressor?style=flat-square&label=release&color=9c7434)](https://github.com/zmardanian/axell-duo-compressor/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/zmardanian/axell-duo-compressor/total?style=flat-square&color=2a1f17)](https://github.com/zmardanian/axell-duo-compressor/releases)
+![Linux + Windows](https://img.shields.io/badge/Linux%20%2B%20Windows-x86__64-2a1f17?style=flat-square)
+![VST3](https://img.shields.io/badge/format-VST3-2a1f17?style=flat-square)
+[![Licence AGPL-3.0](https://img.shields.io/badge/licence-AGPL--3.0-6b5a4a?style=flat-square)](LICENSE)
+<!-- /badges -->
 
 A FET peak compressor, an opto leveling amplifier and a true-peak limiter in one plugin, built for rap and
 boom-bap vocals and just as much at home on bass, drums, mix bus and master. Formerly **Duo Vocal Comp**: projects
 saved with Duo Vocal Comp 1.0 open in Axell Duo Compressor with every setting and render bit-identically
 (checked through a VST3 host, difference exactly 0).
 
-> **Part of Axell's Dojo** - the Axell Signature suite for rap vocals, beats and masters on Linux:
-> [Penta EQ](https://github.com/zmardanian/axell-penta-eq) · [Duo Compressor](https://github.com/zmardanian/axell-duo-compressor) ·
+> **Part of Axell's Dojo** - the Axell Signature suite for rap vocals, beats and masters, on Linux and Windows:
+> [Penta EQ](https://github.com/zmardanian/axell-penta-eq) · **Duo Compressor** ·
 > [Gate](https://github.com/zmardanian/axell-gate) · [De-Reverb](https://github.com/zmardanian/axell-dereverb) ·
 > [Velvet](https://github.com/zmardanian/axell-velvet) · [Master](https://github.com/zmardanian/axell-master) ·
-> [Space](https://github.com/zmardanian/axell-space) · [Forbidden Seal](https://github.com/zmardanian/axell-forbidden-seal), installed,
-> updated and tuned to your voice by the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo).
-> Since 3.0 the plugins share one core library (`external/axell-core`): a breakthrough in one plugin becomes a
-> feature of the next.
+> [Space](https://github.com/zmardanian/axell-space) ·
+> [Forbidden Seal](https://github.com/zmardanian/axell-forbidden-seal) ·
+> [Axell 76](https://github.com/zmardanian/axell-76)
+> Installed, updated and tuned to your voice by the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo)
+> (one Windows installer carries the whole suite). The plugins share one core library (`external/axell-core`):
+> a breakthrough in one plugin becomes a feature of the next.
 
 ![Axell Duo Compressor](docs/screenshots/duo-150pct.png)
 
@@ -164,6 +173,22 @@ Or let the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-
 The installer copies `Axell Duo Compressor.vst3` to `~/.vst3` and removes an installed `Duo Vocal Comp.vst3` (same
 plugin identity: the DAW would otherwise see two plugins claiming one ID). In REAPER: Options > Preferences >
 Plug-ins > VST > Re-scan.
+
+
+## Install (Windows)
+
+Windows 10 / 11, 64-bit. Download `AxellDuoCompressor-<version>-windows-x64.tar.gz` from the
+[latest release](https://github.com/zmardanian/axell-duo-compressor/releases/latest) (optional: check it against `SHA256SUMS.txt`),
+extract it (Windows 11 opens .tar.gz directly; on Windows 10 use 7-Zip or `tar -xzf` in a terminal) and copy the folder
+`Axell Duo Compressor.vst3` into `C:\Program Files\Common Files\VST3`. Then rescan plugins in your DAW.
+Or install the whole suite in one go with the Axell Signature Suite installer from the
+[Axell Signature Dojo releases](https://github.com/zmardanian/axell-signature-dojo/releases/latest) - the Dojo then keeps it up to date.
+
+Your own presets are kept in `%APPDATA%\AxellDuoCompressor\Presets`.
+
+Every Windows build is made by GitHub Actions from this repository, passes the same test suites and pluginval
+(strictness 10) as the Linux build, and is checked to sound the same as it (largest difference far below -90 dBFS,
+most often bit-identical). The plugin is not code-signed yet; DAWs load it directly.
 
 ## Build (Bazzite / any Linux, inside a distrobox)
 
