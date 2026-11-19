@@ -35,7 +35,7 @@ include_directories(${AXELL_CORE_DIR}/include)
 
 juce_add_plugin(AxellDuoCompressor
   COMPANY_NAME              "Axell Yobag"
-  COMPANY_EMAIL             "axellpetre@protonmail.com"
+  COMPANY_EMAIL             "contact@axellsdojo.com"
   BUNDLE_ID                 com.axellyobag.axellduocompressor
   PLUGIN_MANUFACTURER_CODE  Dcmp
   PLUGIN_CODE               Dvc1

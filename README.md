@@ -349,7 +349,7 @@ impulse responses of any commercial product are used.
 
 ### Contact
 
-Axell Yobag - axellpetre@protonmail.com (questions, bug reports, feedback). Issues on GitHub are welcome too.
+Axell Yobag - contact@axellsdojo.com (questions, bug reports, feedback). Issues on GitHub are welcome too.
 
 
 <br>
