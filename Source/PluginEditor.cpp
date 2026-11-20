@@ -1,4 +1,5 @@
 #include "PluginEditor.h"
+#include <axell/gui/ScreenReader.h>
 
 #include <axell/gui/BrandTitle.h>
 #include "BinaryData.h"
@@ -730,6 +731,7 @@ DuoCompEditor::DuoCompEditor (DuoCompProcessor& p)
 
     timerCallback();
     startTimerHz (30);
+    axell::nameControlsForScreenReaders (*this);   // Narrator / VoiceOver read every control by name
 }
 
 DuoCompEditor::~DuoCompEditor()

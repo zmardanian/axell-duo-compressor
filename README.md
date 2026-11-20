@@ -231,12 +231,12 @@ most often bit-identical). The plugin is not code-signed yet; DAWs load it direc
 
 Runs on x86_64 Linux with glibc 2.35 or newer: Ubuntu 22.04+, Debian 12+, Linux Mint 21+, Fedora 36+, Arch, Bazzite.
 
-Download `AxellDuoCompressor-4.0.3-linux-x86_64.tar.gz` from the
+Download `AxellDuoCompressor-4.0.4-linux-x86_64.tar.gz` from the
 [latest release](https://github.com/zmardanian/axell-duo-compressor/releases/latest) (optional: `sha256sum -c
 SHA256SUMS.txt`), then:
 
-    tar xzf AxellDuoCompressor-4.0.3-linux-x86_64.tar.gz
-    cd AxellDuoCompressor-4.0.3-linux-x86_64
+    tar xzf AxellDuoCompressor-4.0.4-linux-x86_64.tar.gz
+    cd AxellDuoCompressor-4.0.4-linux-x86_64
     ./install.sh
 
 Or let the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo) install and update it.
@@ -263,6 +263,7 @@ Plug-ins > VST > Re-scan.
 | **4.0.1** | 2026-10-26 | Faster pitch analysis in the shared core (the suite's sibilance detector (ESS HOLD)): eight lags in registers, same summation order | Output byte-identical to 4.0.0; CPU 6.43 -> 5.61 % of one core (-12.7 %) |
 | **4.0.2** | 2026-10-27 | The version on the interface (small and quiet after the title) | Audio byte-identical to 4.0.1 |
 | **4.0.3** | 2026-11-15 | Faster shared core (detector flatness: one log per frame; inline FFT products; exact true-peak meter shortcut) | Output byte-identical to 4.0.2 (136 renders: 27 presets + 40 random settings); new instance (holds on) 5.58 -> 5.31 % of one core, ESS HOLD detector -9.3 % |
+| **4.0.4** | 2026-11-20 | Script wordmark title; the factory preset (Program) is kept with the project; every control named for screen readers | Audio byte-identical to 4.0.3 (136 renders); pluginval 2.0 L10 with the real-time check |
 
 Every design decision with its measurement: [docs/DECISIONS.md](docs/DECISIONS.md); all changes: [CHANGELOG.md](CHANGELOG.md).
 
